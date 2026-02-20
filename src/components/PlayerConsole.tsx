@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
+import { getPlayer } from './GetPlayer';
+
 
 interface Player{
     playerId:string;
@@ -16,10 +18,23 @@ interface Player{
     accountCreatedDate:string;
 
 }
+export const loadData= async (
+        SetPlayerData:React.Dispatch<React.SetStateAction<Player[]>>
+    )=>{
+        const playerDetails=await getPlayer()
+        console.log(playerDetails)
+        SetPlayerData(playerDetails)
+    };
 
 export  function PlayerConsole(){
 
     const [playerData , SetPlayerData]=useState<Player[]>([])
+
+    useEffect(()=>{
+        loadData(SetPlayerData)
+    },[])
+
+    
 
     const tHeads :string []=[
         "Player Id",
