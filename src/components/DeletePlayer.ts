@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const deletePlayerUrl="http://localhost:3000/scrabbleapp2026/api/v1/player/deleteplayer"
+const deletePlayerUrl="http://localhost:8081/scrabbleapp2026/api/v1/player/deleteplayer"
 const DeletePlayer=async(playerId:string)=>{
     try {
         await axios.delete(`${deletePlayerUrl}?playerId=${playerId}`)
@@ -9,3 +9,4 @@ const DeletePlayer=async(playerId:string)=>{
         throw error;
     }
 }
+export default DeletePlayer;

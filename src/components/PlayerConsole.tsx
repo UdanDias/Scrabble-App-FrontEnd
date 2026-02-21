@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import { getPlayer } from './GetPlayer';
 import { Button } from 'react-bootstrap';
 import EditPlayer from './EditPlayer';
+import DeletePlayer from './DeletePlayer';
 
 
 interface Player{
@@ -33,6 +34,11 @@ export  function PlayerConsole(){
     const [playerData , SetPlayerData]=useState<Player[]>([])
     const [selectedRow,SetSelectedRow]=useState<Player|null>(null)
     const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
+
+    const handleDelete=async(playerId:string)=>{
+        await DeletePlayer(playerId);
+        SetPlayerData(playerData.filter(player=>player.playerId!==playerId))
+    }
 
     const handleOnUpdate=async(updatedPlayer:Player)=>{
         const updatedPlayers=playerData.map((player)=>{
@@ -95,7 +101,7 @@ export  function PlayerConsole(){
                                     <div className="d-flex gap-2 justify-content-center">
                                         <Button variant="primary">Games</Button>
                                         <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
-                                        <Button variant="danger">Delete</Button>
+                                        <Button variant="danger" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
                                     </div>
                                 </td>
                                 
