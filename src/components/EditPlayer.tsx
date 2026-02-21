@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
+import UpdatePlayer from "./UpdatePlayer";
 
 
 interface Player{
@@ -21,8 +22,10 @@ interface EditPlayerProps{
     show:boolean;
     selectedRow:Player|null;
     handleClose:()=>void;
+    handleUpdate:(updatedPlayer:Player)=>void;
+    refreshTable:()=>void;
 }
-const EditPlayer=({show,selectedRow,handleClose}:EditPlayerProps)=>{
+const EditPlayer=({show,selectedRow,handleClose,handleUpdate,refreshTable}:EditPlayerProps)=>{
 
 const [playerDetails,SetPlayerDetails]=useState<Player>({
      playerId:"",
@@ -49,6 +52,18 @@ useEffect(()=>{
 
 const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
     SetPlayerDetails({...playerDetails,[e.target.name]:e.target.value})
+}
+
+const handlesave=async()=>{
+    try {
+        const updatedPlayer=await UpdatePlayer(playerDetails);
+        handleUpdate(updatedPlayer)
+        refreshTable()
+        handleClose()
+    } catch (error) {
+        console.error("Error updating player",error)
+        throw error;
+    }
 }
 
     return(
@@ -171,7 +186,7 @@ const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={handlesave}>
                     Update
                 </Button>
                 </Modal.Footer>

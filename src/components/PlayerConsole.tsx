@@ -34,6 +34,16 @@ export  function PlayerConsole(){
     const [selectedRow,SetSelectedRow]=useState<Player|null>(null)
     const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
 
+    const handleOnUpdate=async(updatedPlayer:Player)=>{
+        const updatedPlayers=playerData.map((player)=>{
+            return player.playerId===updatedPlayer.playerId?updatedPlayer:player
+        })
+        SetPlayerData(updatedPlayers)
+    }
+    const refreshTable=()=>{
+        loadData(SetPlayerData)
+    }
+
     const handleEdit=(row:Player)=>{
         console.log("row data",row)
         SetSelectedRow(row)
@@ -98,7 +108,8 @@ export  function PlayerConsole(){
             show={showEditPlayerModal}
             selectedRow={selectedRow}
             handleClose={handleOnCloseEdit}
-
+            handleUpdate={handleOnUpdate}
+            refreshTable={refreshTable}
             />
         </>
         
