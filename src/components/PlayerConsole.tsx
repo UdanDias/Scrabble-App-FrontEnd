@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { getPlayer } from './GetPlayer';
+import { Button } from 'react-bootstrap';
 
 
 interface Player{
@@ -67,6 +68,14 @@ export  function PlayerConsole(){
                                 {Object.values(row).map((cell,index)=>(
                                     <td key={index}>{cell}</td>
                                 ))}
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <Button variant="secondary">Edit</Button>
+                                            <Button variant="danger">Delete</Button>
+                                        </div>
+                                    </td>
+                                
+                                
                             </tr>
                         ))}
                 </tbody>
