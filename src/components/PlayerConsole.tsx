@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { getPlayer } from './GetPlayer';
 import { Button } from 'react-bootstrap';
+import EditPlayer from './EditPlayer';
 
 
 interface Player{
@@ -30,6 +31,18 @@ export const loadData= async (
 export  function PlayerConsole(){
 
     const [playerData , SetPlayerData]=useState<Player[]>([])
+    const [selectedRow,SetSelectedRow]=useState<Player|null>(null)
+    const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
+
+    const handleEdit=(row:Player)=>{
+        console.log("row data",row)
+        SetSelectedRow(row)
+        SetShowEditPlayerModal(true)
+    }
+
+    const handleOnCloseEdit=()=>{
+        SetShowEditPlayerModal(false)
+    }
 
     useEffect(()=>{
         loadData(SetPlayerData)
@@ -66,20 +79,28 @@ export  function PlayerConsole(){
                         {playerData.map((row)=>(
                             <tr key={row.playerId}>
                                 {Object.values(row).map((cell,index)=>(
-                                    <td key={index}>{cell}</td>
+                                    <td key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
                                 ))}
-                                    <td>
-                                        <div className="d-flex gap-2 justify-content-center">
-                                            <Button variant="secondary">Edit</Button>
-                                            <Button variant="danger">Delete</Button>
-                                        </div>
-                                    </td>
+                                <td>
+                                    <div className="d-flex gap-2 justify-content-center">
+                                        <Button variant="primary">Games</Button>
+                                        <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
+                                        <Button variant="danger">Delete</Button>
+                                    </div>
+                                </td>
                                 
                                 
                             </tr>
                         ))}
                 </tbody>
             </Table>
+            <EditPlayer
+            show={showEditPlayerModal}
+            selectedRow={selectedRow}
+            handleClose={handleOnCloseEdit}
+
+            />
         </>
+        
     );
 }
