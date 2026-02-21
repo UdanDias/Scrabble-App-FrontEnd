@@ -1,13 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import  {PlayerConsole}  from './components/PlayerConsole';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
+import NavBar from './components/NavBar';
 
 function App() {
   return (
     <>
+      <NavBar/>
       <PlayerConsole/>
     </>
   );

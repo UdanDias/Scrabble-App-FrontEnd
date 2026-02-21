@@ -48,7 +48,8 @@ export  function PlayerConsole(){
         "Address",
         "Faculty",
         "Academic Level",
-        "Account Created Date"
+        "Account Created Date",
+        "Action"
     ]
     return(
         <>
@@ -56,7 +57,7 @@ export  function PlayerConsole(){
                 <thead>
                     <tr>
                         {tHeads.map((headings)=>(
-                            <th className="text-center">{headings}</th>
+                            <th className="text-center" key={headings}>{headings}</th>
                         ))}
                     </tr>
                 </thead>
