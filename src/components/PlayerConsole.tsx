@@ -93,9 +93,9 @@ export  function PlayerConsole(){
     return(
         <>
         <div className="d-flex justify-content-end p-2">
-            <Button  variant="success" onClick={()=>SetShowAddPlayerModal(true)}>Add</Button>
+            <Button  variant="success" onClick={()=>SetShowAddPlayerModal(true)}>Create</Button>
         </div>
-            <Table striped bordered hover>
+            <Table striped bordered hover >
                 <thead>
                     <tr>
                         {tHeads.map((headings)=>(
