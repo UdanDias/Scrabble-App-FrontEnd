@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { getPlayer } from './GetPlayer';
+import { getPlayer } from './service/player/GetPlayer';
 import { Button } from 'react-bootstrap';
-import EditPlayer from './EditPlayer';
-import DeletePlayer from './DeletePlayer';
+import EditPlayer from './service/player/EditPlayer';
+import DeletePlayer from './service/player/DeletePlayer';
+import AddPlayer from './service/player/AddPlayer';
 
 
 interface Player{
@@ -34,6 +35,7 @@ export  function PlayerConsole(){
     const [playerData , SetPlayerData]=useState<Player[]>([])
     const [selectedRow,SetSelectedRow]=useState<Player|null>(null)
     const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
+    const [showAddPlayerModal,SetShowAddPlayerModal]=useState(false);
 
     const handleDelete=async(playerId:string)=>{
         await DeletePlayer(playerId);
@@ -49,6 +51,10 @@ export  function PlayerConsole(){
     const refreshTable=()=>{
         loadData(SetPlayerData)
     }
+    const handleAdd=(newPlayer:Player)=>{
+        SetPlayerData((prev)=>([...prev,newPlayer]))
+
+    }
 
     const handleEdit=(row:Player)=>{
         console.log("row data",row)
@@ -58,6 +64,9 @@ export  function PlayerConsole(){
 
     const handleOnCloseEdit=()=>{
         SetShowEditPlayerModal(false)
+    }
+    const handleCloseAdd=()=>{
+        SetShowAddPlayerModal(false)
     }
 
     useEffect(()=>{
@@ -83,6 +92,9 @@ export  function PlayerConsole(){
     ]
     return(
         <>
+        <div className="d-flex justify-content-end p-2">
+            <Button  variant="success" onClick={()=>SetShowAddPlayerModal(true)}>Add</Button>
+        </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -92,8 +104,8 @@ export  function PlayerConsole(){
                     </tr>
                 </thead>
                 <tbody>
-                        {playerData.map((row)=>(
-                            <tr key={row.playerId}>
+                        {playerData.map((row,index)=>(
+                            <tr key={row.playerId||index}>
                                 {Object.values(row).map((cell,index)=>(
                                     <td key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
                                 ))}
@@ -117,6 +129,11 @@ export  function PlayerConsole(){
             handleUpdate={handleOnUpdate}
             refreshTable={refreshTable}
             />
+            <AddPlayer
+            show={showAddPlayerModal}
+            handleClose={handleCloseAdd}
+            handleAdd={handleAdd}
+            refreshTable={refreshTable}/>
         </>
         
     );
