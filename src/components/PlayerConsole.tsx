@@ -107,7 +107,7 @@ export  function PlayerConsole(){
                         {playerData.map((row,index)=>(
                             <tr key={row.playerId||index}>
                                 {Object.values(row).map((cell,index)=>(
-                                    <td key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
+                                    <td  className="text-center"key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
                                 ))}
                                 <td>
                                     <div className="d-flex gap-2 justify-content-center">
