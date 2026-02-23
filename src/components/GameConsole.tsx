@@ -1,5 +1,5 @@
 import { SetStateAction, useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import GetGames from "./service/game/GetGames";
 
 
@@ -33,10 +33,20 @@ const loadGameData=async(SetGameData:React.Dispatch<SetStateAction<Game[]>>)=>{
 
 export function GameConsole(){
     const [gameData,SetGameData]=useState<Game[]>([]);
+    const [editGameModal,SetEditGameModal]=useState(false)
+    const [selectedRow,SetSelectedRow]=useState<Game|null>(null)
 
     useEffect(()=>{
         loadGameData(SetGameData)
     },[])
+
+    const refreshTable=()=>{
+        loadGameData(SetGameData)
+    }
+    const handleEdit=(row:Game)=>{
+        SetSelectedRow(row)
+        SetEditGameModal(true)
+    }
 
     const theads:string[]=[
         "Game Id",
@@ -45,7 +55,7 @@ export function GameConsole(){
         "Score 1",
         "Score 2",
         "Margin",
-        "Is Game Tied",
+        "Game Tied",
         "Winner Id",
         "Game Date",
         "Is Bye Game",
@@ -54,6 +64,9 @@ export function GameConsole(){
     return (
         <>
              <Table striped bordered hover >
+                <div>
+                    <Button variant="success">Add</Button>
+                </div>
                 <thead>
                     <tr>
                         {theads.map((tHead,index)=>(
@@ -66,8 +79,14 @@ export function GameConsole(){
                         <tr key={row.gameId}>{
                             Object.values(row).map((cell,index)=>(
                                 <td className="text-center" key={index}>{typeof cell === "boolean"?cell.toString():cell}</td>
-                            ))
-                        }</tr>
+                            ))}
+                            <td>
+                                <div className="d-flex justify-content-center p-2 gap-2">
+                                    <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
+                                    <Button variant="danger">Delete</Button>
+                                </div>
+                            </td>
+                            </tr>
                     ))}
                 </tbody>
             </Table>
