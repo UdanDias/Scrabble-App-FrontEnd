@@ -58,7 +58,7 @@ export function AddByeGame({show,handleClose,handleAdd}:AddByeGameprops){
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                <Modal.Title>Add Game</Modal.Title>
+                <Modal.Title>Add Bye Game</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     

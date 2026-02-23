@@ -93,20 +93,34 @@ export function GameConsole(){
     }
     const handleAddClick = async () => {
     const result = await Swal.fire({
-        title: 'Adding a Bye Game?',
+        title: 'Select Game Type',
         icon: 'question',
         showConfirmButton: true,
         showDenyButton: true,
         showCancelButton: true,
-        confirmButtonText: 'Yes',
-        denyButtonText: 'No',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Regular Game',
+        denyButtonText: 'Bye Game',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#510dfd',  
+        denyButtonColor: '#19876f',  
+        cancelButtonColor: '#6c757d',
+        customClass: {
+        icon: 'custom-swal-icon'
+    },
+    didOpen: () => {
+        const icon = document.querySelector('.custom-swal-icon')
+        if (icon) {
+            (icon as HTMLElement).style.borderColor = '#fcad2d'  // ✅ icon border
+            ;(icon as HTMLElement).style.color = '#f4b339'        // ✅ icon color
+        }
+    }
     })
 
     if (result.isConfirmed) {
-        SetShowAddByeGameModal(true)  // open bye game modal
+        
+        SetShowAddGameModal(true)  
     } else if (result.isDenied) {
-        SetShowAddGameModal(true)     // open regular game modal
+        SetShowAddByeGameModal(true)   
     }
     // if cancelled — nothing happens
 }
