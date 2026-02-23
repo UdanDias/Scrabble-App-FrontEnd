@@ -3,6 +3,7 @@ import { Button, Table } from "react-bootstrap";
 import GetGames from "./service/game/GetGames";
 import EditGame from "./service/game/EditGame";
 import DeleteGame from "./service/game/DeleteGame";
+import { AddGame } from "./service/game/AddGame";
 
 
 interface Game{
@@ -37,6 +38,7 @@ export function GameConsole(){
     const [gameData,SetGameData]=useState<Game[]>([]);
     const [showEditGameModal,SetShowEditGameModal]=useState(false)
     const [selectedRow,SetSelectedRow]=useState<Game|null>(null)
+    const [showAddGameModal,SetShowAddGameModal]=useState(false)
 
     useEffect(()=>{
         loadGameData(SetGameData)
@@ -71,6 +73,13 @@ export function GameConsole(){
         }
 
     }
+    const handleOnCloseAdd=()=>{
+        SetShowAddGameModal(false)
+    }
+    const handleOnAdd=(newGame:Game)=>{
+        SetGameData((prev)=>([...prev,newGame]))
+        refreshTable()
+    }
 
     const theads:string[]=[
         "Game Id",
@@ -88,21 +97,21 @@ export function GameConsole(){
     return (
         <>
             <div className="d-flex justify-content-end p-2">
-                <Button variant="success">Add</Button>
+                <Button variant="success" onClick={() => SetShowAddGameModal(true)}>Add</Button>
             </div>
              <Table striped bordered hover >
                 
                 <thead>
                     <tr>
-                        {theads.map((tHead,index)=>(
-                            <th className="text-center" key={index}>{tHead}</th>
+                        {theads.map((tHead)=>(
+                            <th className="text-center" key={tHead}>{tHead}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {gameData.map((row)=>(
-                        <tr key={row.gameId}>{
-                            Object.values(row).map((cell,index)=>(
+                    {gameData.map((row,index)=>(
+                        <tr key={row.gameId||index}>
+                            {Object.values(row).map((cell,index)=>(
                                 <td className="text-center" key={index}>{String(cell ?? '')}</td>
                             ))}
                             <td>
@@ -111,7 +120,7 @@ export function GameConsole(){
                                     <Button variant="danger" onClick={()=>handleDelete(row.gameId)}>Delete</Button>
                                 </div>
                             </td>
-                            </tr>
+                        </tr>
                     ))}
                 </tbody>
             </Table>
@@ -122,6 +131,11 @@ export function GameConsole(){
             handleUpdate={handleUpdate}
             refreshTable={refreshTable}
 
+            />
+            <AddGame
+            show={showAddGameModal}
+            handleClose={handleOnCloseAdd}
+            handleAdd={handleOnAdd}
             />
         </>
     );

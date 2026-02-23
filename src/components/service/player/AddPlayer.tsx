@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
-import UpdatePlayer from "./UpdatePlayer";
-import axios from "axios";
 import CreatePlayer from "./CreatePlayer";
 
 
@@ -57,7 +55,7 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
         }
     },[show])
     const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
-        SetNewPlayerDetails((prev)=>({...newPlayerDetails,[e.target.name]:e.target.value}))
+        SetNewPlayerDetails((prev)=>({...prev,[e.target.name]:e.target.value}))
     }
     const handleOnSubmit=async()=>{
         try {
