@@ -4,6 +4,8 @@ import GetGames from "./service/game/GetGames";
 import EditGame from "./service/game/EditGame";
 import DeleteGame from "./service/game/DeleteGame";
 import { AddGame } from "./service/game/AddGame";
+import Swal from "sweetalert2";
+import { AddByeGame } from "./service/game/AddByeGame";
 
 
 interface Game{
@@ -39,6 +41,7 @@ export function GameConsole(){
     const [showEditGameModal,SetShowEditGameModal]=useState(false)
     const [selectedRow,SetSelectedRow]=useState<Game|null>(null)
     const [showAddGameModal,SetShowAddGameModal]=useState(false)
+    const [showAddByeGameModal,SetShowAddByeGameModal]=useState(false)
 
     useEffect(()=>{
         loadGameData(SetGameData)
@@ -76,10 +79,37 @@ export function GameConsole(){
     const handleOnCloseAdd=()=>{
         SetShowAddGameModal(false)
     }
+    const handleOnCloseAddBye=()=>{
+        SetShowAddByeGameModal(false)
+    }
     const handleOnAdd=(newGame:Game)=>{
         SetGameData((prev)=>([...prev,newGame]))
         refreshTable()
     }
+    const handleOnAddBye=(newByeGame:Game)=>{
+        SetGameData((prev)=>([...prev,newByeGame]))
+        refreshTable()
+
+    }
+    const handleAddClick = async () => {
+    const result = await Swal.fire({
+        title: 'Adding a Bye Game?',
+        icon: 'question',
+        showConfirmButton: true,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        denyButtonText: 'No',
+        cancelButtonText: 'Cancel'
+    })
+
+    if (result.isConfirmed) {
+        SetShowAddByeGameModal(true)  // open bye game modal
+    } else if (result.isDenied) {
+        SetShowAddGameModal(true)     // open regular game modal
+    }
+    // if cancelled — nothing happens
+}
 
     const theads:string[]=[
         "Game Id",
@@ -97,7 +127,7 @@ export function GameConsole(){
     return (
         <>
             <div className="d-flex justify-content-end p-2">
-                <Button variant="success" onClick={() => SetShowAddGameModal(true)}>Add Game</Button>
+                <Button variant="success" onClick={() => handleAddClick()}>Add Game</Button>
             </div>
              <Table striped bordered hover >
                 
@@ -137,6 +167,10 @@ export function GameConsole(){
             handleClose={handleOnCloseAdd}
             handleAdd={handleOnAdd}
             />
+            <AddByeGame
+            show={showAddByeGameModal}
+            handleClose={handleOnCloseAddBye}
+            handleAdd={handleOnAddBye}/>
         </>
     );
 }

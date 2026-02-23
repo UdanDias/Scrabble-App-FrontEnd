@@ -8,8 +8,8 @@ function App() {
   return (
     <>
       <NavBar/>
-      <PlayerConsole/> 
-      {/* <GameConsole/> */}
+      {/* <PlayerConsole/>  */}
+      <GameConsole/>
     </>
   );
 }
