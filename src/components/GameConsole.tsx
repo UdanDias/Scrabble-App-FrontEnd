@@ -1,6 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import GetGames from "./service/game/GetGames";
+import EditGame from "./service/game/EditGame";
 
 
 interface Game{
@@ -33,7 +34,7 @@ const loadGameData=async(SetGameData:React.Dispatch<SetStateAction<Game[]>>)=>{
 
 export function GameConsole(){
     const [gameData,SetGameData]=useState<Game[]>([]);
-    const [editGameModal,SetEditGameModal]=useState(false)
+    const [showEditGameModal,SetShowEditGameModal]=useState(false)
     const [selectedRow,SetSelectedRow]=useState<Game|null>(null)
 
     useEffect(()=>{
@@ -45,7 +46,13 @@ export function GameConsole(){
     }
     const handleEdit=(row:Game)=>{
         SetSelectedRow(row)
-        SetEditGameModal(true)
+        SetShowEditGameModal(true)
+    }
+    const handleOnCloseEdit=()=>{
+        SetShowEditGameModal(false)
+    }
+    const handleUpdate=(updatedGame:Game)=>{
+
     }
 
     const theads:string[]=[
@@ -90,6 +97,14 @@ export function GameConsole(){
                     ))}
                 </tbody>
             </Table>
+            <EditGame
+            show={showEditGameModal}
+            selectedRow={selectedRow}
+            handleClose={handleOnCloseEdit}
+            handleUpdate={handleUpdate}
+            refreshTable={refreshTable}
+
+            />
         </>
     );
 }
