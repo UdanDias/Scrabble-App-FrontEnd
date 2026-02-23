@@ -155,7 +155,7 @@ export function AddGame({show,handleClose,handleAdd}:AddGameProps){
                     Close
                 </Button>
                 <Button variant="primary" onClick={()=>handleSave()}>
-                    Save
+                    Save Game
                 </Button>
                 </Modal.Footer>
             </Modal>

@@ -183,7 +183,7 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleOnSubmit}>
-                    Add
+                    Save Player
                 </Button>
                 </Modal.Footer>
             </Modal>

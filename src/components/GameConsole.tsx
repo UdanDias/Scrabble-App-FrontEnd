@@ -97,7 +97,7 @@ export function GameConsole(){
     return (
         <>
             <div className="d-flex justify-content-end p-2">
-                <Button variant="success" onClick={() => SetShowAddGameModal(true)}>Add</Button>
+                <Button variant="success" onClick={() => SetShowAddGameModal(true)}>Add Game</Button>
             </div>
              <Table striped bordered hover >
                 
