@@ -110,8 +110,8 @@ export function GameConsole(){
     didOpen: () => {
         const icon = document.querySelector('.custom-swal-icon')
         if (icon) {
-            (icon as HTMLElement).style.borderColor = '#fcad2d'  // ✅ icon border
-            ;(icon as HTMLElement).style.color = '#f4b339'        // ✅ icon color
+            (icon as HTMLElement).style.borderColor = '#fcad2d' 
+            ;(icon as HTMLElement).style.color = '#f4b339'        
         }
     }
     })

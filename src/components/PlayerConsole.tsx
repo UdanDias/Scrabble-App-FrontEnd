@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import EditPlayer from './service/player/EditPlayer';
 import DeletePlayer from './service/player/DeletePlayer';
 import AddPlayer from './service/player/AddPlayer';
+import { GamesByPlayer } from './service/player/GamesByPlayer';
 
 
 interface Player{
@@ -36,6 +37,7 @@ export  function PlayerConsole(){
     const [selectedRow,SetSelectedRow]=useState<Player|null>(null)
     const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
     const [showAddPlayerModal,SetShowAddPlayerModal]=useState(false);
+    const [showGamesByPlayerModal,setShowGamesByPlayerModal]=useState(false);
 
     const handleDelete=async(playerId:string)=>{
         await DeletePlayer(playerId);
@@ -62,11 +64,19 @@ export  function PlayerConsole(){
         SetShowEditPlayerModal(true)
     }
 
+    const handleGetGamesByPlayer=(row:Player)=>{
+        SetSelectedRow(row)
+        setShowGamesByPlayerModal(true)
+    }
+
     const handleOnCloseEdit=()=>{
         SetShowEditPlayerModal(false)
     }
     const handleCloseAdd=()=>{
         SetShowAddPlayerModal(false)
+    }
+    const handleCloseGames=()=>{
+        setShowGamesByPlayerModal(false)
     }
 
     useEffect(()=>{
@@ -111,7 +121,7 @@ export  function PlayerConsole(){
                                 ))}
                                 <td>
                                     <div className="d-flex gap-2 justify-content-center">
-                                        <Button variant="primary">Games</Button>
+                                        <Button variant="primary"onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
                                         <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
                                         <Button variant="danger" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
                                     </div>
@@ -133,7 +143,13 @@ export  function PlayerConsole(){
             show={showAddPlayerModal}
             handleClose={handleCloseAdd}
             handleAdd={handleAdd}
-            refreshTable={refreshTable}/>
+            refreshTable={refreshTable}
+            />
+            <GamesByPlayer
+            show={showGamesByPlayerModal}
+            handleClose={handleCloseGames}
+            selectedRow={selectedRow}
+            />
         </>
         
     );
