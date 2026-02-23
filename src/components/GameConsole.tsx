@@ -11,10 +11,10 @@ interface Game{
     score1:number;
     score2:number;
     margin:number;
-    isgameTied:boolean;
+    isgameTied:string;
     winnerId:string;
     gameDate:string;
-    isByeGame:boolean;
+    isByeGame:string;
 
 }
 const loadGameData=async(SetGameData:React.Dispatch<SetStateAction<Game[]>>)=>{
@@ -70,10 +70,11 @@ export function GameConsole(){
     ]
     return (
         <>
+            <div className="d-flex justify-content-end p-2">
+                <Button variant="success">Add</Button>
+            </div>
              <Table striped bordered hover >
-                <div>
-                    <Button variant="success">Add</Button>
-                </div>
+                
                 <thead>
                     <tr>
                         {theads.map((tHead,index)=>(
@@ -85,7 +86,7 @@ export function GameConsole(){
                     {gameData.map((row)=>(
                         <tr key={row.gameId}>{
                             Object.values(row).map((cell,index)=>(
-                                <td className="text-center" key={index}>{typeof cell === "boolean"?cell.toString():cell}</td>
+                                <td className="text-center" key={index}>{String(cell ?? '')}</td>
                             ))}
                             <td>
                                 <div className="d-flex justify-content-center p-2 gap-2">

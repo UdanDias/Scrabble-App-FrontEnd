@@ -151,7 +151,7 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleSave}>
+                <Button variant="primary" onClick={()=>handleSave}>
                     Update
                 </Button>
                 </Modal.Footer>
