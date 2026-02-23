@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
+import UpdateGame from "./UpdateGame";
 interface Game{
     gameId:string;
     player1Id:string;
@@ -22,30 +23,47 @@ interface GameEditProps{
     refreshTable:()=>void;
 }
 function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameEditProps){
-    const [gameData,SetGameData]=useState<Game>({
+    const [gameData,SetGameData]=useState<Omit<Game,"isgameTied"|"isByeGame"|"margin"|"winnerId">>({
         gameId:"",
         player1Id:"",
         player2Id:"",
         score1:0,
         score2:0,
-        margin:0,
-        isgameTied:"",
-        winnerId:"",
-        gameDate:"",
-        isByeGame:""
-    })
-    useEffect(()=>{
-        if(selectedRow){
-            SetGameData(selectedRow)
-        }
+        gameDate:""
         
-    },[selectedRow])
+    })
+    useEffect(() => {
+        if (selectedRow) {
+            const { isgameTied, isByeGame,margin,winnerId , ...rest } = selectedRow  
+            SetGameData(rest) 
+        } else {
+           
+            SetGameData({
+                gameId:"",
+                player1Id: "",
+                player2Id: "",
+                score1: 0,
+                score2: 0,
+                gameDate: ""
+            })
+        }
+    }, [selectedRow])
     const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
         SetGameData({...gameData,[e.target.name]:e.target.value})
 
     }
-    const handleSave=(updatedGame:Game)=>{
+    const handleSave=async(updatedGame:Omit<Game, "isgameTied" | "isByeGame"|"margin"|"winnerId">)=>{
+        try {
+            const updatedGameDetails=await UpdateGame(updatedGame);
+            SetGameData(updatedGameDetails)
+            handleClose()
+            handleUpdate(updatedGameDetails) 
 
+        } catch (error) {
+            console.error("Error occurred while fetching updated game details",error)
+            throw error
+        }
+        
     }
     return(
         <>
@@ -60,16 +78,16 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                         type="text" 
                         name="gameId" 
                         placeholder="Game Id"
-                        value={gameData.gameId}
+                        value={gameData.gameId?? ""}
                         onChange={handleOnChange} />
                     </FloatingLabel>
                     
                     <FloatingLabel controlId="floatingInput" label="Player 1 Id" className="mb-3">
                         <Form.Control 
                         type="text" 
-                        name="playe1Id" 
+                        name="player1Id" 
                         placeholder="Player 1 Id"
-                        value={gameData.player1Id}
+                        value={gameData.player1Id?? ""}
                         onChange={handleOnChange} />
                     </FloatingLabel>
 
@@ -78,7 +96,7 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                         type="text" 
                         name="player2Id" 
                         placeholder="Player 2 Id"
-                        value={gameData.player2Id}
+                        value={gameData.player2Id?? ""}
                         onChange={handleOnChange} />
                     </FloatingLabel>
                     
@@ -87,7 +105,7 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                         type="number" 
                         name="score1" 
                         placeholder="Score 1"
-                        value={gameData.score1}
+                        value={gameData.score1?? ""}
                         onChange={handleOnChange} />
                     </FloatingLabel>
 
@@ -96,29 +114,29 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                         type="number" 
                         name="score2" 
                         placeholder="Score 2" 
-                        value={gameData.score2}
+                        value={gameData.score2?? ""}
                         onChange={handleOnChange}/>
                     </FloatingLabel>
                     
-                    <FloatingLabel controlId="floatingInput" label="margin" className="mb-3">
+                    {/* <FloatingLabel controlId="floatingInput" label="margin" className="mb-3">
                         <Form.Control 
                         type="number" 
                         name="margin"
                         placeholder="Margin" 
                         value={gameData.margin}
                         onChange={handleOnChange}/>
-                    </FloatingLabel>
+                    </FloatingLabel> */}
 
-                    <FloatingLabel controlId="floatingInput" label="Is Game Tied" className="mb-3">
+                    {/* <FloatingLabel controlId="floatingInput" label="Is Game Tied" className="mb-3">
                         <Form.Control 
                         type="text" 
                         name="isGameTied"
                         placeholder="Is Game Tied"
                         value={gameData.isgameTied}
                         onChange={handleOnChange} />
-                    </FloatingLabel>
+                    </FloatingLabel> */}
                     
-                    <FloatingLabel controlId="floatingInput" label="Winner Id" className="mb-3">
+                    {/* <FloatingLabel controlId="floatingInput" label="Winner Id" className="mb-3">
                         <Form.Control 
                         
                         type="text" 
@@ -126,32 +144,32 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
                         placeholder="Winner Id"
                         value={gameData.winnerId}
                         onChange={handleOnChange}/>
-                    </FloatingLabel>
+                    </FloatingLabel> */}
 
                     <FloatingLabel controlId="floatingInput" label="Game Date" className="mb-3">
                         <Form.Control 
                         type="date" 
                         name="gameDate"
                         placeholder="Game Date"
-                        value={gameData.gameDate}
+                        value={gameData.gameDate ?? ""}
                         onChange={handleOnChange} />
                     </FloatingLabel>
                     
-                    <FloatingLabel controlId="floatingInput" label="Is Game a Bye" className="mb-3">
+                    {/* <FloatingLabel controlId="floatingInput" label="Is Game a Bye" className="mb-3">
                         <Form.Control 
                         type="text" 
                         name="isByeGame"
                         placeholder="Is Game a Bye"
                         value={gameData.isByeGame}
                         onChange={handleOnChange} />
-                    </FloatingLabel>
+                    </FloatingLabel> */}
 
                 </Modal.Body>
                 <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={()=>handleSave}>
+                <Button variant="primary" onClick={()=>handleSave(gameData)}>
                     Update
                 </Button>
                 </Modal.Footer>

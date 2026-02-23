@@ -45,14 +45,20 @@ export function GameConsole(){
         loadGameData(SetGameData)
     }
     const handleEdit=(row:Game)=>{
+        SetSelectedRow(null) 
         SetSelectedRow(row)
         SetShowEditGameModal(true)
     }
     const handleOnCloseEdit=()=>{
         SetShowEditGameModal(false)
+        SetSelectedRow(null) 
     }
     const handleUpdate=(updatedGame:Game)=>{
-
+        const updatedGameData= gameData.map((game)=>(
+            game.gameId===updatedGame.gameId?updatedGame:game
+        ))
+        SetGameData(updatedGameData)
+        
     }
 
     const theads:string[]=[
