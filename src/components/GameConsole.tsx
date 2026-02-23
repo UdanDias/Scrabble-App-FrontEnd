@@ -2,6 +2,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import GetGames from "./service/game/GetGames";
 import EditGame from "./service/game/EditGame";
+import DeleteGame from "./service/game/DeleteGame";
 
 
 interface Game{
@@ -60,6 +61,16 @@ export function GameConsole(){
         SetGameData(updatedGameData)
         
     }
+    const handleDelete=async(gameId:string)=>{
+        try {
+            await DeleteGame(gameId);
+            SetGameData(gameData.filter((game)=>(game.gameId!==gameId)))
+        } catch (error) {
+            console.error("error while deleting game",error)
+            throw error
+        }
+
+    }
 
     const theads:string[]=[
         "Game Id",
@@ -97,7 +108,7 @@ export function GameConsole(){
                             <td>
                                 <div className="d-flex justify-content-center p-2 gap-2">
                                     <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
-                                    <Button variant="danger">Delete</Button>
+                                    <Button variant="danger" onClick={()=>handleDelete(row.gameId)}>Delete</Button>
                                 </div>
                             </td>
                             </tr>
