@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useState } from "react";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Table } from "react-bootstrap";
 import GetPlayersByRank from "./service/performance/GetPlayersByRank";
 
 
@@ -37,43 +37,64 @@ export function LeaderBoard(){
     })
     return(
         <>
-            <Accordion>
-                {rankedPlayerData.map((game, index) => (
-                    <Accordion.Item eventKey={String(index)} key={game.gameId} >
-                        <Accordion.Header >
-                            Game {String(index + 1).padStart(2, "0")}
-                        </Accordion.Header>
-                                    
-                        <Accordion.Body>
-                            <div className="card p-3">
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col-6 text-start">
-                                            <p><strong>Gam ID:</strong> {game.gameId}</p>
-                                            <p><strong>Player 1:</strong> {game.player1Name}</p>
-                                            <p><strong>Player 2:</strong> {game.player2Name}</p>
-                                            <p><strong>Date:</strong> {game.gameDate}</p>
-                                                        
+            <div className="d-flex justify-content-center p-4">
+                <div style={{width: "60%"}}>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th style={{width: "60px"}}>#Rank</th>
+                                <th style={{paddingRight: "90px", textAlign: "center"}}>Player</th>
+                            </tr>
+                        </thead>
+                    </Table>
+                    <Accordion>
+                        {rankedPlayerData.map((player, index) => (
+                            <Accordion.Item eventKey={String(index)} key={player.playerId}>
+                                <Accordion.Header>
+                                    <div className="d-flex w-100 pe-3 position-relative">
+                                        <div style={{width: "45px", borderRight: "1px solid #dee2e6"}}>
+                                            #{player.playerRank}
                                         </div>
-                                        <div className="col-6 text-start">       
-                                            <p><strong>Bye:</strong> {game.bye ? "Yes" : "No"}</p>             
-                                            <p><strong>Score:</strong> {game.score1} - {game.score2}</p>
-                                            <p><strong>Margin:</strong> {game.margin}</p>
-                                            <p><strong>Tied:</strong> {game.gameTied ? "Yes" : "No"}</p>
-                                            <p><strong>Winner:</strong> {game.winnerName}</p>
+                                        <div className="position-absolute start-50 translate-middle-x">
+                                            {player.firstName} {player.lastName}
                                         </div>
                                     </div>
+                                </Accordion.Header>
+                                        
+                                <Accordion.Body>
+                                    <div className="card p-3">
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-6 text-start">
+                                                    <p><strong>Total Games Played:</strong> {player.totalGamesPlayed}</p>
+                                                    <p><strong>Total Wins:</strong> {player.totalWins}</p>             
+                                                </div>
+                                                <div className="col-6 text-start">       
+                                                    <p><strong>Cum Margin:</strong> {player.cumMargin}</p>             
+                                                    <p><strong>Avg Margin:</strong> {player.avgMargin}</p>
+                                                </div>
+                                            </div>
 
-                                    <div className="text-center mt-2">
-                                        {/* {getGameResult(game)} */}
+                                            <div className="text-center mt-2">
+                                                <span className={`badge fs-6 ${
+                                                    player.playerRank === 1 ? "bg-warning text-dark" :
+                                                    player.playerRank === 2 ? "bg-secondary" :
+                                                    player.playerRank === 3 ? "bg-danger" :
+                                                    "bg-primary"
+                                                }`}>
+                                                    Rank #{player.playerRank}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </Accordion.Body>
+                                </Accordion.Body>
 
-                    </Accordion.Item>
-                ))}
-            </Accordion>
+                            </Accordion.Item>
+                        ))}
+                    </Accordion>
+                </div>
+            </div>
+            
         </>
     );
 }

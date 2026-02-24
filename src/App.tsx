@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './components/NavBar';
 import { GameConsole } from './components/GameConsole';
 import { Profile } from './components/Profile';
+import { LeaderBoard } from './components/LeaderBoard';
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <NavBar/>
       {/* <PlayerConsole/>  */}
       {/* <GameConsole/> */}
-      {<Profile/>}
+      {<LeaderBoard/>}
     </>
   );
 }
