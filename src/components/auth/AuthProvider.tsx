@@ -12,14 +12,18 @@ import { Children,createContext, ReactNode, useEffect, useState } from "react";
 
         const [isAuthenticated,SetIsAuthenticated]=useState(false)
         useEffect(()=>{
+            const token=localStorage.getItem("scrblToken")
 
         },[])
 
-        const login=()=>{
+
+        const login=(token :string)=>{
+            localStorage.setItem("scrblToken",token)
             SetIsAuthenticated(true)
         }
 
         const logout=()=>{
+            localStorage.removeItem("scrblToken")
             SetIsAuthenticated(false)
         }
         return(
