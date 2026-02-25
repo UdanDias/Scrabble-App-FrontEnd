@@ -1,4 +1,4 @@
-import { Children,createContext, ReactNode, useEffect, useState } from "react";
+import { Children,createContext, ReactNode, useContext, useEffect, useState } from "react";
 
     interface AuthContextType{
         isAuthenticated:boolean;
@@ -18,7 +18,7 @@ import { Children,createContext, ReactNode, useEffect, useState } from "react";
 
 
         const login=(token :string)=>{
-            localStorage.setItem("scrblToken",token)
+            localStorage.setItem("scrblToken",token.trim())
             SetIsAuthenticated(true)
         }
 
@@ -34,3 +34,10 @@ import { Children,createContext, ReactNode, useEffect, useState } from "react";
         </>
         );
     } 
+    export const useAuth=()=>{
+        const context= useContext(AuthContext)
+        if(!context){
+            throw new Error("useAuth should be used within an AuthProvider")
+        }
+        return context;
+    }
