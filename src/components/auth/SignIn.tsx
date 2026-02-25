@@ -49,7 +49,7 @@ export const SignIn=()=>{
                         <Form.Group className="mb-3" controlId="password">
                             <Form.Label>Password</Form.Label>
                             <Form.Control 
-                            type="email" 
+                            type="password" 
                             placeholder="Enter email" 
                             name="password"
                             value={user.password}
