@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseAuthUrl="http://localhost:8081/scrabbleapp2026/api/v1/auth";
-const SignUpTask=async(signUp:any)=>{
+export const SignUpTask=async(signUp:any)=>{
     console.log(signUp);
     try {
         const signUpResponse= await axios.post(
@@ -14,7 +14,7 @@ const SignUpTask=async(signUp:any)=>{
     }
 }
 
-const SignInTask=async(signIn:any)=>{
+export const SignInTask=async(signIn:any)=>{
     console.log(signIn);
     try {
         const signInResponse= await axios.post(
@@ -26,4 +26,3 @@ const SignInTask=async(signIn:any)=>{
         throw error;
     }
 }
-export default {SignUpTask,SignInTask};

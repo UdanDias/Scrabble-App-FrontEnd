@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import {SignUpTask} from "../service/auth/Auth"
 
 interface SignUp{
     firstName:string;
@@ -20,9 +21,10 @@ export const SignUp=()=>{
         SetUser((prev)=>({...prev,[e.target.name]:e.target.value}))
 
     }
-    const handleOnSubmit=(e:React.ChangeEvent<HTMLFormElement>)=>{
+    const handleOnSubmit= async (e:React.ChangeEvent<HTMLFormElement>)=>{
         e.preventDefault();
-        console.log(user);
+        const token=await SignUpTask(user)
+        console.log(token);
         SetUser({
             firstName:"",
             lastName:"",
