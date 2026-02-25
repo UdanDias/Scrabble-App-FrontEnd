@@ -1,9 +1,15 @@
 import axios from "axios"
+import FetchToken from "../auth/FetchToken";
 
 const getPlayersByRankUrl="http://localhost:8081/scrabbleapp2026/api/v1/performance/getrankedplayers"
 const GetPlayersByRank=async()=>{
     try {
-        const response= await axios.get(getPlayersByRankUrl);
+        
+        const response= await axios.get(getPlayersByRankUrl,
+            {headers:{
+                Authorization:FetchToken()
+            }}
+        );
         return response.data
 
     } catch (error) {
