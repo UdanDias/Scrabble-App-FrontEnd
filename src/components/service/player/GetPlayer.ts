@@ -20,7 +20,10 @@ export const getPlayer=async()=>{
 }
 export const getGamesByPlayer=async(playerId:string)=>{
     try {
-        const response=await axios.get(`${getgamesByPlayerIdUrl}?playerId=${playerId}`)
+        const response=await axios.get(`${getgamesByPlayerIdUrl}?playerId=${playerId}`,
+            {headers:{
+                Authorization:FetchToken()
+            }})
         return response.data
     } catch (error) {
         console.error("error fetching games by playerId",error)
