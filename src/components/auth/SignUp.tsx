@@ -47,11 +47,12 @@ export const SignUp=()=>{
 
                     <Form.Group className="mb-3" controlId="role">
                         <Form.Label>Role</Form.Label>
-                        <Form.Control 
-                        type="text" 
-                        placeholder="Role" 
-                        name="role"
-                        />
+                        <Form.Select>
+                            <option value="" disabled>Select a Role</option>
+                            <option value="admin">ADMIN</option>
+                            <option value="user">USER</option>
+
+                        </Form.Select>
                     </Form.Group>
                     <div className="d-flex justify-content-center">
                         <Button variant="success" type="submit">
