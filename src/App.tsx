@@ -8,22 +8,25 @@ import { LeaderBoard } from './components/LeaderBoard';
 import { SignIn } from './components/auth/SignIn';
 import { SignUp } from './components/auth/SignUp';
 import { BrowserRouter, Route, Routes } from 'react-router';
+import { AuthProvider } from './components/auth/AuthProvider';
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <NavBar/>
-        <Routes>
-          <Route path="/" element={<PlayerConsole/>}/>
-          <Route path="/player" element={<PlayerConsole/>}/>
-          <Route path="/game" element={<GameConsole/>}/>
-          <Route path="/leaderboard" element={<LeaderBoard/>}/>
-          <Route path="/signin" element={<SignIn/>}/>
-          <Route path="/signup" element={<SignUp/>}/>
-          
- 
-        </Routes>
+        <AuthProvider>
+          <NavBar/>
+          <Routes>
+
+            <Route path="/" element={<SignUp/>}/>
+            <Route path="/player" element={<PlayerConsole/>}/>
+            <Route path="/game" element={<GameConsole/>}/>
+            <Route path="/leaderboard" element={<LeaderBoard/>}/>
+            <Route path="/signin" element={<SignIn/>}/>
+            <Route path="/signup" element={<SignUp/>}/>
+            
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </>
   );

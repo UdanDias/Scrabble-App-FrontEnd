@@ -13,6 +13,9 @@ import { Children,createContext, ReactNode, useContext, useEffect, useState } fr
         const [isAuthenticated,SetIsAuthenticated]=useState(false)
         useEffect(()=>{
             const token=localStorage.getItem("scrblToken")
+            if(token){
+                SetIsAuthenticated(!!token)
+            }
 
         },[])
 

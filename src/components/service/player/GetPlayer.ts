@@ -1,11 +1,16 @@
 import axios from "axios"
+import FetchToken from "../auth/FetchToken"
 const getPlayerUrl="http://localhost:8081/scrabbleapp2026/api/v1/player/getallplayers"
 const getgamesByPlayerIdUrl="http://localhost:8081/scrabbleapp2026/api/v1/game/getplayergames"
 
 
 export const getPlayer=async()=>{
     try {
-        const response=await axios.get(getPlayerUrl)
+        const response=await axios.get(getPlayerUrl,
+            {headers:{
+                Authorization:FetchToken()
+            }}
+        )
         return response.data;
     } catch (error) {
         console.error("failed to get the data",error)

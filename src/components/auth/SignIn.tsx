@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import {SignInTask} from "../service/auth/Auth"
+import { AuthProvider, useAuth } from "./AuthProvider";
 interface SignIn{
     email:string;
     password:string;
@@ -24,8 +25,9 @@ export const SignIn=()=>{
                 email:"",
                 password:""
             })
+            login(token)
         }
-
+        const {login}=useAuth();
     return (
         <>
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">

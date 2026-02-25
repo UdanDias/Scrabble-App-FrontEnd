@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import {SignUpTask} from "../service/auth/Auth"
+import { useAuth } from "./AuthProvider";
 
 interface SignUp{
     firstName:string;
@@ -32,7 +33,9 @@ export const SignUp=()=>{
             password:"",
             role:""
         })
+        login(token)
     }
+    const {login} = useAuth();
     return (
         <>
         <div className="d-flex flex-column align-items-center mt-5">
