@@ -9,6 +9,7 @@ import { SignIn } from './components/auth/SignIn';
 import { SignUp } from './components/auth/SignUp';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { AuthProvider } from './components/auth/AuthProvider';
+import { UserConsole } from './components/UserConsole';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/profile" element={<Profile/>}/>
             <Route path="/player" element={<PlayerConsole/>}/>
             <Route path="/game" element={<GameConsole/>}/>
+            <Route path="/user" element={<UserConsole/>}/>
             <Route path="/leaderboard" element={<LeaderBoard/>}/>
             <Route path="/signin" element={<SignIn/>}/>
             <Route path="/signup" element={<SignUp/>}/>
