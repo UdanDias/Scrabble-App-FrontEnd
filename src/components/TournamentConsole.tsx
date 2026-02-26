@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react"
 import Table from "react-bootstrap/Table"
 import { Button, Badge } from "react-bootstrap"
@@ -8,7 +9,8 @@ import EditTournament from "./service/tournament/EditTournament"
 import GetRoundsByTournament from "./service/tournament/GetRoundsByTournament"
 import GetTournaments from "./service/tournament/GetTournaments"
 import RoundGamesModal from "./service/tournament/RoundGamesModal"
-
+import AddRound from "./service/tournament/AddRound"
+// import AddRound from "./service/tournament/AddRound"
 
 interface Tournament {
     tournamentId: string
@@ -22,6 +24,7 @@ interface Round {
     roundId: string
     tournamentId: string
     roundNumber: number
+    roundName: string
 }
 
 const loadData = async (setData: React.Dispatch<React.SetStateAction<Tournament[]>>) => {
@@ -44,9 +47,11 @@ export function TournamentConsole() {
     const [showEditModal, setShowEditModal] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
     const [showRoundGamesModal, setShowRoundGamesModal] = useState(false)
+    const [showAddRoundModal, setShowAddRoundModal] = useState(false)
     const [selectedRoundId, setSelectedRoundId] = useState<string | null>(null)
     const [selectedRoundNumber, setSelectedRoundNumber] = useState<number | null>(null)
     const [selectedTournamentName, setSelectedTournamentName] = useState("")
+    const [selectedTournamentId, setSelectedTournamentId] = useState("")
 
     useEffect(() => {
         loadData(setTournamentData)
@@ -84,48 +89,74 @@ export function TournamentConsole() {
         setTournamentData(prev => [...prev, newTournament])
     }
 
-    // Rounds button click — show Swal select with round options
-    const handleRoundsClick = async (tournament: Tournament) => {
+    const handleAddRound = (tournament: Tournament) => {
+        setSelectedTournamentId(tournament.tournamentId)
+        setSelectedTournamentName(tournament.tournamentName)
+        setShowAddRoundModal(true)
+    }
+
+    // Top right "View Rounds" — pick tournament then round
+    const handleViewRoundsClick = async () => {
+        if (tournamentData.length === 0) {
+            Swal.fire("No Tournaments", "There are no tournaments yet.", "info")
+            return
+        }
+
+        const tournamentOptions: Record<string, string> = {}
+        tournamentData.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+
+        const { value: tournamentId } = await Swal.fire({
+            title: "Select Tournament",
+            input: "select",
+            inputOptions: tournamentOptions,
+            inputPlaceholder: "Select a tournament",
+            showCancelButton: true,
+            confirmButtonText: "Next",
+            inputValidator: (value) =>
+                new Promise(resolve => value ? resolve(undefined) : resolve("Please select a tournament"))
+        })
+
+        if (!tournamentId) return
+
+        const selectedTournament = tournamentData.find(t => t.tournamentId === tournamentId)!
+        await showRoundSelector(selectedTournament)
+    }
+
+    // Row "Rounds" button — directly pick round for that tournament
+    const handleViewRoundsForRow = async (tournament: Tournament) => {
+        await showRoundSelector(tournament)
+    }
+
+    // Shared round selector logic
+    const showRoundSelector = async (tournament: Tournament) => {
         let rounds: Round[] = []
         try {
             rounds = await GetRoundsByTournament(tournament.tournamentId)
-        } catch (error) {
+        } catch {
             Swal.fire("Error", "Failed to fetch rounds.", "error")
             return
         }
 
         if (rounds.length === 0) {
-            Swal.fire({
-                title: "No Rounds",
-                text: `${tournament.tournamentName} has no rounds yet.`,
-                icon: "info"
-            })
+            Swal.fire("No Rounds", `${tournament.tournamentName} has no rounds yet.`, "info")
             return
         }
 
-        // Build inputOptions for Swal select
-        const inputOptions: Record<string, string> = {}
+        const roundOptions: Record<string, string> = {}
         rounds.forEach(r => {
-            inputOptions[r.roundId] = `Round ${r.roundNumber}`
+            roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
         })
 
         const { value: roundId } = await Swal.fire({
-            title: `${tournament.tournamentName}`,
+            title: tournament.tournamentName,
             html: `<p class="text-muted mb-0">Select a round to view games</p>`,
             input: "select",
-            inputOptions: inputOptions,
+            inputOptions: roundOptions,
             inputPlaceholder: "Select a round",
             showCancelButton: true,
             confirmButtonText: "View Games",
-            inputValidator: (value) => {
-                return new Promise(resolve => {
-                    if (value) {
-                        resolve(undefined)
-                    } else {
-                        resolve("Please select a round")
-                    }
-                })
-            }
+            inputValidator: (value) =>
+                new Promise(resolve => value ? resolve(undefined) : resolve("Please select a round"))
         })
 
         if (roundId) {
@@ -148,7 +179,11 @@ export function TournamentConsole() {
 
     return (
         <>
-            <div className="d-flex justify-content-end p-2">
+            {/* Top right buttons */}
+            <div className="d-flex justify-content-end gap-2 p-2">
+                <Button variant="info" onClick={handleViewRoundsClick}>
+                    View Rounds
+                </Button>
                 <Button variant="success" onClick={() => setShowAddModal(true)}>
                     + Add Tournament
                 </Button>
@@ -172,8 +207,11 @@ export function TournamentConsole() {
                             <td className="text-center">{getStatusBadge(row.status)}</td>
                             <td>
                                 <div className="d-flex gap-2 justify-content-center">
-                                    <Button variant="info" onClick={() => handleRoundsClick(row)}>
+                                    <Button variant="info" onClick={() => handleViewRoundsForRow(row)}>
                                         Rounds
+                                    </Button>
+                                    <Button variant="primary" onClick={() => handleAddRound(row)}>
+                                        + Round
                                     </Button>
                                     <Button variant="secondary" onClick={() => handleEdit(row)}>
                                         Edit
@@ -209,6 +247,13 @@ export function TournamentConsole() {
                 roundId={selectedRoundId}
                 roundNumber={selectedRoundNumber}
                 tournamentName={selectedTournamentName}
+            />
+
+            <AddRound
+                show={showAddRoundModal}
+                tournamentId={selectedTournamentId}
+                handleClose={() => setShowAddRoundModal(false)}
+                handleAdd={() => setShowAddRoundModal(false)}
             />
         </>
     )
