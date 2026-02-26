@@ -19,6 +19,7 @@ function App() {
           <Routes>
 
             <Route path="/" element={<SignIn/>}/>
+            <Route path="/profile" element={<Profile/>}/>
             <Route path="/player" element={<PlayerConsole/>}/>
             <Route path="/game" element={<GameConsole/>}/>
             <Route path="/leaderboard" element={<LeaderBoard/>}/>

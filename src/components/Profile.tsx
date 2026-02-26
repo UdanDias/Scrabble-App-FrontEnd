@@ -30,7 +30,12 @@ interface Game{
 
 }
 interface Performance{
-    
+    playerId:string;
+    totalWins:number;
+    totalGamesPlayed:number;
+    cumMargin:number;
+    avgMargin:number;
+    playerRank:number;
 }
 export function Profile(){
     return(

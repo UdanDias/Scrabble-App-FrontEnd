@@ -17,7 +17,8 @@ function NavBar(){
                     <Navbar.Brand href="#" className="fw-bold fs-4 px-2 ">Scrabble</Navbar.Brand>
                     <Nav className="me-auto">
                         {isAuthenticated?(
-                            <>
+                            <>  
+                                <Nav.Link as = {NavLink} to = "/profile">Profile</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/player">Player</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/game">Game</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/leaderboard">LeaderBoard</Nav.Link>

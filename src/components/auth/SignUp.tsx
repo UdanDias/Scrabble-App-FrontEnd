@@ -4,21 +4,35 @@ import {SignUpTask} from "../service/auth/Auth"
 import { useAuth } from "./AuthProvider";
 import { useNavigate } from "react-router";
 
-interface SignUp{
-    firstName:string;
-    lastName:string;
-    email:string;
-    password:string;
-    role:string;
+interface SignUp {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    role: string;
+    age: number;
+    gender: string;
+    dob: string;
+    phone: string;
+    address: string;
+    faculty: string;
+    academicLevel: string;
 }
 export const SignUp=()=>{
-    const [user,SetUser]= useState<SignUp>({
-        firstName:"",
-        lastName:"",
-        email:"",
-        password:"",
-        role:""
-    })
+    const [user, SetUser] = useState<SignUp>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "",
+    age: 0,
+    gender: "",
+    dob: "",
+    phone: "",
+    address: "",
+    faculty: "",
+    academicLevel: ""
+})
     const handleOnChange=(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement|HTMLTextAreaElement>)=>{
         SetUser((prev)=>({...prev,[e.target.name]:e.target.value}))
 
@@ -28,11 +42,18 @@ export const SignUp=()=>{
         const token=await SignUpTask(user)
         console.log(token);
         SetUser({
-            firstName:"",
-            lastName:"",
-            email:"",
-            password:"",
-            role:""
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            role: "",
+            age: 0,
+            gender: "",
+            dob: "",
+            phone: "",
+            address: "",
+            faculty: "",
+            academicLevel: ""
         })
         login(token)
         navigate("/player")
@@ -100,6 +121,68 @@ export const SignUp=()=>{
                             <option value="USER">USER</option>
 
                         </Form.Select>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="age">
+                        <Form.Label>Age</Form.Label>
+                        <Form.Control 
+                        type="number" 
+                        name="age" 
+                        value={user.age} 
+                        onChange={handleOnChange} />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="gender">
+                        <Form.Label>Gender</Form.Label>
+                        <Form.Select name="gender" value={user.gender} onChange={handleOnChange}>
+                            <option value="" disabled>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="dob">
+                        <Form.Label>Date of Birth</Form.Label>
+                        <Form.Control 
+                        type="date" 
+                        name="dob" 
+                        value={user.dob} 
+                        onChange={handleOnChange} />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="phone">
+                        <Form.Label>Phone</Form.Label>
+                        <Form.Control 
+                        type="text" 
+                        name="phone" 
+                        value={user.phone} 
+                        onChange={handleOnChange} />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="address">
+                        <Form.Label>Address</Form.Label>
+                        <Form.Control 
+                        type="text" 
+                        name="address" 
+                        value={user.address} 
+                        onChange={handleOnChange} />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="faculty">
+                        <Form.Label>Faculty</Form.Label>
+                        <Form.Control 
+                        type="text" 
+                        name="faculty" 
+                        value={user.faculty} 
+                        onChange={handleOnChange} />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="academicLevel">
+                        <Form.Label>Academic Level</Form.Label>
+                        <Form.Control 
+                        type="text" 
+                        name="academicLevel" 
+                        value={user.academicLevel} 
+                        onChange={handleOnChange} />
                     </Form.Group>
                     <div className="d-flex justify-content-center">
                         <Button variant="success" type="submit" >
