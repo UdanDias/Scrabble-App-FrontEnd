@@ -1,0 +1,109 @@
+import { useEffect, useState } from "react"
+import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
+import UpdateTournament from "./UpdateTournament"
+
+interface Tournament {
+    tournamentId: string
+    tournamentName: string
+    startDate: string
+    endDate: string
+    status: string
+}
+
+interface EditTournamentProps {
+    show: boolean
+    selectedRow: Tournament | null
+    handleClose: () => void
+    handleUpdate: (updated: Tournament) => void
+    refreshTable: () => void
+}
+
+const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }: EditTournamentProps) => {
+    const [details, setDetails] = useState<Tournament>({
+        tournamentId: "",
+        tournamentName: "",
+        startDate: "",
+        endDate: "",
+        status: ""
+    })
+
+    useEffect(() => {
+        if (selectedRow) {
+            setDetails({ ...selectedRow })
+        }
+    }, [selectedRow])
+
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setDetails(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    }
+
+    const handleSave = async () => {
+        try {
+            const updated = await UpdateTournament(details)
+            handleUpdate(updated)
+            refreshTable()
+            handleClose()
+        } catch (error) {
+            console.error("Error updating tournament", error)
+        }
+    }
+
+    return (
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Tournament</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <FloatingLabel label="Tournament ID" className="mb-3">
+                    <Form.Control
+                        readOnly
+                        type="text"
+                        name="tournamentId"
+                        placeholder="Tournament ID"
+                        value={details.tournamentId} />
+                </FloatingLabel>
+
+                <FloatingLabel label="Tournament Name" className="mb-3">
+                    <Form.Control
+                        type="text"
+                        name="tournamentName"
+                        placeholder="Tournament Name"
+                        value={details.tournamentName}
+                        onChange={handleOnChange} />
+                </FloatingLabel>
+
+                <FloatingLabel label="Start Date" className="mb-3">
+                    <Form.Control
+                        type="date"
+                        name="startDate"
+                        placeholder="Start Date"
+                        value={details.startDate}
+                        onChange={handleOnChange} />
+                </FloatingLabel>
+
+                <FloatingLabel label="End Date" className="mb-3">
+                    <Form.Control
+                        type="date"
+                        name="endDate"
+                        placeholder="End Date"
+                        value={details.endDate}
+                        onChange={handleOnChange} />
+                </FloatingLabel>
+
+                <FloatingLabel label="Status" className="mb-3">
+                    <Form.Select name="status" value={details.status} onChange={handleOnChange}>
+                        <option value="UPCOMING">Upcoming</option>
+                        <option value="ONGOING">Ongoing</option>
+                        <option value="COMPLETED">Completed</option>
+                    </Form.Select>
+                </FloatingLabel>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>Close</Button>
+                <Button variant="primary" onClick={handleSave}>Update</Button>
+            </Modal.Footer>
+        </Modal>
+    )
+}
+
+export default EditTournament
