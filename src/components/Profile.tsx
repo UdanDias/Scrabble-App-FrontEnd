@@ -29,6 +29,9 @@ interface Game{
     isByeGame:string;
 
 }
+interface Performance{
+    
+}
 export function Profile(){
     return(
         <>

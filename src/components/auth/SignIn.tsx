@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import {SignInTask} from "../service/auth/Auth"
 import { AuthProvider, useAuth } from "./AuthProvider";
+import { useNavigate } from "react-router";
 interface SignIn{
     email:string;
     password:string;
@@ -26,8 +27,10 @@ export const SignIn=()=>{
                 password:""
             })
             login(token)
+            navigate("/player")
         }
         const {login}=useAuth();
+        const navigate=useNavigate()
     return (
         <>
         <div className="d-flex flex-column justify-content-center align-items-center vh-100">

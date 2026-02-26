@@ -18,7 +18,7 @@ function App() {
           <NavBar/>
           <Routes>
 
-            <Route path="/" element={<SignUp/>}/>
+            <Route path="/" element={<SignIn/>}/>
             <Route path="/player" element={<PlayerConsole/>}/>
             <Route path="/game" element={<GameConsole/>}/>
             <Route path="/leaderboard" element={<LeaderBoard/>}/>

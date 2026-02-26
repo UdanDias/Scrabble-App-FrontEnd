@@ -17,7 +17,11 @@ const CreateGame=async(newGame:any)=>{
 }
 export const CreateByeGame=async(newByeGame:any)=>{
     try {
-        const response=await axios.post(addByeGameUrl,newByeGame)
+        const response=await axios.post(addByeGameUrl,newByeGame,
+            {headers:{
+                Authorization:FetchToken()
+            }}
+        )
         return response.data
     } catch (error) {
         console.error("Error while creating Bye game",error)
