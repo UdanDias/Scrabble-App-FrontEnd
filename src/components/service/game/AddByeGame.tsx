@@ -16,18 +16,22 @@ interface Game{
 
 }
 interface ByeGame {
-    playerId: string   
-    gameDate: string
+    playerId: string; 
+    gameDate: string;
+    
+    
 }
 interface AddByeGameprops{
     show : boolean;
     handleClose : ()=>void;
-    handleAdd :(newByeGame:Game)=>void
+    handleAdd :(newByeGame:Game)=>void;
+    roundId:string|null;
 }
-export function AddByeGame({show,handleClose,handleAdd}:AddByeGameprops){
+export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops){
     const [byeGameData,SetByeGameData]= useState<ByeGame>({
         playerId:"",
-        gameDate:""
+        gameDate:"",
+        
     })
 
     const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -37,7 +41,8 @@ export function AddByeGame({show,handleClose,handleAdd}:AddByeGameprops){
         if(show){
             SetByeGameData({
                 playerId:"",
-                gameDate:""
+                gameDate:"",
+                
 
             })
         }
@@ -45,7 +50,7 @@ export function AddByeGame({show,handleClose,handleAdd}:AddByeGameprops){
     const handleSave=async()=>{
         try {
             console.log("Sending:", byeGameData) 
-            const byeGameDetails=await CreateByeGame(byeGameData)
+            const byeGameDetails=await CreateByeGame({...byeGameData,roundId})
             handleAdd(byeGameDetails)
             handleClose()
         } catch (error) {

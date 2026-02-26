@@ -19,8 +19,9 @@ interface AddGameProps{
     show : boolean;
     handleClose : ()=>void;
     handleAdd :(newGame:Game)=>void
+    roundId:string|null;
 }
-export function AddGame({show,handleClose,handleAdd}:AddGameProps){
+export function AddGame({show,handleClose,handleAdd,roundId}:AddGameProps){
 
     const [newGameData,SetNewGameData] = useState<Omit<Game,"gameId"|"margin"|"winnerId"|"isgameTied"|"isByeGame">>({
        
@@ -35,7 +36,7 @@ export function AddGame({show,handleClose,handleAdd}:AddGameProps){
     }
   
     const handleSave=async()=>{
-        const newGameDetails=await CreateGame(newGameData)
+        const newGameDetails=await CreateGame({...newGameData,roundId})
         handleAdd(newGameDetails)
         handleClose()
     }

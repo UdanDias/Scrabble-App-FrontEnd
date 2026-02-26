@@ -5,8 +5,6 @@ import UpdateTournament from "./UpdateTournament"
 interface Tournament {
     tournamentId: string
     tournamentName: string
-    startDate: string
-    endDate: string
     status: string
 }
 
@@ -22,8 +20,6 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
     const [details, setDetails] = useState<Tournament>({
         tournamentId: "",
         tournamentName: "",
-        startDate: "",
-        endDate: "",
         status: ""
     })
 
@@ -69,24 +65,6 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
                         name="tournamentName"
                         placeholder="Tournament Name"
                         value={details.tournamentName}
-                        onChange={handleOnChange} />
-                </FloatingLabel>
-
-                <FloatingLabel label="Start Date" className="mb-3">
-                    <Form.Control
-                        type="date"
-                        name="startDate"
-                        placeholder="Start Date"
-                        value={details.startDate}
-                        onChange={handleOnChange} />
-                </FloatingLabel>
-
-                <FloatingLabel label="End Date" className="mb-3">
-                    <Form.Control
-                        type="date"
-                        name="endDate"
-                        placeholder="End Date"
-                        value={details.endDate}
                         onChange={handleOnChange} />
                 </FloatingLabel>
 

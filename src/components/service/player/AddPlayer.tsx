@@ -25,7 +25,7 @@ interface AddPlayerProps{
     refreshTable:()=>void;
 }
 const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
-    const [newPlayerDetails,SetNewPlayerDetails]=useState<Omit<Player,"playerId"|'age'>>({
+    const [newPlayerDetails,SetNewPlayerDetails]=useState<Omit<Player,"playerId"|'age'|'accountCreatedDate'>>({
         
         firstName:"",
         lastName:"",
@@ -35,9 +35,8 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
         phone:"",
         address:"",
         faculty:"",
-        academicLevel:"",
-        accountCreatedDate:""
-    })
+        academicLevel:""
+        })
     useEffect(()=>{
         if(show){
             SetNewPlayerDetails({
@@ -49,8 +48,7 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
                 phone:"",
                 address:"",
                 faculty:"",
-                academicLevel:"",
-                accountCreatedDate:""
+                academicLevel:""
             })
         }
     },[show])
@@ -169,14 +167,7 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
                         onChange={handleOnChange}/>
                     </FloatingLabel>
                     
-                    <FloatingLabel controlId="floatingInput" label="Account Created Date" className="mb-3">
-                        <Form.Control 
-                        type="date" 
-                        name="accountCreatedDate"
-                        placeholder="Account Created Date"
-                        value={newPlayerDetails.accountCreatedDate}
-                        onChange={handleOnChange} />
-                    </FloatingLabel>
+                    
                  </Modal.Body>
                 <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

@@ -6,7 +6,7 @@ interface Round {
     roundId: string
     tournamentId: string
     roundNumber: number
-    roundName: string
+    
 }
 
 interface AddRoundProps {
@@ -19,13 +19,14 @@ interface AddRoundProps {
 const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps) => {
     const [details, setDetails] = useState({
         roundNumber: 1,
-        roundName: "",
         tournamentId: ""
     })
 
     useEffect(() => {
         if (show) {
-            setDetails({ roundNumber: 1, roundName: "", tournamentId })
+            setDetails({
+            roundNumber: 1, 
+            tournamentId })
         }
     }, [show, tournamentId])
 
@@ -58,14 +59,7 @@ const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps)
                         onChange={handleOnChange} />
                 </FloatingLabel>
 
-                <FloatingLabel label="Round Name" className="mb-3">
-                    <Form.Control
-                        type="text"
-                        name="roundName"
-                        placeholder="Round Name (optional)"
-                        value={details.roundName}
-                        onChange={handleOnChange} />
-                </FloatingLabel>
+                
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Close</Button>

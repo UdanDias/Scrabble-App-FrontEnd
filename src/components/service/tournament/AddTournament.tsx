@@ -5,8 +5,6 @@ import CreateTournament from "./CreateTournament"
 interface Tournament {
     tournamentId: string
     tournamentName: string
-    startDate: string
-    endDate: string
     status: string
 }
 
@@ -20,14 +18,14 @@ interface AddTournamentProps {
 const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTournamentProps) => {
     const [details, setDetails] = useState({
         tournamentName: "",
-        startDate: "",
-        endDate: "",
         status: "UPCOMING"
     })
 
     useEffect(() => {
         if (show) {
-            setDetails({ tournamentName: "", startDate: "", endDate: "", status: "UPCOMING" })
+            setDetails({ 
+                tournamentName: "",
+                status: "UPCOMING" })
         }
     }, [show])
 
@@ -58,24 +56,6 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
                         name="tournamentName"
                         placeholder="Tournament Name"
                         value={details.tournamentName}
-                        onChange={handleOnChange} />
-                </FloatingLabel>
-
-                <FloatingLabel label="Start Date" className="mb-3">
-                    <Form.Control
-                        type="date"
-                        name="startDate"
-                        placeholder="Start Date"
-                        value={details.startDate}
-                        onChange={handleOnChange} />
-                </FloatingLabel>
-
-                <FloatingLabel label="End Date" className="mb-3">
-                    <Form.Control
-                        type="date"
-                        name="endDate"
-                        placeholder="End Date"
-                        value={details.endDate}
                         onChange={handleOnChange} />
                 </FloatingLabel>
 
