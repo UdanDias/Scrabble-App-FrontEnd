@@ -56,18 +56,18 @@ export function GamesByPlayer({show,handleClose,selectedRow}:GetGamesByPlayerpro
         }
     },[selectedRow])
     {/* Helper function — add this inside the component before return */}
-const getGameResult = (game: PlayerGame) => {
-    if (game.bye) {
-        return <span className="badge bg-secondary fs-6 " style={{marginRight: "50px"}} >Bye Game</span>
+    const getGameResult = (game: PlayerGame) => {
+        if (game.bye) {
+            return <span className="badge bg-secondary fs-6 " style={{marginRight: "50px"}} >Bye Game</span>
+        }
+        if (game.gameTied) {
+            return <span className="badge bg-warning text-dark fs-6"style={{marginRight: "50px"}}>Game Tied</span>
+        }
+        if (game.winnerId === selectedRow?.playerId) {
+            return <span className="badge bg-success fs-6 " style={{marginRight: "50px"}}>Won the Game</span>
+        }
+        return <span className="badge bg-danger fs-6" style={{marginRight: "50px"}}>Lost the Game</span>
     }
-    if (game.gameTied) {
-        return <span className="badge bg-warning text-dark fs-6"style={{marginRight: "50px"}}>Game Tied</span>
-    }
-    if (game.winnerId === selectedRow?.playerId) {
-        return <span className="badge bg-success fs-6 " style={{marginRight: "50px"}}>Won the Game</span>
-    }
-    return <span className="badge bg-danger fs-6" style={{marginRight: "50px"}}>Lost the Game</span>
-}
 
     return(
         <>

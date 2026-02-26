@@ -40,6 +40,21 @@ interface Performance{
     avgMargin:number;
     playerRank:number;
 }
+interface PlayerGame {
+    gameId: string;
+    player1Id: string;
+    player2Id: string;
+    player1Name: string;
+    player2Name: string;
+    winnerName: string;
+    score1: number;
+    score2: number;
+    margin: number;
+    gameTied: boolean;
+    winnerId: string;
+    gameDate: string;
+    bye: boolean;
+}
 export function Profile(){
     const [player, SetPlayer] = useState<Player|null>({
     playerId: "",
@@ -56,7 +71,7 @@ export function Profile(){
     accountCreatedDate: ""
 });
 
-const [game, SetGames] = useState<Game[]|null>([]);
+const [games, SetGames] = useState<PlayerGame[]|null>([]);
 
 const [performance, SetPerformance] = useState<Performance|null>({
     playerId: "",
@@ -68,7 +83,7 @@ const [performance, SetPerformance] = useState<Performance|null>({
 });
 
 const fetchData=async()=>{
-    const playerId= await getPlayerIdFromToken();
+    const playerId = getPlayerIdFromToken();
     if (playerId) {
         try {
             const selectedPlayer = await getSelectedPlayer(playerId);
@@ -87,9 +102,22 @@ const fetchData=async()=>{
 }
 
 useEffect(()=>{
-     fetchData()
+    fetchData()
 
 },[])
+
+const getGameResult = (game: PlayerGame) => {
+        if (game.bye) {
+            return <span className="badge bg-secondary fs-6 " style={{marginRight: "50px"}} >Bye Game</span>
+        }
+        if (game.gameTied) {
+            return <span className="badge bg-warning text-dark fs-6"style={{marginRight: "50px"}}>Game Tied</span>
+        }
+        if (game.winnerId === player?.playerId) {
+            return <span className="badge bg-success fs-6 " style={{marginRight: "50px"}}>Won the Game</span>
+        }
+        return <span className="badge bg-danger fs-6" style={{marginRight: "50px"}}>Lost the Game</span>
+    } 
     return (
         <>
             <div
@@ -131,7 +159,7 @@ useEffect(()=>{
                     </Card>
                 </div>
                 {/* Bottom Section - Two Cards Side by Side */}
-                <div className="d-flex justify-content-center gap-4 mb-4">
+                <div className="d-flex justify-content-center gap-4 mb-4 align-items-start">
 
                     <Card style={{ width: "50%" }} className="shadow">
                         <Card.Body>
@@ -180,34 +208,47 @@ useEffect(()=>{
                                 Games 
                             </Card.Title>
 
-                            <div className="px-3">
+                            {/* <div className="px-3"> */}
+                            <div className="px-3" style={{ maxHeight: "400px",minHeight: "187px",  overflowY: "auto" }}>
 
-                                {game && game.length === 0 ? (
+                                {games && games.length === 0 ? (
                                     <p className="text-center">No games found.</p>
                                 ) : (
                                     <Accordion >
 
-                                        {game?.map((g, index) => (
-                                            <Accordion.Item eventKey={String(index)} key={g.gameId}>
+                                        {games?.map((game, index) => (
+                                            <Accordion.Item eventKey={String(index)} key={game.gameId}>
                                                 <Accordion.Header>
                                                     Game {index + 1}
                                                 </Accordion.Header>
 
                                                 <Accordion.Body>
-                                                    <div className="row">
+                                                    <div className="card p-3">
+                                                        <div className="card-body">
+                                                            <div className="row">
+                                                                <div className="col-6 text-start">
+                                                                    <p><strong>Game ID:</strong> {game.gameId}</p>
+                                                                    <p><strong>Player 1:</strong> {game.player1Name}</p>
+                                                                    <p><strong>Player 2:</strong> {game.player2Name}</p>
+                                                                    <p><strong>Date:</strong> {game.gameDate}</p>
+                                                                    
+                                                                </div>
+                                                                <div className="col-6 text-start">
+                                                                    
+                                                                    
+                                                                    <p><strong>Bye:</strong> {game.bye ? "Yes" : "No"}</p>
+                                                                    
+                                                                    <p><strong>Score:</strong> {game.score1} - {game.score2}</p>
+                                                                    <p><strong>Margin:</strong> {game.margin}</p>
+                                                                    <p><strong>Tied:</strong> {game.gameTied ? "Yes" : "No"}</p>
+                                                                    <p><strong>Winner:</strong> {game.winnerName}</p>
+                                                                </div>
+                                                            </div>
 
-                                                        <div className="col-6">
-                                                            <p><strong>Date:</strong> {g.gameDate}</p>
-                                                            <p><strong>Score:</strong> {g.score1} - {g.score2}</p>
-                                                            <p><strong>Margin:</strong> {g.margin}</p>
+                                                            <div className="text-center mt-2">
+                                                                {getGameResult(game)}
+                                                            </div>
                                                         </div>
-
-                                                        <div className="col-6">
-                                                            <p><strong>Winner:</strong> {g.winnerId}</p>
-                                                            <p><strong>Tied:</strong> {g.isgameTied}</p>
-                                                            <p><strong>Bye:</strong> {g.isByeGame}</p>
-                                                        </div>
-
                                                     </div>
                                                 </Accordion.Body>
                                             </Accordion.Item>
