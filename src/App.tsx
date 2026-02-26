@@ -10,6 +10,7 @@ import { SignUp } from './components/auth/SignUp';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { AuthProvider } from './components/auth/AuthProvider';
 import { UserConsole } from './components/UserConsole';
+import { TournamentConsole } from './components/TournamentConsole';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<SignIn/>}/>
             <Route path="/profile" element={<Profile/>}/>
             <Route path="/player" element={<PlayerConsole/>}/>
+            <Route path="/tournament" element={<TournamentConsole/>}/>
             <Route path="/game" element={<GameConsole/>}/>
             <Route path="/user" element={<UserConsole/>}/>
             <Route path="/leaderboard" element={<LeaderBoard/>}/>

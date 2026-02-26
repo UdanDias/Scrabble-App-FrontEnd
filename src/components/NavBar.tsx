@@ -20,6 +20,7 @@ function NavBar(){
                             <>  
                                 <Nav.Link as = {NavLink} to = "/profile">Profile</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/player">Player</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/tournament">Tournament</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/game">Game</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/user">User</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/leaderboard">LeaderBoard</Nav.Link>

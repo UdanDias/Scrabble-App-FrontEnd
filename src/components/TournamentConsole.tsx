@@ -2,12 +2,13 @@ import { useEffect, useState } from "react"
 import Table from "react-bootstrap/Table"
 import { Button, Badge } from "react-bootstrap"
 import Swal from "sweetalert2"
-import GetTournaments from "./service/tournament/GetTournaments"
-import DeleteTournament from "./service/tournament/DeleteTournament"
-import GetRoundsByTournament from "./service/tournament/GetRoundsByTournament"
 import AddTournament from "./service/tournament/AddTournament"
+import DeleteTournament from "./service/tournament/DeleteTournament"
 import EditTournament from "./service/tournament/EditTournament"
+import GetRoundsByTournament from "./service/tournament/GetRoundsByTournament"
+import GetTournaments from "./service/tournament/GetTournaments"
 import RoundGamesModal from "./service/tournament/RoundGamesModal"
+
 
 interface Tournament {
     tournamentId: string
