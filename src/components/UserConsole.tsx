@@ -24,6 +24,7 @@ interface User {
     address: string;
     faculty: string;
     academicLevel: string;
+    accountCreatedDate:string;
 }
 export const loadData= async (
         SetUserData:React.Dispatch<React.SetStateAction<User[]>>

@@ -1,197 +1,230 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
-import UpdatePlayer from "./UpdatePlayer";
+import UpdateUser from "./UpdateUser";
 
-
-interface Player{
-    playerId:string;
-    firstName:string;
-    lastName:string;
-    age:number;
-    gender:string;
-    dob:string;
-    email:string;
-    phone:string;
-    address:string;
-    faculty:string;
-    academicLevel:string;
+interface User {
+    userId: string;
+    playerId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    role: string;
+    age: number;
+    gender: string;
+    dob: string;
+    phone: string;
+    address: string;
+    faculty: string;
+    academicLevel: string;
     accountCreatedDate:string;
 }
 
-interface EditPlayerProps{
-    show:boolean;
-    selectedRow:Player|null;
-    handleClose:()=>void;
-    handleUpdate:(updatedPlayer:Player)=>void;
-    refreshTable:()=>void;
+interface EditUserProps {
+    show: boolean;
+    selectedRow: User | null;
+    handleClose: () => void;
+    handleUpdate: (updatedUser: User) => void;
+    refreshTable: () => void;
 }
-const EditPlayer=({show,selectedRow,handleClose,handleUpdate,refreshTable}:EditPlayerProps)=>{
 
-const [playerDetails,SetPlayerDetails]=useState<Player>({
-     playerId:"",
-    firstName:"",
-    lastName:"",
-    age:0,
-    gender:"",
-    dob:"",
-    email:"",
-    phone:"",
-    address:"",
-    faculty:"",
-    academicLevel:"",
-    accountCreatedDate:""
+const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }: EditUserProps) => {
 
-})
+    const [userDetails, setUserDetails] = useState<User>({
+        userId: "",
+        playerId: "",
+        firstName: "",
+        lastName: "",
+        age: 0,
+        gender: "",
+        dob: "",
+        email: "",
+        password: "",
+        role: "",
+        phone: "",
+        address: "",
+        faculty: "",
+        academicLevel: "",
+        accountCreatedDate:""
+    });
 
-useEffect(()=>{
-    if(selectedRow){
-        SetPlayerDetails({...selectedRow})  
+    useEffect(() => {
+        if (selectedRow) {
+            setUserDetails({ ...selectedRow })
+        }
+    }, [selectedRow])
+
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setUserDetails({ ...userDetails, [e.target.name]: e.target.value })
     }
-    
-},[selectedRow])
 
-const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
-    SetPlayerDetails({...playerDetails,[e.target.name]:e.target.value})
-}
-
-const handlesave=async()=>{
-    try {
-        const updatedPlayer=await UpdatePlayer(playerDetails);
-        handleUpdate(updatedPlayer)
-        refreshTable()
-        handleClose()
-    } catch (error) {
-        console.error("Error updating player",error)
-        throw error;
+    const handleSave = async () => {
+        try {
+            const updatedUser = await UpdateUser(userDetails);
+            handleUpdate(updatedUser);
+            refreshTable();
+            handleClose();
+        } catch (error) {
+            console.error("Error updating user", error);
+            throw error;
+        }
     }
-}
 
-    return(
+    return (
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                <Modal.Title>Edit Player</Modal.Title>
+                    <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <FloatingLabel controlId="floatingInput" label="Player Id" className="mb-3">
-                        <Form.Control 
-                        readOnly
-                        type="text" 
-                        name="playerId" 
-                        placeholder="Player Id"
-                        value={playerDetails.playerId}
-                        onChange={handleOnChange} />
-                    </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="First Name" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="firstName" 
-                        placeholder="First Name"
-                        value={playerDetails.firstName}
-                        onChange={handleOnChange} />
+                    <FloatingLabel label="User Id" className="mb-3">
+                        <Form.Control
+                            readOnly
+                            type="text"
+                            name="userId"
+                            placeholder="User Id"
+                            value={userDetails.userId}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Last Name" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="lastName" 
-                        placeholder="Last Name"
-                        value={playerDetails.lastName}
-                        onChange={handleOnChange} />
-                    </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="Age" className="mb-3">
-                        <Form.Control 
-                        type="number" 
-                        name="age" 
-                        placeholder="Age"
-                        value={playerDetails.age}
-                        onChange={handleOnChange} />
+                    <FloatingLabel label="Player Id" className="mb-3">
+                        <Form.Control
+                            readOnly
+                            type="text"
+                            name="playerId"
+                            placeholder="Player Id"
+                            value={userDetails.playerId}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Gender" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="gender" 
-                        placeholder="Gender" 
-                        value={playerDetails.gender}
-                        onChange={handleOnChange}/>
-                    </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="Date of Birth" className="mb-3">
-                        <Form.Control 
-                        type="date" 
-                        name="dob"
-                        placeholder="Date of Birth" 
-                        value={playerDetails.dob}
-                        onChange={handleOnChange}/>
+                    <FloatingLabel label="First Name" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="firstName"
+                            placeholder="First Name"
+                            value={userDetails.firstName}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Email" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="email"
-                        placeholder="Email"
-                        value={playerDetails.email}
-                        onChange={handleOnChange} />
-                    </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="Phone" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="phone"
-                        placeholder="Phone"
-                        value={playerDetails.phone}
-                        onChange={handleOnChange}/>
+                    <FloatingLabel label="Last Name" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="lastName"
+                            placeholder="Last Name"
+                            value={userDetails.lastName}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Address" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="address"
-                        placeholder="Address"
-                        value={playerDetails.address}
-                        onChange={handleOnChange} />
-                    </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="Faculty" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="faculty"
-                        placeholder="Faculty"
-                        value={playerDetails.faculty}
-                        onChange={handleOnChange} />
+                    <FloatingLabel label="Age" className="mb-3">
+                        <Form.Control
+                            type="number"
+                            name="age"
+                            placeholder="Age"
+                            value={userDetails.age}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Academic Level" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="academicLevel"
-                        placeholder="Academic Level" 
-                        value={playerDetails.academicLevel}
-                        onChange={handleOnChange}/>
+                    <FloatingLabel label="Gender" className="mb-3">
+                        <Form.Select name="gender" value={userDetails.gender} onChange={handleOnChange}>
+
+                            <option value="" disabled>Select a Gender</option>
+                            <option value="Male" disabled>Male</option>
+                            <option value="Female" disabled>Female</option>
+
+                        </Form.Select>
                     </FloatingLabel>
-                    
-                    <FloatingLabel controlId="floatingInput" label="Account Created Date" className="mb-3">
-                        <Form.Control 
-                        type="date" 
-                        name="accountCreatedDate"
-                        placeholder="Account Created Date"
-                        value={playerDetails.accountCreatedDate}
-                        onChange={handleOnChange} />
+
+                    <FloatingLabel label="Date of Birth" className="mb-3">
+                        <Form.Control
+                            type="date"
+                            name="dob"
+                            placeholder="Date of Birth"
+                            value={userDetails.dob}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Email" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="email"
+                            placeholder="Email"
+                            value={userDetails.email}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Password" className="mb-3">
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Password (leave blank to keep current)"
+                            value={userDetails.password}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Role" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="role"
+                            placeholder="Role"
+                            value={userDetails.role}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Phone" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="phone"
+                            placeholder="Phone"
+                            value={userDetails.phone}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Address" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="address"
+                            placeholder="Address"
+                            value={userDetails.address}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Faculty" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="faculty"
+                            placeholder="Faculty"
+                            value={userDetails.faculty}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+
+                    <FloatingLabel label="Academic Level" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="academicLevel"
+                            placeholder="Academic Level"
+                            value={userDetails.academicLevel}
+                            onChange={handleOnChange} />
+                    </FloatingLabel>
+                    <FloatingLabel label="Account Created Date" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="accountCreatedDate"
+                            placeholder="Account Created Date"
+                            value={userDetails.accountCreatedDate}
+                            onChange={handleOnChange} />
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
-                <Button variant="primary" onClick={handlesave}>
-                    Update
-                </Button>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSave}>
+                        Update
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </>
     );
 }
-export default EditPlayer;
+
+export default EditUser;
