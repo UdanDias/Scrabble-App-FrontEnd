@@ -2,6 +2,8 @@ import axios from "axios"
 import FetchToken from "../auth/FetchToken";
 
 const getPlayersByRankUrl="http://localhost:8081/scrabbleapp2026/api/v1/performance/getrankedplayers"
+const getSelectedPerformanceUrl="http://localhost:8081/scrabbleapp2026/api/v1/performance/getselectedperformance"
+
 const GetPlayersByRank=async()=>{
     try {
         

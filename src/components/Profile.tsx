@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
+import { getPlayerIdFromToken } from "./service/auth/GetPlayerId";
+import { getPlayer, getSelectedPlayer } from "./service/player/GetPlayer";
 
 
 interface Player{
@@ -38,6 +40,52 @@ interface Performance{
     playerRank:number;
 }
 export function Profile(){
+    const [player, SetPlayer] = useState<Player>({
+    playerId: "",
+    firstName: "",
+    lastName: "",
+    age: 0,
+    gender: "",
+    dob: "",
+    email: "",
+    phone: "",
+    address: "",
+    faculty: "",
+    academicLevel: "",
+    accountCreatedDate: ""
+});
+
+const [game, SetGame] = useState<Game>({
+    gameId: "",
+    player1Id: "",
+    player2Id: "",
+    score1: 0,
+    score2: 0,
+    margin: 0,
+    isgameTied: "",
+    winnerId: "",
+    gameDate: "",
+    isByeGame: ""
+});
+
+const [performance, SetPerformance] = useState<Performance>({
+    playerId: "",
+    totalWins: 0,
+    totalGamesPlayed: 0,
+    cumMargin: 0,
+    avgMargin: 0,
+    playerRank: 0
+});
+
+useEffect(()=>{
+    const playerId=getPlayerIdFromToken();
+    if (playerId) {
+        // use playerId to fetch player data, performance etc
+        getSelectedPlayer(playerId);
+        fetchPerformance(playerId);
+    }
+
+})
     return(
         <>
             <div  className="d-flex justify-content-center p-4">
