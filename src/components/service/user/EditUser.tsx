@@ -207,6 +207,7 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                     </FloatingLabel>
                     <FloatingLabel label="Account Created Date" className="mb-3">
                         <Form.Control
+                            readOnly
                             type="text"
                             name="accountCreatedDate"
                             placeholder="Account Created Date"

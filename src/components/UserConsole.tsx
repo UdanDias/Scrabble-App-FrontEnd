@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { getPlayer } from './service/player/GetPlayer';
 import { Button } from 'react-bootstrap';
-import EditPlayer from './service/player/EditPlayer';
-import DeletePlayer from './service/player/DeletePlayer';
-import AddPlayer from './service/player/AddPlayer';
-import { GamesByPlayer } from './service/player/GamesByPlayer';
 import GetUsers from './service/user/GetUser';
+import DeleteUser from './service/user/DeleteUser';
+import EditUser from './service/user/EditUser';
 
 
 interface User {
@@ -26,6 +23,7 @@ interface User {
     academicLevel: string;
     accountCreatedDate:string;
 }
+
 export const loadData= async (
         SetUserData:React.Dispatch<React.SetStateAction<User[]>>
     )=>{
@@ -39,7 +37,6 @@ export  function UserConsole(){
     const [userData , SetUserData]=useState<User[]>([])
     const [selectedRow,SetSelectedRow]=useState<User|null>(null)
     const [showEditUserModal,SetShowEditUserModal]= useState(false)
-    const [showAddUserModal,SetShowAddUserModal]=useState(false);
 
     const handleDelete=async(userId:string)=>{
         await DeleteUser(userId);
@@ -55,10 +52,7 @@ export  function UserConsole(){
     const refreshTable=()=>{
         loadData(SetUserData)
     }
-    const handleAdd=(newUser:User)=>{
-        SetUserData((prev)=>([...prev,newUser]))
-
-    }
+   
 
     const handleEdit=(row:User)=>{
         console.log("row data",row)
@@ -69,9 +63,7 @@ export  function UserConsole(){
     const handleOnCloseEdit=()=>{
         SetShowEditUserModal(false)
     }
-    const handleCloseAdd=()=>{
-        SetShowAddUserModal(false)
-    }
+    
     
 
     useEffect(()=>{
@@ -85,14 +77,8 @@ export  function UserConsole(){
         "Player Id",
         "First Name",
         "Last Name",
-        "Age",
-        "Gender",
-        "Date Of Birth",
         "Email",
-        "Phone",
-        "Address",
-        "Faculty",
-        "Academic Level",
+        "role",
         "Account Created Date",
         "Action"
     ]
@@ -110,21 +96,23 @@ export  function UserConsole(){
                     </tr>
                 </thead>
                 <tbody>
-                        {userData.map((row,index)=>(
-                            <tr key={row.userId||index}>
-                                {Object.values(row).map((cell,index)=>(
-                                    <td  className="text-center"key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
-                                ))}
-                                <td>
-                                    <div className="d-flex gap-2 justify-content-center">
-                                        <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
-                                        <Button variant="danger" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
-                                    </div>
-                                </td>
-                                
-                                
-                            </tr>
-                        ))}
+                    {userData.map((row, index) => (
+                        <tr key={row.userId || index}>
+                            <td className="text-center">{row.userId}</td>
+                            <td className="text-center">{row.playerId}</td>
+                            <td className="text-center">{row.firstName}</td>
+                            <td className="text-center">{row.lastName}</td>
+                            <td className="text-center">{row.email}</td>
+                            <td className="text-center">{row.role}</td>
+                            <td className="text-center">{row.accountCreatedDate}</td>
+                            <td>
+                                <div className="d-flex gap-2 justify-content-center">
+                                    <Button variant="secondary" onClick={() => handleEdit(row)}>Edit</Button>
+                                    <Button variant="danger" onClick={() => handleDelete(row.userId)}>Delete</Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </Table>
             <EditUser
@@ -134,12 +122,7 @@ export  function UserConsole(){
             handleUpdate={handleOnUpdate}
             refreshTable={refreshTable}
             />
-            <AddUser
-            show={showAddUserModal}
-            handleClose={handleCloseAdd}
-            handleAdd={handleAdd}
-            refreshTable={refreshTable}
-            />
+           
             
         </>
         
