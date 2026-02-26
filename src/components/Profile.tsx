@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { getPlayerIdFromToken } from "./service/auth/GetPlayerId";
-import { getPlayer, getSelectedPlayer } from "./service/player/GetPlayer";
+import { getGamesByPlayer, getPlayer, getSelectedPlayer } from "./service/player/GetPlayer";
+import { GetSelectedPerformance } from "./service/performance/GetPlayersByRank";
 
 
 interface Player{
@@ -40,7 +41,7 @@ interface Performance{
     playerRank:number;
 }
 export function Profile(){
-    const [player, SetPlayer] = useState<Player>({
+    const [player, SetPlayer] = useState<Player|null>({
     playerId: "",
     firstName: "",
     lastName: "",
@@ -55,20 +56,9 @@ export function Profile(){
     accountCreatedDate: ""
 });
 
-const [game, SetGame] = useState<Game>({
-    gameId: "",
-    player1Id: "",
-    player2Id: "",
-    score1: 0,
-    score2: 0,
-    margin: 0,
-    isgameTied: "",
-    winnerId: "",
-    gameDate: "",
-    isByeGame: ""
-});
+const [game, SetGames] = useState<Game[]|null>([]);
 
-const [performance, SetPerformance] = useState<Performance>({
+const [performance, SetPerformance] = useState<Performance|null>({
     playerId: "",
     totalWins: 0,
     totalGamesPlayed: 0,
@@ -77,15 +67,29 @@ const [performance, SetPerformance] = useState<Performance>({
     playerRank: 0
 });
 
-useEffect(()=>{
-    const playerId=getPlayerIdFromToken();
+const fetchData=async()=>{
+    const playerId= await getPlayerIdFromToken();
     if (playerId) {
-        // use playerId to fetch player data, performance etc
-        getSelectedPlayer(playerId);
-        fetchPerformance(playerId);
-    }
+        try {
+            const selectedPlayer = await getSelectedPlayer(playerId);
+            const selectedPerformance = await GetSelectedPerformance(playerId);
+            const playerGames = await getGamesByPlayer(playerId);
 
-})
+            SetPlayer(selectedPlayer);
+            SetPerformance(selectedPerformance);
+            SetGames(playerGames);
+
+        } catch (error) {
+            console.error("Error fetching profile data:", error);
+        }
+    }
+      
+}
+
+useEffect(()=>{
+     fetchData()
+
+},[])
     return(
         <>
             <div  className="d-flex justify-content-center p-4">
