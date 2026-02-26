@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import { getPlayerIdFromToken } from "./service/auth/GetPlayerId";
 import { getGamesByPlayer, getPlayer, getSelectedPlayer } from "./service/player/GetPlayer";
 import { GetSelectedPerformance } from "./service/performance/GetPlayersByRank";
@@ -90,20 +90,138 @@ useEffect(()=>{
      fetchData()
 
 },[])
-    return(
+    return (
         <>
-            <div  className="d-flex justify-content-center p-4">
-                <Card  style={{ width: '50rem' }}>
-                    <Card.Body>
-                        <Card.Title>Welcome</Card.Title>
-                        <Card.Text>
-                        Some quick example text to build on the card title and make up the
-                        bulk of the card's content.
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
+            <div
+                className="mx-auto mt-4 p-4"
+                style={{
+                    width: "70%",
+                    border: "2px solid #ccc",
+                    borderRadius: "10px",
+                    backgroundColor: "#f8f9fa"
+                }}
+            >
+
+                {/* Player Profile Card */}
+                <div className="d-flex justify-content-center mb-4">
+                    <Card style={{ width: "100%" }} className="shadow">
+                        <Card.Body>
+                            <Card.Title className="mb-4 text-center fs-3">
+                                Player Profile
+                            </Card.Title>
+
+                            <div className="row px-4" style={{ marginLeft: "70px" }}>
+                                <div className="col-md-5 offset-md-1">
+                                    <p><strong>First Name:</strong> {player?.firstName}</p>
+                                    <p><strong>Last Name:</strong> {player?.lastName}</p>
+                                    <p><strong>Age:</strong> {player?.age}</p>
+                                    <p><strong>Gender:</strong> {player?.gender}</p>
+                                    <p><strong>Date of Birth:</strong> {player?.dob}</p>
+                                </div>
+
+                                <div className="col-md-5 offset-md-1">
+                                    <p><strong>Email:</strong> {player?.email}</p>
+                                    <p><strong>Phone:</strong> {player?.phone}</p>
+                                    <p><strong>Address:</strong> {player?.address}</p>
+                                    <p><strong>Faculty:</strong> {player?.faculty}</p>
+                                    <p><strong>Academic Level:</strong> {player?.academicLevel}</p>
+                                </div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </div>
+                {/* Bottom Section - Two Cards Side by Side */}
+                <div className="d-flex justify-content-center gap-4 mb-4">
+
+                    <Card style={{ width: "50%" }} className="shadow">
+                        <Card.Body>
+                            <Card.Title className="mb-4 text-center fs-3">
+                                Performance 
+                            </Card.Title>
+
+                            <div className="row text-center px-4">
+                                <div className="text-center">
+                                    <p className="mt-3"><strong>Player ID : </strong>{performance?.playerId}</p>
+                                </div>
+                                {/* Left Column */}
+                                <div className="col-md-6">
+
+                                    <p className="mt-3"><strong>Cum Margin : </strong>{performance?.cumMargin}</p>
+                                    <p><strong>Avg Margin : </strong>{performance?.avgMargin}</p>
+                                </div>
+
+                                {/* Right Column */}
+                                <div className="col-md-6">
+                                    
+
+                                    <p className="mt-3"><strong>Total Games : </strong>{performance?.totalGamesPlayed}</p>
+
+                                    <p className="mt-3"><strong>Total Wins : </strong>{performance?.totalWins}</p>
+
+                                </div>
+                                <div className="text-center mt-2">
+                                                <span className={`badge fs-6 ${
+                                                    performance?.playerRank === 1 ? "bg-warning text-dark" :
+                                                    performance?.playerRank === 2 ? "bg-secondary" :
+                                                    performance?.playerRank === 3 ? "bg-danger" :
+                                                    "bg-primary"
+                                                }`}>
+                                                    Rank #{performance?.playerRank}
+                                                </span>
+                                </div>
+
+                            </div>
+                        </Card.Body>
+                    </Card>
+
+                    <Card style={{ width: "50%" }} className="shadow">
+                        <Card.Body>
+                            <Card.Title className="mb-4 text-center fs-3">
+                                Games 
+                            </Card.Title>
+
+                            <div className="px-3">
+
+                                {game && game.length === 0 ? (
+                                    <p className="text-center">No games found.</p>
+                                ) : (
+                                    <Accordion >
+
+                                        {game?.map((g, index) => (
+                                            <Accordion.Item eventKey={String(index)} key={g.gameId}>
+                                                <Accordion.Header>
+                                                    Game {index + 1}
+                                                </Accordion.Header>
+
+                                                <Accordion.Body>
+                                                    <div className="row">
+
+                                                        <div className="col-6">
+                                                            <p><strong>Date:</strong> {g.gameDate}</p>
+                                                            <p><strong>Score:</strong> {g.score1} - {g.score2}</p>
+                                                            <p><strong>Margin:</strong> {g.margin}</p>
+                                                        </div>
+
+                                                        <div className="col-6">
+                                                            <p><strong>Winner:</strong> {g.winnerId}</p>
+                                                            <p><strong>Tied:</strong> {g.isgameTied}</p>
+                                                            <p><strong>Bye:</strong> {g.isByeGame}</p>
+                                                        </div>
+
+                                                    </div>
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        ))}
+
+                                    </Accordion>
+                                )}
+
+                            </div>
+                        </Card.Body>
+                    </Card>
+
+                </div>
             </div>
-            
         </>
     );
 }
