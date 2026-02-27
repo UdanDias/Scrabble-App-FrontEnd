@@ -483,3 +483,34 @@ code {
   color: #bfd0e1d1;
   font-weight: bold;
 }
+.profile-games-table {
+  border: none !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed;       /* fixed so columns share space equally */
+}
+
+.profile-games-table th,
+.profile-games-table td {
+  background-color: #2e2f2dc1 !important;
+  border: none !important;
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-games-table th {
+  color: #f7f186b4 !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: left;
+  width: 20%;                /* label takes 20% */
+}
+
+.profile-games-table td {
+  color: #bfd0e1d1 !important;
+  font-weight: bold;
+  width: 30%;                /* value takes 30% */
+}
