@@ -470,12 +470,13 @@ code {
   border: none !important;
   width: 100% !important;
   border-collapse: collapse !important;
-  table-layout: fixed;       /* fixed so columns share space equally */
+  /* table-layout: fixed;        */
+  /* fixed so columns share space equally */
 }
 
 .profile-games-table th,
 .profile-games-table td {
-  background-color: #2e2f2dc1 !important;
+  background-color: #3a3a3938 !important;
   border: none !important;
   padding: 6px 8px;
   font-size: 0.75rem;
@@ -485,7 +486,7 @@ code {
 }
 
 .profile-games-table th {
-  color: #f7f186b4 !important;
+  color: #f7f1869a !important;
   letter-spacing: 1px;
   text-transform: uppercase;
   text-align: left;
@@ -493,7 +494,7 @@ code {
 }
 
 .profile-games-table td {
-  color: #bfd0e1d1 !important;
+  color: #bfd0e1a0 !important;
   font-weight: bold;
   width: 30%;                /* value takes 30% */
 }

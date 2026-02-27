@@ -1,44 +1,30 @@
 import { useEffect, useState } from "react";
 import { Accordion, Card } from "react-bootstrap";
 import { getPlayerIdFromToken } from "../service/auth/GetPlayerId";
-import { getGamesByPlayer, getPlayer, getSelectedPlayer } from "../service/player/GetPlayer";
+import { getGamesByPlayer, getSelectedPlayer } from "../service/player/GetPlayer";
 import { GetSelectedPerformance } from "../service/performance/GetPlayersByRank";
 
-
-interface Player{
-    playerId:string;
-    firstName:string;
-    lastName:string;
-    age:number;
-    gender:string;
-    dob:string;
-    email:string;
-    phone:string;
-    address:string;
-    faculty:string;
-    academicLevel:string;
-    accountCreatedDate:string;
+interface Player {
+    playerId: string;
+    firstName: string;
+    lastName: string;
+    age: number;
+    gender: string;
+    dob: string;
+    email: string;
+    phone: string;
+    address: string;
+    faculty: string;
+    academicLevel: string;
+    accountCreatedDate: string;
 }
-interface Game{
-    gameId:string;
-    player1Id:string;
-    player2Id:string;
-    score1:number;
-    score2:number;
-    margin:number;
-    isgameTied:string;
-    winnerId:string;
-    gameDate:string;
-    isByeGame:string;
-
-}
-interface Performance{
-    playerId:string;
-    totalWins:number;
-    totalGamesPlayed:number;
-    cumMargin:number;
-    avgMargin:number;
-    playerRank:number;
+interface Performance {
+    playerId: string;
+    totalWins: number;
+    totalGamesPlayed: number;
+    cumMargin: number;
+    avgMargin: number;
+    playerRank: number;
 }
 interface PlayerGame {
     gameId: string;
@@ -55,92 +41,87 @@ interface PlayerGame {
     gameDate: string;
     bye: boolean;
 }
-export function Profile(){
-    const [player, SetPlayer] = useState<Player|null>({
-    playerId: "",
-    firstName: "",
-    lastName: "",
-    age: 0,
-    gender: "",
-    dob: "",
-    email: "",
-    phone: "",
-    address: "",
-    faculty: "",
-    academicLevel: "",
-    accountCreatedDate: ""
-});
 
-const [games, SetGames] = useState<PlayerGame[]|null>([]);
+export function Profile() {
+    const [player, SetPlayer] = useState<Player | null>({
+        playerId: "", firstName: "", lastName: "", age: 0, gender: "",
+        dob: "", email: "", phone: "", address: "", faculty: "",
+        academicLevel: "", accountCreatedDate: ""
+    });
+    const [games, SetGames] = useState<PlayerGame[] | null>([]);
+    const [performance, SetPerformance] = useState<Performance | null>({
+        playerId: "", totalWins: 0, totalGamesPlayed: 0,
+        cumMargin: 0, avgMargin: 0, playerRank: 0
+    });
 
-const [performance, SetPerformance] = useState<Performance|null>({
-    playerId: "",
-    totalWins: 0,
-    totalGamesPlayed: 0,
-    cumMargin: 0,
-    avgMargin: 0,
-    playerRank: 0
-});
-
-const fetchData=async()=>{
-    const playerId = getPlayerIdFromToken();
-    if (playerId) {
-        try {
-            const selectedPlayer = await getSelectedPlayer(playerId);
-            const selectedPerformance = await GetSelectedPerformance(playerId);
-            const playerGames = await getGamesByPlayer(playerId);
-
-            SetPlayer(selectedPlayer);
-            SetPerformance(selectedPerformance);
-            SetGames(playerGames);
-
-        } catch (error) {
-            console.error("Error fetching profile data:", error);
+    const fetchData = async () => {
+        const playerId = getPlayerIdFromToken();
+        if (playerId) {
+            try {
+                const selectedPlayer = await getSelectedPlayer(playerId);
+                const selectedPerformance = await GetSelectedPerformance(playerId);
+                const playerGames = await getGamesByPlayer(playerId);
+                SetPlayer(selectedPlayer);
+                SetPerformance(selectedPerformance);
+                SetGames(playerGames);
+            } catch (error) {
+                console.error("Error fetching profile data:", error);
+            }
         }
-    }
-      
-}
+    };
 
-useEffect(()=>{
-    fetchData()
+    useEffect(() => { fetchData() }, []);
 
-},[])
+    const getGameResult = (game: PlayerGame) => {
+        if (game.bye) return <span className="badge bg-secondary fs-6">Bye Game</span>;
+        if (game.gameTied) return <span className="badge bg-warning text-dark fs-6">Game Tied</span>;
+        if (game.winnerId === player?.playerId) return <span className="badge bg-success fs-6">Won the Game</span>;
+        return <span className="badge bg-danger fs-6">Lost the Game</span>;
+    };
 
-const getGameResult = (game: PlayerGame) => {
-        if (game.bye) {
-            return <span className="badge bg-secondary fs-6 " style={{marginRight: "50px"}} >Bye Game</span>
-        }
-        if (game.gameTied) {
-            return <span className="badge bg-warning text-dark fs-6"style={{marginRight: "50px"}}>Game Tied</span>
-        }
-        if (game.winnerId === player?.playerId) {
-            return <span className="badge bg-success fs-6 " style={{marginRight: "50px"}}>Won the Game</span>
-        }
-        return <span className="badge bg-danger fs-6" style={{marginRight: "50px"}}>Lost the Game</span>
-    } 
     return (
         <>
             <div className="console-page">
-                <div className="console-table-container" style={{width: '70%'}}>
+                <div className="console-table-container" style={{ width: '70%' }}>
 
                     {/* Player Profile Card */}
                     <div className="profile-card mb-4">
-                        <h3 className="profile-card-title">Player Profile</h3>
-                        <div className="row px-4">
-                            <div className="col-md-6">
-                                <p><span className="profile-label">First Name:</span> {player?.firstName}</p>
-                                <p><span className="profile-label">Last Name:</span> {player?.lastName}</p>
-                                <p><span className="profile-label">Age:</span> {player?.age}</p>
-                                <p><span className="profile-label">Gender:</span> {player?.gender}</p>
-                                <p><span className="profile-label">Date of Birth:</span> {player?.dob}</p>
-                            </div>
-                            <div className="col-md-6">
-                                <p><span className="profile-label">Email:</span> {player?.email}</p>
-                                <p><span className="profile-label">Phone:</span> {player?.phone}</p>
-                                <p><span className="profile-label">Address:</span> {player?.address}</p>
-                                <p><span className="profile-label">Faculty:</span> {player?.faculty}</p>
-                                <p><span className="profile-label">Academic Level:</span> {player?.academicLevel}</p>
-                            </div>
+                        <h3 className="profile-card-title">Personal Details</h3>
+                        <div className="leaderboard-inner-table-wrapper">
+                            <table className="profile-games-table w-100">
+                                <tbody>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <td>{player?.firstName}</td>
+                                        <th>Email</th>
+                                        <td>{player?.email}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Name</th>
+                                        <td>{player?.lastName}</td>
+                                        <th>Phone</th>
+                                        <td>{player?.phone}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Age</th>
+                                        <td>{player?.age}</td>
+                                        <th>Address</th>
+                                        <td>{player?.address}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gender</th>
+                                        <td>{player?.gender}</td>
+                                        <th>Faculty</th>
+                                        <td>{player?.faculty}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date of Birth</th>
+                                        <td>{player?.dob}</td>
+                                        <th>Academic Level</th>
+                                        <td>{player?.academicLevel}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -148,23 +129,31 @@ const getGameResult = (game: PlayerGame) => {
                     <div className="d-flex gap-4 align-items-stretch">
 
                         {/* Performance Card */}
-                        <div className="profile-card" style={{width: '50%'}}>
+                        <div className="profile-card" style={{ width: '50%' }}>
                             <h3 className="profile-card-title">Performance</h3>
-                            <div className="text-center mb-2">
-                                <span className="profile-label">Player ID:</span>
-                                <span className="profile-value"> {performance?.playerId}</span>
+                            <div className="leaderboard-inner-table-wrapper">
+                                <table className="profile-games-table w-100">
+                                    <tbody>
+                                        <tr>
+                                            <th>Player ID</th>
+                                            <td colSpan={3}>{performance?.playerId}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Cum Margin</th>
+                                            <td>{performance?.cumMargin}</td>
+                                            <th>Total Games</th>
+                                            <td>{performance?.totalGamesPlayed}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Avg Margin</th>
+                                            <td>{performance?.avgMargin}</td>
+                                            <th>Total Wins</th>
+                                            <td>{performance?.totalWins}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div className="row text-center">
-                                <div className="col-6">
-                                    <p><span className="profile-label">Cum Margin:</span> <span className="profile-value">{performance?.cumMargin}</span></p>
-                                    <p><span className="profile-label">Avg Margin:</span> <span className="profile-value">{performance?.avgMargin}</span></p>
-                                </div>
-                                <div className="col-6">
-                                    <p><span className="profile-label">Total Games:</span> <span className="profile-value">{performance?.totalGamesPlayed}</span></p>
-                                    <p><span className="profile-label">Total Wins:</span> <span className="profile-value">{performance?.totalWins}</span></p>
-                                </div>
-                            </div>
-                            <div className="d-flex justify-content-center mt-2">
+                            <div className="d-flex justify-content-center mt-3">
                                 <span className={`badge fs-6 ${
                                     performance?.playerRank === 1 ? "bg-warning text-dark" :
                                     performance?.playerRank === 2 ? "bg-secondary" :
@@ -177,9 +166,9 @@ const getGameResult = (game: PlayerGame) => {
                         </div>
 
                         {/* Games Card */}
-                        <div className="profile-card d-flex flex-column" style={{width: '50%'}}>
+                        <div className="profile-card d-flex flex-column" style={{ width: '50%' }}>
                             <h3 className="profile-card-title">Games</h3>
-                            <div className="console-table-wrapper" style={{flex: 1, maxHeight: 'none', overflow: 'visible'}}>
+                            <div className="console-table-wrapper" style={{ flex: 1, maxHeight: 'none', overflow: 'visible' }}>
                                 {games && games.length === 0 ? (
                                     <p className="text-center profile-value">No games found.</p>
                                 ) : (
@@ -193,11 +182,11 @@ const getGameResult = (game: PlayerGame) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th>Game ID</th>
-                                                                    <td >{game.gameId}</td>
+                                                                    <td>{game.gameId}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Date</th>
-                                                                    <td >{game.gameDate}</td>
+                                                                    <td>{game.gameDate}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Player 1</th>
@@ -225,6 +214,9 @@ const getGameResult = (game: PlayerGame) => {
                                                                 </tr>
                                                             </tbody>
                                                         </table>
+                                                    </div>
+                                                    <div className="leaderboard-rank-badge">
+                                                        {getGameResult(game)}
                                                     </div>
                                                 </Accordion.Body>
                                             </Accordion.Item>
