@@ -43,8 +43,8 @@ export function LeaderBoard(){
                         <Table className="leaderboard-header-table" bordered>
                             <thead>
                                 <tr>
-                                    <th style={{width: "60px"}}>#Rank</th>
-                                    <th style={{paddingRight: "90px", textAlign: "center"}}>Player</th>
+                                    <th style={{width: "60px",fontSize:"20px"}}>#Rank</th>
+                                    <th style={{paddingRight: "120px", textAlign: "center",fontSize:"20px"}}>Player</th>
                                 </tr>
                             </thead>
                         </Table>
@@ -56,7 +56,7 @@ export function LeaderBoard(){
                                             <div className="rank-divider" style={{width: "45px"}}>
                                                 #{player.playerRank}
                                             </div>
-                                            <div className="position-absolute start-50 translate-middle-x">
+                                            <div className="position-absolute start-50 translate-middle-x" style={{fontSize:"18px"}}>
                                                 {player.firstName} {player.lastName}
                                             </div>
                                         </div>

@@ -45,7 +45,7 @@ const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps)
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="dark-modal">
             <Modal.Header closeButton>
                 <Modal.Title>Add Round</Modal.Title>
             </Modal.Header>
@@ -62,8 +62,8 @@ const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps)
                 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Close</Button>
-                <Button variant="primary" onClick={handleSubmit}>Save Round</Button>
+                <Button className="btn-edit" onClick={handleClose}>Close</Button>
+                <Button className="btn-create" onClick={handleSubmit}>Save Round</Button>
             </Modal.Footer>
         </Modal>
     )

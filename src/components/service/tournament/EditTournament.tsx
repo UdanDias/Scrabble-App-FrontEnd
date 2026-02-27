@@ -45,7 +45,7 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="dark-modal">
             <Modal.Header closeButton>
                 <Modal.Title>Edit Tournament</Modal.Title>
             </Modal.Header>
@@ -77,8 +77,8 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
                 </FloatingLabel>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Close</Button>
-                <Button variant="primary" onClick={handleSave}>Update</Button>
+                <Button className="btn-edit" onClick={handleClose}>Close</Button>
+                <Button className="btn-create" onClick={handleSave}>Update</Button>
             </Modal.Footer>
         </Modal>
     )
