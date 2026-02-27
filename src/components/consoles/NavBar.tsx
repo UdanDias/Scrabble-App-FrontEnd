@@ -14,17 +14,17 @@ function NavBar(){
         <>
             <Navbar className="custom-navbar" data-bs-theme="dark">
                 
-                    <Navbar.Brand href="#" className="fw-bold fs-4 px-2 ">Scrabble</Navbar.Brand>
+                    <Navbar.Brand href="#" className="fw-bold fs-4 px-2 ">SCRABBLE</Navbar.Brand>
                     <Nav className="me-auto">
-                        {isAuthenticated?(
+                        {isAuthenticated?( 
                             <>  
-                                <Nav.Link as = {NavLink} to = "/profile">Profile</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/player">Player</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/tournament">Tournament</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/game">Game</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/user">User</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/leaderboard">LeaderBoard</Nav.Link>
-                                <Button variant="warning" onClick={handleOnClick}>Logout</Button>
+                                <Nav.Link as = {NavLink} to = "/profile">PROFILE</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/player">PLAYER</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/tournament">TOURNAMENT</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/game">GAME</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/user">USER</Nav.Link>
+                                <Nav.Link as = {NavLink} to = "/leaderboard">LEADERBOARD</Nav.Link>
+                                <Button variant="warning" onClick={handleOnClick}>LOG OUT</Button>
                             </>
                         ):(
                             <>

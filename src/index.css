@@ -92,15 +92,14 @@ code {
   gap: 0 20px;
 }
 
-/* ///////////////////////////////////////////////////////////////////////////////////// Player Table //////////////////////////////////////////////////////////////////// */
-/* ///////////////////////////////////////////////////////////////////////////////////// Player Table //////////////////////////////////////////////////////////////////// */
-.player-page {
+/* ///////////////////////////////////////////////////////////////////////////////////// Console pages //////////////////////////////////////////////////////////////////// */
+.console-page {
   background-color: #0d1117 !important;
   min-height: 100vh;
   padding-top: 20px;
 }
 
-.player-table-container {
+.console-table-container {
   width: 90%;
   margin: 20px auto;
   background-color: #1e0d0716;
@@ -110,20 +109,21 @@ code {
   border: 1px solid rgba(0, 255, 150, 0.1);
 }
 
-.player-table-wrapper {
+.console-table-wrapper {
   max-height: 65vh;
   overflow-y: auto;
   border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
 /* scrollbar */
-.player-table-wrapper::-webkit-scrollbar {
+.console-table-wrapper::-webkit-scrollbar {
   width: 6px;
 }
-.player-table-wrapper::-webkit-scrollbar-track {
+.console-table-wrapper::-webkit-scrollbar-track {
   background: #0d1317;
 }
-.player-table-wrapper::-webkit-scrollbar-thumb {
+.console-table-wrapper::-webkit-scrollbar-thumb {
   background: #7d6904;
   border-radius: 10px;
 }
@@ -134,10 +134,10 @@ code {
 }
 
 /* table header */
-.player-table thead th {
+.console-table thead th {
   background-color: #000000 !important;
   color: #e0d318d4 !important;          /* cyan header text like in the image */
-  border-color: rgba(0, 255, 150, 0.15) !important;
+  /* border-color: rgba(0, 255, 150, 0.15) !important; */
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;          /* uppercase headers like the image */
@@ -145,34 +145,92 @@ code {
   position: sticky;
   top: 0;
   z-index: 1;
+  border-color: rgba(224, 211, 24, 0.15) !important;  /* subtle gold border on header */
+
 }
 
 /* table rows */
-.player-table tbody td {
+.console-table tbody td {
   background-color: #060413 !important;
   color: #bfd0e1d1 !important;
-  border-color: rgba(0, 255, 150, 0.08) !important;
+  /* border-color: rgba(0, 255, 150, 0.08) !important; */
+  border-color: rgba(255, 255, 255, 0.06) !important;
   font-size: 0.9rem;
   font-weight: bold;
 }
 
 /* alternating rows */
-.player-table tbody tr:nth-child(even) td {
+.console-table tbody tr:nth-child(even) td {
   background-color: #0d0c18 !important;
 }
 
 /* row hover */
-.player-table tbody tr:hover td {
-  background-color: #393a44b2 !important;
+.console-table tbody tr:hover td {
+  background-color: #272730b2 !important;
   transition: background-color 0.2s ease;
 }
 
 /* first column rank/id styling */
-.player-table tbody td:first-child {
+.console-table tbody td:first-child {
   color: #bfd0e1cd !important;          /* cyan for id column like rank numbers */
   font-weight: 600;
 }
+.console-table {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
 
+/* ///////////////////////////////////////////////////////////////////////////////////// Buttons /////////////////////////////////////////////////////////////////// */
+
+/* action buttons */
+.btn-create {
+  background-color: transparent !important;
+  border: 1px solid #00ff95d0 !important;
+  color: #00ff95d0 !important;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+.btn-create:hover {
+  background-color: rgba(0, 255, 149, 0.15) !important;
+  color: #ffffff !important;
+}
+.btn-games {
+  background-color: transparent !important;
+  border: 1px solid #59a9b4 !important;
+  color: #6ac8d4 !important;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+.btn-games:hover {
+  background-color: rgba(89, 169, 180, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.btn-edit {
+  background-color: transparent !important;
+  border: 1px solid #767976 !important;
+  color: #c8d0c8 !important;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+.btn-edit:hover {
+  background-color: rgba(118, 121, 118, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.btn-delete {
+  background-color: transparent !important;
+  border: 1px solid #c93131 !important;
+  color: #e05959 !important;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+.btn-delete:hover {
+  background-color: rgba(201, 49, 49, 0.2) !important;
+  color: #ffffff !important;
+}
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Navbar //////////////////////////////////////////////////////////////////// */
 .custom-navbar {

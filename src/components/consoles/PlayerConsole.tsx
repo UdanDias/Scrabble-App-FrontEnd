@@ -102,23 +102,16 @@ export  function PlayerConsole(){
     ]
     return(
         <>
-        <div className="player-page">
+        <div className="console-page">
             <div className="create-button d-flex justify-content-end  ">
-                <Button 
-                    style={{
-                        backgroundColor: 'transparent',
-                        border: '1px solid #00ff95d0',
-                        color: '#00ff95d0',
-                        letterSpacing: '1px'
-                    }} 
-                    onClick={()=>SetShowAddPlayerModal(true)}>
+                <Button className="btn-create" onClick={()=>SetShowAddPlayerModal(true)}>
                     + Create Player
                 </Button>
             </div>
             
-        <div className="player-table-container">
-            <div className="player-table-wrapper">
-            <Table striped bordered hover  className="player-table">
+        <div className="console-table-container">
+            <div className="console-table-wrapper">
+            <Table striped bordered hover  className="console-table">
                 <thead>
                     <tr>
                         {tHeads.map((headings)=>(
@@ -134,35 +127,11 @@ export  function PlayerConsole(){
                                 ))}
                                 <td>
                                     <div className="d-flex gap-2 justify-content-center">
-                                        <Button 
-                                            style={{
-                                            backgroundColor: 'transparent',
-                                            border: '1px solid #59a9b4',
-                                            color: '#6ac8d4',
-                                            letterSpacing: '1px',
-                                            fontSize: '0.8rem'
-                                            }} 
-                                            onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
+                                        <Button className="btn-games" onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
 
-                                        <Button 
-                                            style={{
-                                            backgroundColor: 'transparent',
-                                            border: '1px solid #767976',
-                                            color: '#c8d0c8',
-                                            letterSpacing: '1px',
-                                            fontSize: '0.8rem'
-                                            }} 
-                                            onClick={()=>handleEdit(row)}>Edit</Button>
+                                        <Button className="btn-edit" onClick={()=>handleEdit(row)}>Edit</Button>
 
-                                        <Button 
-                                            style={{
-                                            backgroundColor: 'transparent',
-                                            border: '1px solid #c93131',
-                                            color: '#e05959',
-                                            letterSpacing: '1px',
-                                            fontSize: '0.8rem'
-                                            }} 
-                                            onClick={()=>handleDelete(row.playerId)}>Delete</Button>
+                                        <Button className="btn-delete" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
                                         </div>
                                 </td>
                                 
