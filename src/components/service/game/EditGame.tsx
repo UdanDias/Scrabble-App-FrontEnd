@@ -67,7 +67,7 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
     }
     return(
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className="dark-modal">
                 <Modal.Header closeButton>
                 <Modal.Title>Edit Game</Modal.Title>
                 </Modal.Header>
@@ -166,10 +166,10 @@ function EditGame({show,selectedRow,handleClose,handleUpdate,refreshTable}:GameE
 
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button className="btn-edit" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={()=>handleSave(gameData)}>
+                <Button className="btn-create" onClick={()=>handleSave(gameData)}>
                     Update
                 </Button>
                 </Modal.Footer>
