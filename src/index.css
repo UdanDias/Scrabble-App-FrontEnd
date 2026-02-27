@@ -722,3 +722,14 @@ code {
 .dark-modal .card strong {
   color: #e0d318d4 !important;
 }
+/* date input calendar icon */
+.dark-modal input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);        /* turns black icon to white */
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.dark-modal input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+

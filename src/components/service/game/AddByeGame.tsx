@@ -61,7 +61,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
     }
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className="dark-modal">
                 <Modal.Header closeButton>
                 <Modal.Title>Add Bye Game</Modal.Title>
                 </Modal.Header>
@@ -90,10 +90,10 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
 
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button className="btn-edit" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={()=>handleSave()}>
+                <Button className="btn-create" onClick={()=>handleSave()}>
                     Save Bye Game
                 </Button>
                 </Modal.Footer>
