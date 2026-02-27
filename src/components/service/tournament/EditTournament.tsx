@@ -72,7 +72,7 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
                     <Form.Select name="status" value={details.status} onChange={handleOnChange}>
                         <option value="UPCOMING">Upcoming</option>
                         <option value="ONGOING">Ongoing</option>
-                        <option value="COMPLETED">Completed</option>
+                        <option value="FINISHED">Finished</option>
                     </Form.Select>
                 </FloatingLabel>
             </Modal.Body>

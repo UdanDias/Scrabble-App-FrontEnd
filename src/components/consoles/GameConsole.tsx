@@ -1,13 +1,13 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import GetGames from "./service/game/GetGames";
-import EditGame from "./service/game/EditGame";
-import DeleteGame from "./service/game/DeleteGame";
-import { AddGame } from "./service/game/AddGame";
+import GetGames from "../service/game/GetGames";
+import EditGame from "../service/game/EditGame";
+import DeleteGame from "../service/game/DeleteGame";
+import { AddGame } from "../service/game/AddGame";
 import Swal from "sweetalert2";
-import { AddByeGame } from "./service/game/AddByeGame";
-import GetTournaments from "./service/tournament/GetTournaments";
-import GetRoundsByTournament from "./service/tournament/GetRoundsByTournament";
+import { AddByeGame } from "../service/game/AddByeGame";
+import GetTournaments from "../service/tournament/GetTournaments";
+import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament";
 
 interface Game {
     gameId: string;
@@ -184,9 +184,17 @@ export function GameConsole() {
     }
 
     const theads: string[] = [
-        "Game Id", "Player1 Id", "Player2 Id",
-        "Score 1", "Score 2", "Margin",
-        "Game Tied", "Winner Id", "Game Date", "Is Bye Game", "Action"
+        "Game Id",
+        "Player1 Id", 
+        "Player2 Id",
+        "Score 1", 
+        "Score 2", 
+        "Margin",
+        "Game Tied", 
+        "Winner Id", 
+        "Game Date", 
+        "Is Bye Game","Round Id", 
+        "Action"
     ]
 
     return (

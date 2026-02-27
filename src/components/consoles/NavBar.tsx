@@ -1,6 +1,6 @@
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router"; 
-import { useAuth } from "./auth/AuthProvider";
+import { useAuth } from "../auth/AuthProvider";
 
 function NavBar(){
     const handleOnClick=()=>{

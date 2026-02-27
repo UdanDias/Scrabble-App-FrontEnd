@@ -1,16 +1,16 @@
 import './App.css';
-import  {PlayerConsole}  from './components/PlayerConsole';
+import  {PlayerConsole}  from './components/consoles/PlayerConsole';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NavBar from './components/NavBar';
-import { GameConsole } from './components/GameConsole';
-import { Profile } from './components/Profile';
-import { LeaderBoard } from './components/LeaderBoard';
+import NavBar from './components/consoles/NavBar';
+import { GameConsole } from './components/consoles/GameConsole';
+import { Profile } from './components/consoles/Profile';
+import { LeaderBoard } from './components/consoles/LeaderBoard';
 import { SignIn } from './components/auth/SignIn';
 import { SignUp } from './components/auth/SignUp';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { AuthProvider } from './components/auth/AuthProvider';
-import { UserConsole } from './components/UserConsole';
-import { TournamentConsole } from './components/TournamentConsole';
+import { UserConsole } from './components/consoles/UserConsole';
+import { TournamentConsole } from './components/consoles/TournamentConsole';
 
 function App() {
   return (

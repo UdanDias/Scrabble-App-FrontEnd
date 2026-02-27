@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { Button } from 'react-bootstrap';
-import GetUsers from './service/user/GetUser';
-import DeleteUser from './service/user/DeleteUser';
-import EditUser from './service/user/EditUser';
+import GetUsers from '../service/user/GetUser';
+import DeleteUser from '../service/user/DeleteUser';
+import EditUser from '../service/user/EditUser';
 
 
 interface User {

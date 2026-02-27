@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { getPlayer } from './service/player/GetPlayer';
+import { getPlayer } from '../service/player/GetPlayer';
 import { Button } from 'react-bootstrap';
-import EditPlayer from './service/player/EditPlayer';
-import DeletePlayer from './service/player/DeletePlayer';
-import AddPlayer from './service/player/AddPlayer';
-import { GamesByPlayer } from './service/player/GamesByPlayer';
+import EditPlayer from '../service/player/EditPlayer';
+import DeletePlayer from '../service/player/DeletePlayer';
+import AddPlayer from '../service/player/AddPlayer';
+import { GamesByPlayer } from '../service/player/GamesByPlayer';
 
 
 interface Player{

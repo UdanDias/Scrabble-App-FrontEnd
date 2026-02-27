@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Accordion, Card } from "react-bootstrap";
-import { getPlayerIdFromToken } from "./service/auth/GetPlayerId";
-import { getGamesByPlayer, getPlayer, getSelectedPlayer } from "./service/player/GetPlayer";
-import { GetSelectedPerformance } from "./service/performance/GetPlayersByRank";
+import { getPlayerIdFromToken } from "../service/auth/GetPlayerId";
+import { getGamesByPlayer, getPlayer, getSelectedPlayer } from "../service/player/GetPlayer";
+import { GetSelectedPerformance } from "../service/performance/GetPlayersByRank";
 
 
 interface Player{

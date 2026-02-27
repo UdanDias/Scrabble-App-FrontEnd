@@ -52,7 +52,7 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
             })
         }
     },[show])
-    const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const handleOnChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement| HTMLTextAreaElement>)=>{
         SetNewPlayerDetails((prev)=>({...prev,[e.target.name]:e.target.value}))
     }
     const handleOnSubmit=async()=>{
@@ -105,12 +105,11 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
                     </FloatingLabel> */}
 
                     <FloatingLabel controlId="floatingInput" label="Gender" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="gender" 
-                        placeholder="Gender" 
-                        value={newPlayerDetails.gender}
-                        onChange={handleOnChange}/>
+                        <Form.Select name="gender" value={newPlayerDetails.gender} onChange={handleOnChange}>
+                            <option value="" disabled>Select Gender</option> 
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </Form.Select>
                     </FloatingLabel>
                     
                     <FloatingLabel controlId="floatingInput" label="Date of Birth" className="mb-3">

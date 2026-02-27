@@ -33,12 +33,13 @@ export const SignIn=()=>{
         const navigate=useNavigate()
     return (
         <>
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-            <div className="d-flex flex-column align-items-center ">
-                <h1> Login</h1>
-            </div>
+        <div className="auth-container d-flex flex-column justify-content-center align-items-center vh-100">
+            <div className="auth-border-login">
+                <div className=" d-flex flex-column align-items-center ">
+                    <h1 className="auth-font"> Login</h1>
+                </div>
                 <Form className="d-flex flex-column align-items-center mt-3 w-100" onSubmit={handleOnSubmit}>
-                    <div className="w-25">
+                    <div className="w-100">
                         
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Label>Email address</Form.Label>
@@ -63,8 +64,8 @@ export const SignIn=()=>{
                             
                         </Form.Group>
 
-                        <div className="d-flex justify-content-center">
-                            <Button variant="success" type="submit">
+                        <div className=" d-flex justify-content-center">
+                            <Button  variant="success" type="submit">
                                 Login
                             </Button>
                         </div>
@@ -72,7 +73,7 @@ export const SignIn=()=>{
                     </div>
                 </Form>
             </div>
-        
+        </div>
 
         </>
     );

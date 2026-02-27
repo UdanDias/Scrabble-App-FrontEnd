@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import { Accordion, Table } from "react-bootstrap";
-import {GetPlayersByRank} from "./service/performance/GetPlayersByRank";
+import {GetPlayersByRank} from "../service/performance/GetPlayersByRank";
 
 
 

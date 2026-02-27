@@ -5,9 +5,79 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+  
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* ///////////////////////////////////////////////////////////////////////////////////// auth components //////////////////////////////////////////////////////////////////// */
+.auth-container {
+  position: relative;        /* needed for pseudo-element */
+  overflow: hidden;          /* keeps blur inside the container */
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('img/scrabble_background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  filter: blur(7px);         /* only blurs the background */
+  z-index: 0;                /* behind the form */
+  /* opacity: 0.8; */
+}
+.auth-font{
+  font-family: 'Lobster Two', cursive;
+  font-weight: 700;
+  letter-spacing: 2px;
+  
+}
+/* ///////////////////////////////////////////////////////////////////////////////////// Login component //////////////////////////////////////////////////////////////////// */
+.auth-border-login {
+  position: relative;        /* sits above the blurred background */
+  z-index: 1;                /* above the pseudo-element */
+  background-color: rgba(164, 192, 191, 0.85);  /* semi-transparent white */
+  width: 400px;
+  height: auto;
+  padding: 40px;
+  border-radius: 16px;       /* rounded corners */
+  border: 1px solid rgba(4, 50, 18, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);  /* soft shadow for depth */
+}
+/* .login-border h1 {
+  
+} */
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Register component //////////////////////////////////////////////////////////////////// */
+.auth-border-signup {
+  
+  position: relative;
+  z-index: 1;
+  background-color: rgba(164, 192, 191, 0.85);
+  width: 750px;          /* wider for two columns */
+  height: auto;          /* no fixed height, no scroll */
+  padding: 30px 40px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.signup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;   /* three equal columns */
+  gap: 0 20px;
+}
+

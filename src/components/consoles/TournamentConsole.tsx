@@ -218,13 +218,13 @@ import { useEffect, useState } from "react"
 import Table from "react-bootstrap/Table"
 import { Button, Badge } from "react-bootstrap"
 import Swal from "sweetalert2"
-import AddTournament from "./service/tournament/AddTournament"
-import DeleteTournament from "./service/tournament/DeleteTournament"
-import EditTournament from "./service/tournament/EditTournament"
-import GetRoundsByTournament from "./service/tournament/GetRoundsByTournament"
-import GetTournaments from "./service/tournament/GetTournaments"
-import RoundGamesModal from "./service/tournament/RoundGamesModal"
-import AddRound from "./service/tournament/AddRound"
+import AddTournament from "../service/tournament/AddTournament"
+import DeleteTournament from "../service/tournament/DeleteTournament"
+import EditTournament from "../service/tournament/EditTournament"
+import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament"
+import GetTournaments from "../service/tournament/GetTournaments"
+import RoundGamesModal from "../service/tournament/RoundGamesModal"
+import AddRound from "../service/tournament/AddRound"
 // import AddRound from "./service/tournament/AddRound"
 
 interface Tournament {
@@ -248,7 +248,7 @@ const getStatusBadge = (status: string) => {
     switch (status) {
         case "UPCOMING": return <Badge bg="primary">Upcoming</Badge>
         case "ONGOING": return <Badge bg="success">Ongoing</Badge>
-        case "COMPLETED": return <Badge bg="secondary">Completed</Badge>
+        case "FINISHED": return <Badge bg="secondary">Finished</Badge>
         default: return <Badge bg="light" text="dark">{status}</Badge>
     }
 }
@@ -394,7 +394,7 @@ export function TournamentConsole() {
             {/* Top right buttons */}
             <div className="d-flex justify-content-end gap-2 p-2">
                 <Button variant="info" onClick={handleViewRoundsClick}>
-                    View Rounds
+                    View Tournaments
                 </Button>
                 <Button variant="success" onClick={() => setShowAddModal(true)}>
                     + Add Tournament
@@ -417,11 +417,11 @@ export function TournamentConsole() {
                             <td className="text-center">{getStatusBadge(row.status)}</td>
                             <td>
                                 <div className="d-flex gap-2 justify-content-center">
-                                    <Button variant="info" onClick={() => handleViewRoundsForRow(row)}>
+                                    {/* <Button variant="info" onClick={() => handleViewRoundsForRow(row)}>
                                         Rounds
-                                    </Button>
+                                    </Button> */}
                                     <Button variant="primary" onClick={() => handleAddRound(row)}>
-                                        Add Round
+                                       + Add Round
                                     </Button>
                                     <Button variant="secondary" onClick={() => handleEdit(row)}>
                                         Edit
