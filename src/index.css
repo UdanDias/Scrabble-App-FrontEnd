@@ -150,9 +150,10 @@ code {
 /* table rows */
 .player-table tbody td {
   background-color: #060413 !important;
-  color: #bfd0e1 !important;
+  color: #bfd0e1d1 !important;
   border-color: rgba(0, 255, 150, 0.08) !important;
   font-size: 0.9rem;
+  font-weight: bold;
 }
 
 /* alternating rows */
@@ -162,14 +163,58 @@ code {
 
 /* row hover */
 .player-table tbody tr:hover td {
-  background-color: #22313a !important;
+  background-color: #393a44b2 !important;
   transition: background-color 0.2s ease;
 }
 
 /* first column rank/id styling */
 .player-table tbody td:first-child {
-  color: #bfd0e1 !important;          /* cyan for id column like rank numbers */
+  color: #bfd0e1cd !important;          /* cyan for id column like rank numbers */
   font-weight: 600;
 }
 
 
+/* ///////////////////////////////////////////////////////////////////////////////////// Navbar //////////////////////////////////////////////////////////////////// */
+.custom-navbar {
+  background-color: #060413 !important;
+  border-bottom: 1px solid rgba(224, 211, 24, 0.2);
+  position: sticky;       /* sticks to top when scrolling */
+  top: 0;
+  z-index: 999;
+}
+
+.custom-navbar .navbar-brand {
+  color: #e0d318d4 !important;
+  font-family: 'Lobster Two', cursive;
+  letter-spacing: 3px;
+  font-size: 2rem;        /* bigger text */
+  padding-left: 0;        /* removes left padding */
+  margin-right: 40px;     /* more space between brand and links */
+  text-shadow: 0 0 15px rgba(224, 211, 24, 0.893);
+  padding: 5px;
+  margin-left: 12px;  
+}
+
+.custom-navbar .nav-link {
+  color: #bfd0e1 !important;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.custom-navbar .nav-link:hover,
+.custom-navbar .nav-link.active {
+  color: #e0d318d4 !important;
+}
+
+.custom-navbar .btn {
+  background-color: transparent !important;
+  border: 1px solid #e0d318d4 !important;
+  color: #e0d318d4 !important;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+
+.custom-navbar .btn:hover {
+  background-color: rgba(224, 211, 24, 0.15) !important;
+}
