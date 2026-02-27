@@ -53,7 +53,7 @@ export function AddGame({show,handleClose,handleAdd,roundId}:AddGameProps){
     },[show])
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className="dark-modal">
                 <Modal.Header closeButton>
                 <Modal.Title>Add Game</Modal.Title>
                 </Modal.Header>
@@ -152,10 +152,10 @@ export function AddGame({show,handleClose,handleAdd,roundId}:AddGameProps){
 
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button className="btn-edit" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={()=>handleSave()}>
+                <Button className="btn-create" onClick={()=>handleSave()}>
                     Save Game
                 </Button>
                 </Modal.Footer>

@@ -733,3 +733,93 @@ code {
   opacity: 1;
 }
 
+/* ///////////////////////////////////////////////////////////////////////////////////// SweetAlert2 //////////////////////////////////////////////////////////////////// */
+.swal2-popup {
+  background-color: #060413 !important;
+  border: 1px solid rgba(224, 211, 24, 0.15) !important;
+  box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8) !important;
+  border-radius: 16px !important;
+}
+
+.swal2-title {
+  color: #e0d318d4 !important;
+  font-family: 'Lobster Two', cursive !important;
+  letter-spacing: 2px !important;
+}
+
+.swal2-html-container {
+  color: #bfd0e1d1 !important;
+}
+
+.swal2-input,
+.swal2-select {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1d1 !important;
+  border-radius: 8px !important;
+}
+
+.swal2-input:focus,
+.swal2-select:focus {
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+  outline: none !important;
+}
+
+.swal2-select option {
+  background-color: #0d0c18 !important;
+  color: #bfd0e1d1 !important;
+}
+
+/* confirm button */
+.swal2-confirm {
+  background-color: transparent !important;
+  border: 1px solid #510dfd !important;
+  color: #a78bfa !important;
+  letter-spacing: 1px !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-confirm:hover {
+  background-color: rgba(81, 13, 253, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* deny button (bye game) */
+.swal2-deny {
+  background-color: transparent !important;
+  border: 1px solid #19876f !important;
+  color: #6ac8d4 !important;
+  letter-spacing: 1px !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-deny:hover {
+  background-color: rgba(25, 135, 111, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* cancel button */
+.swal2-cancel {
+  background-color: transparent !important;
+  border: 1px solid #767976 !important;
+  color: #c8d0c8 !important;
+  letter-spacing: 1px !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-cancel:hover {
+  background-color: rgba(118, 121, 118, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* icon border */
+.swal2-icon {
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #e0d318d4 !important;
+}
+
+/* backdrop */
+.swal2-backdrop-show {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}

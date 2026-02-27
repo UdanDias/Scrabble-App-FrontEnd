@@ -110,13 +110,14 @@ export function GameConsole() {
 
                 const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
                     title: "Select Tournament",
-                    html: `<p class="text-muted mb-0">Select a tournament for this game, or cancel to skip</p>`,
+                    html: `<p style="color:#bfd0e1d1;margin:0"> Select a tournament for this game</p>`,
                     input: "select",
                     inputOptions: tournamentOptions,
                     inputPlaceholder: "Select a tournament",
                     showCancelButton: true,
                     confirmButtonText: "Next",
-                    cancelButtonText: "Skip"
+                    cancelButtonText: "Skip",
+                    customClass: { popup: 'swal-dark' }
                 })
 
                 if (!tournamentSkipped && tournamentId) {
@@ -131,13 +132,14 @@ export function GameConsole() {
 
                         const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
                             title: "Select Round",
-                            html: `<p class="text-muted mb-0">Select a round for this game, or cancel to skip</p>`,
+                            html: `<p style="color:#bfd0e1d1;margin:0" >Select a round for this game, or cancel to skip</p>`,
                             input: "select",
                             inputOptions: roundOptions,
                             inputPlaceholder: "Select a round",
                             showCancelButton: true,
                             confirmButtonText: "Next",
-                            cancelButtonText: "Skip"
+                            cancelButtonText: "Skip",
+                            customClass: { popup: 'swal-dark' }
                         })
 
                         if (!roundSkipped && selectedRoundId) {
@@ -163,7 +165,12 @@ export function GameConsole() {
             confirmButtonColor: '#510dfd',
             denyButtonColor: '#19876f',
             cancelButtonColor: '#6c757d',
-            customClass: { icon: 'custom-swal-icon' },
+            customClass: {
+            icon: 'custom-swal-icon',
+            confirmButton: 'swal2-confirm',   /* ← add these */
+            denyButton: 'swal2-deny',
+            cancelButton: 'swal2-cancel'
+        },
             didOpen: () => {
                 const icon = document.querySelector('.custom-swal-icon')
                 if (icon) {
