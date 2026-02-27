@@ -120,147 +120,115 @@ const getGameResult = (game: PlayerGame) => {
     } 
     return (
         <>
-            <div
-                className="mx-auto mt-4 p-4"
-                style={{
-                    width: "70%",
-                    border: "2px solid #ccc",
-                    borderRadius: "10px",
-                    backgroundColor: "#f8f9fa"
-                }}
-            >
+            <div className="console-page">
+                <div className="console-table-container" style={{width: '70%'}}>
 
-                {/* Player Profile Card */}
-                <div className="d-flex justify-content-center mb-4">
-                    <Card style={{ width: "100%" }} className="shadow">
-                        <Card.Body>
-                            <Card.Title className="mb-4 text-center fs-3">
-                                Player Profile
-                            </Card.Title>
+                    {/* Player Profile Card */}
+                    <div className="profile-card mb-4">
+                        <h3 className="profile-card-title">Player Profile</h3>
+                        <div className="row px-4">
+                            <div className="col-md-6">
+                                <p><span className="profile-label">First Name:</span> {player?.firstName}</p>
+                                <p><span className="profile-label">Last Name:</span> {player?.lastName}</p>
+                                <p><span className="profile-label">Age:</span> {player?.age}</p>
+                                <p><span className="profile-label">Gender:</span> {player?.gender}</p>
+                                <p><span className="profile-label">Date of Birth:</span> {player?.dob}</p>
+                            </div>
+                            <div className="col-md-6">
+                                <p><span className="profile-label">Email:</span> {player?.email}</p>
+                                <p><span className="profile-label">Phone:</span> {player?.phone}</p>
+                                <p><span className="profile-label">Address:</span> {player?.address}</p>
+                                <p><span className="profile-label">Faculty:</span> {player?.faculty}</p>
+                                <p><span className="profile-label">Academic Level:</span> {player?.academicLevel}</p>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div className="row px-4" style={{ marginLeft: "70px" }}>
-                                <div className="col-md-5 offset-md-1">
-                                    <p><strong>First Name:</strong> {player?.firstName}</p>
-                                    <p><strong>Last Name:</strong> {player?.lastName}</p>
-                                    <p><strong>Age:</strong> {player?.age}</p>
-                                    <p><strong>Gender:</strong> {player?.gender}</p>
-                                    <p><strong>Date of Birth:</strong> {player?.dob}</p>
+                    {/* Bottom Section */}
+                    <div className="d-flex gap-4 align-items-start">
+
+                        {/* Performance Card */}
+                        <div className="profile-card" style={{width: '50%'}}>
+                            <h3 className="profile-card-title">Performance</h3>
+                            <div className="text-center mb-2">
+                                <span className="profile-label">Player ID:</span>
+                                <span className="profile-value"> {performance?.playerId}</span>
+                            </div>
+                            <div className="row text-center">
+                                <div className="col-6">
+                                    <p><span className="profile-label">Cum Margin:</span> <span className="profile-value">{performance?.cumMargin}</span></p>
+                                    <p><span className="profile-label">Avg Margin:</span> <span className="profile-value">{performance?.avgMargin}</span></p>
                                 </div>
-
-                                <div className="col-md-5 offset-md-1">
-                                    <p><strong>Email:</strong> {player?.email}</p>
-                                    <p><strong>Phone:</strong> {player?.phone}</p>
-                                    <p><strong>Address:</strong> {player?.address}</p>
-                                    <p><strong>Faculty:</strong> {player?.faculty}</p>
-                                    <p><strong>Academic Level:</strong> {player?.academicLevel}</p>
+                                <div className="col-6">
+                                    <p><span className="profile-label">Total Games:</span> <span className="profile-value">{performance?.totalGamesPlayed}</span></p>
+                                    <p><span className="profile-label">Total Wins:</span> <span className="profile-value">{performance?.totalWins}</span></p>
                                 </div>
                             </div>
-                        </Card.Body>
-                    </Card>
-                </div>
-                {/* Bottom Section - Two Cards Side by Side */}
-                <div className="d-flex justify-content-center gap-4 mb-4 align-items-start">
-
-                    <Card style={{ width: "50%" }} className="shadow">
-                        <Card.Body>
-                            <Card.Title className="mb-4 text-center fs-3">
-                                Performance 
-                            </Card.Title>
-
-                            <div className="row text-center px-4">
-                                <div className="text-center">
-                                    <p className="mt-3"><strong>Player ID : </strong>{performance?.playerId}</p>
-                                </div>
-                                {/* Left Column */}
-                                <div className="col-md-6">
-
-                                    <p className="mt-3"><strong>Cum Margin : </strong>{performance?.cumMargin}</p>
-                                    <p><strong>Avg Margin : </strong>{performance?.avgMargin}</p>
-                                </div>
-
-                                {/* Right Column */}
-                                <div className="col-md-6">
-                                    
-
-                                    <p className="mt-3"><strong>Total Games : </strong>{performance?.totalGamesPlayed}</p>
-
-                                    <p className="mt-3"><strong>Total Wins : </strong>{performance?.totalWins}</p>
-
-                                </div>
-                                <div className="text-center mt-2">
-                                                <span className={`badge fs-6 ${
-                                                    performance?.playerRank === 1 ? "bg-warning text-dark" :
-                                                    performance?.playerRank === 2 ? "bg-secondary" :
-                                                    performance?.playerRank === 3 ? "bg-danger" :
-                                                    "bg-primary"
-                                                }`}>
-                                                    Rank #{performance?.playerRank}
-                                                </span>
-                                </div>
-
+                            <div className="d-flex justify-content-center mt-2">
+                                <span className={`badge fs-6 ${
+                                    performance?.playerRank === 1 ? "bg-warning text-dark" :
+                                    performance?.playerRank === 2 ? "bg-secondary" :
+                                    performance?.playerRank === 3 ? "bg-danger" :
+                                    "bg-primary"
+                                }`}>
+                                    Rank #{performance?.playerRank}
+                                </span>
                             </div>
-                        </Card.Body>
-                    </Card>
+                        </div>
 
-                    <Card style={{ width: "50%" }} className="shadow">
-                        <Card.Body>
-                            <Card.Title className="mb-4 text-center fs-3">
-                                Games 
-                            </Card.Title>
-
-                            {/* <div className="px-3"> */}
-                            <div className="px-3" style={{ maxHeight: "400px",minHeight: "187px",  overflowY: "auto" }}>
-
+                        {/* Games Card */}
+                        <div className="profile-card" style={{width: '50%'}}>
+                            <h3 className="profile-card-title">Games</h3>
+                            <div className="console-table-wrapper" style={{maxHeight: '400px', minHeight: '187px'}}>
                                 {games && games.length === 0 ? (
-                                    <p className="text-center">No games found.</p>
+                                    <p className="text-center profile-value">No games found.</p>
                                 ) : (
-                                    <Accordion >
-
+                                    <Accordion className="leaderboard-accordion">
                                         {games?.map((game, index) => (
                                             <Accordion.Item eventKey={String(index)} key={game.gameId}>
-                                                <Accordion.Header>
-                                                    Game {index + 1}
-                                                </Accordion.Header>
-
+                                                <Accordion.Header>Game {index + 1}</Accordion.Header>
                                                 <Accordion.Body>
-                                                    <div className="card p-3">
-                                                        <div className="card-body">
-                                                            <div className="row">
-                                                                <div className="col-6 text-start">
-                                                                    <p><strong>Game ID:</strong> {game.gameId}</p>
-                                                                    <p><strong>Player 1:</strong> {game.player1Name}</p>
-                                                                    <p><strong>Player 2:</strong> {game.player2Name}</p>
-                                                                    <p><strong>Date:</strong> {game.gameDate}</p>
-                                                                    
-                                                                </div>
-                                                                <div className="col-6 text-start">
-                                                                    
-                                                                    
-                                                                    <p><strong>Bye:</strong> {game.bye ? "Yes" : "No"}</p>
-                                                                    
-                                                                    <p><strong>Score:</strong> {game.score1} - {game.score2}</p>
-                                                                    <p><strong>Margin:</strong> {game.margin}</p>
-                                                                    <p><strong>Tied:</strong> {game.gameTied ? "Yes" : "No"}</p>
-                                                                    <p><strong>Winner:</strong> {game.winnerName}</p>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="text-center mt-2">
-                                                                {getGameResult(game)}
-                                                            </div>
-                                                        </div>
+                                                    <div className="leaderboard-inner-table-wrapper">
+                                                        <table className="leaderboard-inner-table w-100">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>Game ID</th>
+                                                                    <td>{game.gameId}</td>
+                                                                    <th>Date</th>
+                                                                    <td>{game.gameDate}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Player 1</th>
+                                                                    <td>{game.player1Name}</td>
+                                                                    <th>Player 2</th>
+                                                                    <td>{game.player2Name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Score</th>
+                                                                    <td>{game.score1} - {game.score2}</td>
+                                                                    <th>Margin</th>
+                                                                    <td>{game.margin}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Winner</th>
+                                                                    <td>{game.winnerName}</td>
+                                                                    <th>Tied</th>
+                                                                    <td>{game.gameTied ? "Yes" : "No"}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div className="d-flex justify-content-center mt-2">
+                                                        {getGameResult(game)}
                                                     </div>
                                                 </Accordion.Body>
                                             </Accordion.Item>
                                         ))}
-
                                     </Accordion>
                                 )}
-
                             </div>
-                        </Card.Body>
-                    </Card>
-
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
