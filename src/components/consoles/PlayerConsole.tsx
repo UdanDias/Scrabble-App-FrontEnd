@@ -109,58 +109,58 @@ export  function PlayerConsole(){
                 </Button>
             </div>
             
-        <div className="console-table-container">
-            <div className="console-table-wrapper">
-            <Table striped bordered hover  className="console-table">
-                <thead>
-                    <tr>
-                        {tHeads.map((headings)=>(
-                            <th className="text-center" key={headings}>{headings}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                        {playerData.map((row,index)=>(
-                            <tr key={row.playerId||index}>
-                                {Object.values(row).map((cell,index)=>(
-                                    <td  className="text-center"key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
-                                ))}
-                                <td>
-                                    <div className="d-flex gap-2 justify-content-center">
-                                        <Button className="btn-games" onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
+            <div className="console-table-container">
+                <div className="console-table-wrapper">
+                <Table striped bordered hover  className="console-table">
+                    <thead>
+                        <tr>
+                            {tHeads.map((headings)=>(
+                                <th className="text-center" key={headings}>{headings}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {playerData.map((row,index)=>(
+                                <tr key={row.playerId||index}>
+                                    {Object.values(row).map((cell,index)=>(
+                                        <td  className="text-center"key={index}>{cell !== null && cell !== undefined ? String(cell) : ''}</td>
+                                    ))}
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <Button className="btn-games" onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
 
-                                        <Button className="btn-edit" onClick={()=>handleEdit(row)}>Edit</Button>
+                                            <Button className="btn-edit" onClick={()=>handleEdit(row)}>Edit</Button>
 
-                                        <Button className="btn-delete" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
-                                        </div>
-                                </td>
-                                
-                                
-                            </tr>
-                        ))}
-                </tbody>
-            </Table>
+                                            <Button className="btn-delete" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
+                                            </div>
+                                    </td>
+                                    
+                                    
+                                </tr>
+                            ))}
+                    </tbody>
+                </Table>
+                </div>
+                <EditPlayer
+                show={showEditPlayerModal}
+                selectedRow={selectedRow}
+                handleClose={handleOnCloseEdit}
+                handleUpdate={handleOnUpdate}
+                refreshTable={refreshTable}
+                />
+                <AddPlayer
+                show={showAddPlayerModal}
+                handleClose={handleCloseAdd}
+                handleAdd={handleAdd}
+                refreshTable={refreshTable}
+                />
+                <GamesByPlayer
+                show={showGamesByPlayerModal}
+                handleClose={handleCloseGames}
+                selectedRow={selectedRow}
+                />
             </div>
-            <EditPlayer
-            show={showEditPlayerModal}
-            selectedRow={selectedRow}
-            handleClose={handleOnCloseEdit}
-            handleUpdate={handleOnUpdate}
-            refreshTable={refreshTable}
-            />
-            <AddPlayer
-            show={showAddPlayerModal}
-            handleClose={handleCloseAdd}
-            handleAdd={handleAdd}
-            refreshTable={refreshTable}
-            />
-            <GamesByPlayer
-            show={showGamesByPlayerModal}
-            handleClose={handleCloseGames}
-            selectedRow={selectedRow}
-            />
-            </div>
-            </div>
+        </div>
         </>
         
     );

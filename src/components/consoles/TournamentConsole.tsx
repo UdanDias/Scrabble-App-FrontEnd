@@ -391,50 +391,55 @@ export function TournamentConsole() {
 
     return (
         <>
+        <div className="console-page">
             {/* Top right buttons */}
-            <div className="d-flex justify-content-end gap-2 p-2">
-                <Button variant="info" onClick={handleViewRoundsClick}>
+            <div className="create-button d-flex justify-content-end gap-2 p-2">
+                <Button className="btn-view" variant="info" onClick={handleViewRoundsClick}>
                     View Tournaments
                 </Button>
-                <Button variant="success" onClick={() => setShowAddModal(true)}>
+                <Button className="btn-create" variant="success" onClick={() => setShowAddModal(true)}>
                     + Add Tournament
                 </Button>
             </div>
-
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        {tHeads.map(h => (
-                            <th className="text-center" key={h}>{h}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {tournamentData.map((row, index) => (
-                        <tr key={row.tournamentId || index}>
-                            <td className="text-center">{row.tournamentId}</td>
-                            <td className="text-center">{row.tournamentName}</td>
-                            <td className="text-center">{getStatusBadge(row.status)}</td>
-                            <td>
-                                <div className="d-flex gap-2 justify-content-center">
-                                    {/* <Button variant="info" onClick={() => handleViewRoundsForRow(row)}>
-                                        Rounds
-                                    </Button> */}
-                                    <Button variant="primary" onClick={() => handleAddRound(row)}>
-                                       + Add Round
-                                    </Button>
-                                    <Button variant="secondary" onClick={() => handleEdit(row)}>
-                                        Edit
-                                    </Button>
-                                    <Button variant="danger" onClick={() => handleDelete(row.tournamentId)}>
-                                        Delete
-                                    </Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            <div className="console-table-container">
+                <div className="console-table-wrapper">
+                    <Table striped bordered hover className="console-table">
+                        <thead>
+                            <tr>
+                                {tHeads.map(h => (
+                                    <th className="text-center" key={h}>{h}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tournamentData.map((row, index) => (
+                                <tr key={row.tournamentId || index}>
+                                    <td className="text-center">{row.tournamentId}</td>
+                                    <td className="text-center">{row.tournamentName}</td>
+                                    <td className="text-center">{getStatusBadge(row.status)}</td>
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            {/* <Button variant="info" onClick={() => handleViewRoundsForRow(row)}>
+                                                Rounds
+                                            </Button> */}
+                                            <Button  className="btn-create" variant="primary" onClick={() => handleAddRound(row)}>
+                                            + Add Round
+                                            </Button>
+                                            <Button className="btn-edit" variant="secondary" onClick={() => handleEdit(row)}>
+                                                Edit
+                                            </Button>
+                                            <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row.tournamentId)}>
+                                                Delete
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+            
 
             <AddTournament
                 show={showAddModal}
@@ -465,6 +470,7 @@ export function TournamentConsole() {
                 handleClose={() => setShowAddRoundModal(false)}
                 handleAdd={() => setShowAddRoundModal(false)}
             />
+        </div>
         </>
     )
 }

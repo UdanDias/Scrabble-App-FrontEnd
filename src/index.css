@@ -128,10 +128,7 @@ code {
   border-radius: 10px;
 }
 
-.create-button {
-  width: 90%;
-  margin: 0 auto 15px auto;
-}
+
 
 /* table header */
 .console-table thead th {
@@ -181,6 +178,10 @@ code {
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Buttons /////////////////////////////////////////////////////////////////// */
 
+.create-button {
+  width: 90%;
+  margin: 0 auto 15px auto;
+}
 /* action buttons */
 .btn-create {
   background-color: transparent !important;
@@ -191,6 +192,17 @@ code {
 }
 .btn-create:hover {
   background-color: rgba(0, 255, 149, 0.15) !important;
+  color: #ffffff !important;
+}
+.btn-view {
+  background-color: transparent !important;
+  border: 1px solid #41a4ea  !important;
+  color: #41a4ea !important;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+.btn-view:hover {
+  background-color: rgba(20, 66, 231, 0.373) !important;
   color: #ffffff !important;
 }
 .btn-games {

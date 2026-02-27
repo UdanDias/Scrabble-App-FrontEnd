@@ -197,35 +197,42 @@ export function GameConsole() {
         "Action"
     ]
 
-    return (
+    return ( 
         <>
-            <div className="d-flex justify-content-end p-2">
-                <Button variant="success" onClick={handleAddClick}>Add Game</Button>
+        <div className="console-page">
+            <div className="create-button d-flex justify-content-end p-2">
+                <Button className="btn-create" variant="success" onClick={handleAddClick}>Add Game</Button>
             </div>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        {theads.map(tHead => (
-                            <th className="text-center" key={tHead}>{tHead}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {gameData.map((row, index) => (
-                        <tr key={row.gameId || index}>
-                            {Object.values(row).map((cell, index) => (
-                                <td className="text-center" key={index}>{String(cell ?? '')}</td>
+            <div className="console-table-container">
+                <div className="console-table-wrapper">
+                    <Table striped bordered hover className="console-table">
+                        <thead>
+                            <tr>
+                                {theads.map(tHead => (
+                                    <th className="text-center" key={tHead}>{tHead}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {gameData.map((row, index) => (
+                                <tr key={row.gameId || index}>
+                                    {Object.values(row).map((cell, index) => (
+                                        <td className="text-center" key={index}>{String(cell ?? '')}</td>
+                                    ))}
+                                    <td>
+                                        <div className="d-flex justify-content-center p-2 gap-2">
+                                            <Button className="btn-edit" variant="secondary" onClick={() => handleEdit(row)}>Edit</Button>
+                                            <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row.gameId)}>Delete</Button>
+                                        </div>
+                                    </td>
+                                </tr>
                             ))}
-                            <td>
-                                <div className="d-flex justify-content-center p-2 gap-2">
-                                    <Button variant="secondary" onClick={() => handleEdit(row)}>Edit</Button>
-                                    <Button variant="danger" onClick={() => handleDelete(row.gameId)}>Delete</Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+            
+            
 
             <EditGame
                 show={showEditGameModal}
@@ -246,6 +253,7 @@ export function GameConsole() {
                 handleAdd={handleOnAddBye}
                 roundId={selectedRoundId}   // ← pass roundId
             />
+        </div>
         </>
     );
 }
