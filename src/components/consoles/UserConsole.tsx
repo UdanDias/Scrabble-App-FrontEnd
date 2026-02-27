@@ -87,34 +87,40 @@ export  function UserConsole(){
         {/* <div className="d-flex justify-content-end p-2">
             <Button  variant="success" onClick={()=>SetShowAddUserModal(true)}>Create User</Button>
         </div> */}
-            <Table striped bordered hover >
-                <thead>
-                    <tr>
-                        {tHeads.map((headings)=>(
-                            <th className="text-center" key={headings}>{headings}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {userData.map((row, index) => (
-                        <tr key={row.userId || index}>
-                            <td className="text-center">{row.userId}</td>
-                            <td className="text-center">{row.playerId}</td>
-                            <td className="text-center">{row.firstName}</td>
-                            <td className="text-center">{row.lastName}</td>
-                            <td className="text-center">{row.email}</td>
-                            <td className="text-center">{row.role}</td>
-                            <td className="text-center">{row.accountCreatedDate}</td>
-                            <td>
-                                <div className="d-flex gap-2 justify-content-center">
-                                    <Button variant="secondary" onClick={() => handleEdit(row)}>Edit</Button>
-                                    <Button variant="danger" onClick={() => handleDelete(row.userId)}>Delete</Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+        <div className="console-page">
+            <div className="console-table-container">
+                <div className="console-table-wrapper">
+                    <Table striped bordered hover className="console-table" >
+                        <thead>
+                            <tr>
+                                {tHeads.map((headings)=>(
+                                    <th className="text-center" key={headings}>{headings}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {userData.map((row, index) => (
+                                <tr key={row.userId || index}>
+                                    <td className="text-center">{row.userId}</td>
+                                    <td className="text-center">{row.playerId}</td>
+                                    <td className="text-center">{row.firstName}</td>
+                                    <td className="text-center">{row.lastName}</td>
+                                    <td className="text-center">{row.email}</td>
+                                    <td className="text-center">{row.role}</td>
+                                    <td className="text-center">{row.accountCreatedDate}</td>
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <Button className="btn-edit" variant="secondary" onClick={() => handleEdit(row)}>Edit</Button>
+                                            <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row.userId)}>Delete</Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+            
             <EditUser
             show={showEditUserModal}
             selectedRow={selectedRow}
@@ -123,7 +129,7 @@ export  function UserConsole(){
             refreshTable={refreshTable}
             />
            
-            
+        </div>  
         </>
         
     );
