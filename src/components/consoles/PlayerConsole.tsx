@@ -102,10 +102,23 @@ export  function PlayerConsole(){
     ]
     return(
         <>
-        <div className="d-flex justify-content-end p-2">
-            <Button  variant="success" onClick={()=>SetShowAddPlayerModal(true)}>Create Player</Button>
-        </div>
-            <Table striped bordered hover >
+        <div className="player-page">
+            <div className="create-button d-flex justify-content-end  ">
+                <Button 
+                    style={{
+                        backgroundColor: 'transparent',
+                        border: '1px solid #00ff95d0',
+                        color: '#00ff95d0',
+                        letterSpacing: '1px'
+                    }} 
+                    onClick={()=>SetShowAddPlayerModal(true)}>
+                    + Create Player
+                </Button>
+            </div>
+            
+        <div className="player-table-container">
+            <div className="player-table-wrapper">
+            <Table striped bordered hover  className="player-table">
                 <thead>
                     <tr>
                         {tHeads.map((headings)=>(
@@ -121,10 +134,36 @@ export  function PlayerConsole(){
                                 ))}
                                 <td>
                                     <div className="d-flex gap-2 justify-content-center">
-                                        <Button variant="primary"onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
-                                        <Button variant="secondary" onClick={()=>handleEdit(row)}>Edit</Button>
-                                        <Button variant="danger" onClick={()=>handleDelete(row.playerId)}>Delete</Button>
-                                    </div>
+                                        <Button 
+                                            style={{
+                                            backgroundColor: 'transparent',
+                                            border: '1px solid #59a9b4',
+                                            color: '#6ac8d4',
+                                            letterSpacing: '1px',
+                                            fontSize: '0.8rem'
+                                            }} 
+                                            onClick={()=>handleGetGamesByPlayer(row)}>Games</Button>
+
+                                        <Button 
+                                            style={{
+                                            backgroundColor: 'transparent',
+                                            border: '1px solid #767976',
+                                            color: '#c8d0c8',
+                                            letterSpacing: '1px',
+                                            fontSize: '0.8rem'
+                                            }} 
+                                            onClick={()=>handleEdit(row)}>Edit</Button>
+
+                                        <Button 
+                                            style={{
+                                            backgroundColor: 'transparent',
+                                            border: '1px solid #c93131',
+                                            color: '#e05959',
+                                            letterSpacing: '1px',
+                                            fontSize: '0.8rem'
+                                            }} 
+                                            onClick={()=>handleDelete(row.playerId)}>Delete</Button>
+                                        </div>
                                 </td>
                                 
                                 
@@ -132,6 +171,7 @@ export  function PlayerConsole(){
                         ))}
                 </tbody>
             </Table>
+            </div>
             <EditPlayer
             show={showEditPlayerModal}
             selectedRow={selectedRow}
@@ -150,6 +190,8 @@ export  function PlayerConsole(){
             handleClose={handleCloseGames}
             selectedRow={selectedRow}
             />
+            </div>
+            </div>
         </>
         
     );

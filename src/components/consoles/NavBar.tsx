@@ -12,7 +12,7 @@ function NavBar(){
     const {logout}=useAuth();
     return (
         <>
-            <Navbar bg="dark" data-bs-theme="dark">
+            <Navbar className="custom-navbar" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand href="#" className="fw-bold fs-4 px-2 ">Scrabble</Navbar.Brand>
                     <Nav className="me-auto">

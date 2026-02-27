@@ -6,7 +6,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-
+   background-color: red;  /* test with red first */
+  min-height: 100vh; 
+  padding: 0;
   
 
 }
@@ -30,14 +32,23 @@ code {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('img/scrabble_background.jpg');
+  /* background-image: url('img/scrabble_background.jpg'); */
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: center;
-  background-attachment: fixed;
-  filter: blur(7px);         /* only blurs the background */
-  z-index: 0;                /* behind the form */
-  /* opacity: 0.8; */
+  filter: blur(5px);
+  z-index: 0;
+  /* opacity: 0.4; */
+}
+
+.auth-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, hsla(142, 70%, 35%, 1) 0%, hsla(200, 70%, 40%, 1) 100%);
+  z-index: 0;
 }
 .auth-font{
   font-family: 'Lobster Two', cursive;
@@ -72,7 +83,7 @@ code {
   padding: 30px 40px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
 }
 
 .signup-grid {
@@ -80,4 +91,85 @@ code {
   grid-template-columns: 1fr 1fr 1fr;   /* three equal columns */
   gap: 0 20px;
 }
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Player Table //////////////////////////////////////////////////////////////////// */
+/* ///////////////////////////////////////////////////////////////////////////////////// Player Table //////////////////////////////////////////////////////////////////// */
+.player-page {
+  background-color: #0d1117 !important;
+  min-height: 100vh;
+  padding-top: 20px;
+}
+
+.player-table-container {
+  width: 90%;
+  margin: 20px auto;
+  background-color: #1e0d0716;
+  border-radius: 12px;
+  box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8);
+  padding: 30px;
+  border: 1px solid rgba(0, 255, 150, 0.1);
+}
+
+.player-table-wrapper {
+  max-height: 65vh;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+/* scrollbar */
+.player-table-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.player-table-wrapper::-webkit-scrollbar-track {
+  background: #0d1317;
+}
+.player-table-wrapper::-webkit-scrollbar-thumb {
+  background: #7d6904;
+  border-radius: 10px;
+}
+
+.create-button {
+  width: 90%;
+  margin: 0 auto 15px auto;
+}
+
+/* table header */
+.player-table thead th {
+  background-color: #000000 !important;
+  color: #e0d318d4 !important;          /* cyan header text like in the image */
+  border-color: rgba(0, 255, 150, 0.15) !important;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;          /* uppercase headers like the image */
+  font-size: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* table rows */
+.player-table tbody td {
+  background-color: #060413 !important;
+  color: #bfd0e1 !important;
+  border-color: rgba(0, 255, 150, 0.08) !important;
+  font-size: 0.9rem;
+}
+
+/* alternating rows */
+.player-table tbody tr:nth-child(even) td {
+  background-color: #0d0c18 !important;
+}
+
+/* row hover */
+.player-table tbody tr:hover td {
+  background-color: #22313a !important;
+  transition: background-color 0.2s ease;
+}
+
+/* first column rank/id styling */
+.player-table tbody td:first-child {
+  color: #bfd0e1 !important;          /* cyan for id column like rank numbers */
+  font-weight: 600;
+}
+
 
