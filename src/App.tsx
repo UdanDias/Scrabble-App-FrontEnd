@@ -22,17 +22,17 @@ function AppLayout() {
   const isAuthPage = ['/', '/signin', '/signup'].includes(location.pathname);
 
   return (
-    <div>
-      {!isAuthPage && <NavBar />}
-      <div style={{ display: 'flex' }}>
-        {!isAuthPage && <Sidebar />}
-                  <div style={{ 
-                    marginLeft: isAuthPage ? '0' : '220px', 
-                    width: isAuthPage ? '100%' : 'calc(100% - 220px)',  /* key fix */
-                    overflow: 'hidden',
-                    boxSizing: 'border-box',
-                    
-                }}>
+    <div style={{ paddingTop: isAuthPage ? '0' : '60px' }}>
+        {!isAuthPage && <NavBar />}
+        <div style={{ display: 'flex' }}>
+            {!isAuthPage && <Sidebar />}
+            <div style={{ 
+                marginLeft: isAuthPage ? '0' : '220px', 
+                width: isAuthPage ? '100%' : 'calc(100% - 220px)',
+                boxSizing: 'border-box',
+                backgroundColor: '#0d1117',
+                minHeight: '100vh' 
+            }}>
           <Routes>
             <Route path="/" element={<Navigate to="/signin" />} />
             <Route path="/signin" element={<SignIn />} />

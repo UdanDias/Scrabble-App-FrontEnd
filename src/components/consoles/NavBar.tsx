@@ -15,16 +15,18 @@ function NavBar(){
             <Navbar className="custom-navbar" data-bs-theme="dark">
                 
                     <Navbar.Brand href="#" className="fw-bold fs-4 px-2 ">SCRABBLE</Navbar.Brand>
-                    <Nav className="me-auto">
+                    <Nav className="ms-auto">
                         {isAuthenticated?( 
                             <>  
-                                <Nav.Link as = {NavLink} to = "/profile">PROFILE</Nav.Link>
+                                {/* <Nav.Link as = {NavLink} to = "/profile">PROFILE</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/player">PLAYER</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/tournament">TOURNAMENT</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/game">GAME</Nav.Link>
                                 <Nav.Link as = {NavLink} to = "/user">USER</Nav.Link>
-                                <Nav.Link as = {NavLink} to = "/leaderboard">LEADERBOARD</Nav.Link>
-                                <Button variant="warning" onClick={handleOnClick}>LOG OUT</Button>
+                                <Nav.Link as = {NavLink} to = "/leaderboard">LEADERBOARD</Nav.Link> */}
+                                <Nav.Link as = {NavLink} className="me-3" to = "/home">HOME</Nav.Link>
+                                <Nav.Link as = {NavLink} className="me-3" to = "/signup">REGISTER</Nav.Link>
+                                <Button variant="warning" className="me-3" onClick={handleOnClick}>LOG OUT</Button>
                             </>
                         ):(
                             <>

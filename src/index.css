@@ -81,13 +81,12 @@ code {
   min-height: 100vh;
   padding-top: 20px;
 } */
- .console-page {
+.console-page {
   background-color: #0d1117 !important;
   min-height: 100vh;
   padding-top: 20px;
-  overflow-x: hidden;      /* add this */
-  width: 100%;             /* add this */
-  box-sizing: border-box;  /* add this */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* .console-table-container {
@@ -108,13 +107,13 @@ code {
   padding: 20px 30px;
   border: 1px solid rgba(0, 255, 150, 0.1);
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .console-table-wrapper {
   max-height: 65vh;
   overflow-y: auto;
-  
+  overflow-x: auto; 
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
@@ -149,7 +148,7 @@ code {
   top: 0;
   z-index: 1;
   border-color: rgba(224, 211, 24, 0.15) !important;  /* subtle gold border on header */
-  
+   white-space: nowrap; 
 }
 
 /* table rows */
@@ -186,6 +185,28 @@ code {
   min-width: 90%;
 }
 
+/* sticky action column */
+.console-table thead th:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  background-color: #000000 !important;
+}
+
+.console-table tbody td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background-color: #060413 !important;
+}
+
+.console-table tbody tr:nth-child(even) td:last-child {
+  background-color: #0d0c18 !important;
+}
+
+.console-table tbody tr:hover td:last-child {
+  background-color: #272730b2 !important;
+}
 /* ///////////////////////////////////////////////////////////////////////////////////// Buttons /////////////////////////////////////////////////////////////////// */
 
 .create-button {
@@ -259,9 +280,12 @@ code {
 .custom-navbar {
   background-color: #060413 !important;
   border-bottom: 1px solid rgba(224, 211, 24, 0.2);
-  position: sticky;       /* sticks to top when scrolling */
+  position: fixed!important;        /* changed from sticky */
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 999;
+  
 }
 
 .custom-navbar .navbar-brand {
@@ -919,7 +943,7 @@ code {
 
 /* add these right below */
 .sidebar-nav .nav-link {
-  color: #bfd0e1d1 !important;
+  color: #bfd0e1 !important;
 }
 
 .sidebar-nav .nav-link:hover {
