@@ -40,7 +40,7 @@ code {
   /* opacity: 0.4; */
 }
 
-.auth-container::after {
+/* .auth-container::after {
   content: '';
   position: absolute;
   top: 0;
@@ -49,7 +49,7 @@ code {
   height: 100%;
   background: linear-gradient(90deg, hsla(142, 70%, 35%, 1) 0%, hsla(200, 70%, 40%, 1) 100%);
   z-index: 0;
-}
+} */
 .auth-font{
   font-family: 'Lobster Two', cursive;
   font-weight: 700;
@@ -73,24 +73,7 @@ code {
 } */
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Register component //////////////////////////////////////////////////////////////////// */
-.auth-border-signup {
-  
-  position: relative;
-  z-index: 1;
-  background-color: rgba(164, 192, 191, 0.85);
-  width: 750px;          /* wider for two columns */
-  height: auto;          /* no fixed height, no scroll */
-  padding: 30px 40px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
-}
 
-.signup-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;   /* three equal columns */
-  gap: 0 20px;
-}
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Console pages //////////////////////////////////////////////////////////////////// */
 .console-page {
@@ -513,4 +496,154 @@ code {
   color: #bfd0e1d1 !important;
   font-weight: bold;
   width: 30%;                /* value takes 30% */
+}
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Register component //////////////////////////////////////////////////////////////////// */
+.auth-border-signup {
+  position: relative;
+  z-index: 1;
+  background-color: #060413;
+  width: 850px;
+  height: auto;
+  padding: 30px 40px;
+  border-radius: 16px;
+  border: 1px solid rgba(224, 211, 24, 0.15);
+  box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8);
+}
+
+.auth-border-signup .auth-font {
+  color: #e0d318a2;
+  text-shadow: 0 0 15px rgba(224, 211, 24, 0.893);
+}
+
+/* signup form labels */
+.auth-border-signup label {
+  color: #e0d318d4 !important;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* signup form inputs and selects */
+.auth-border-signup .form-control,
+.auth-border-signup .form-select {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1d1 !important;
+}
+
+.auth-border-signup .form-control:focus,
+.auth-border-signup .form-select:focus {
+  background-color: #0d0c18 !important;
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #bfd0e1d1 !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+}
+
+/* placeholder text */
+.auth-border-signup .form-control::placeholder {
+  color: rgba(191, 208, 225, 0.3) !important;
+}
+
+/* select options */
+.auth-border-signup .form-select option {
+  background-color: #0d0c18;
+  color: #bfd0e1d1;
+}
+
+.signup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 20px;
+}
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Login component //////////////////////////////////////////////////////////////////// */
+.auth-border-login {
+  position: relative;
+  z-index: 1;
+  background-color: #060413;
+  width: 400px;
+  height: auto;
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid rgba(224, 211, 24, 0.15);
+  box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8);
+}
+.auth-border-login .auth-font {
+  color: #e0d318a2;
+  text-shadow: 0 0 15px rgba(224, 211, 24, 0.638);
+}
+.auth-border-login label {
+  color: #e0d318d4 !important;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.auth-border-login .form-control {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1d1 !important;
+}
+
+.auth-border-login .form-control:focus {
+  background-color: #0d0c18 !important;
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #bfd0e1d1 !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+}
+
+.auth-border-login .form-control::placeholder {
+  color: rgba(191, 208, 225, 0.3) !important;
+}
+
+.auth-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0d1117;   /* solid dark instead of green gradient */
+  z-index: 0;
+}
+
+.signup-form-container {
+  background-color: rgba(255, 255, 255, 0.05);   /* subtle white tint */
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+/* override labels inside container to white */
+.signup-form-container label {
+  color: #ffffff !important;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* override inputs inside container */
+.signup-form-container .form-control,
+.signup-form-container .form-select {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.signup-form-container .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.signup-form-container .form-control:focus,
+.signup-form-container .form-select:focus {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.signup-form-container .form-select option {
+  background-color: #0d0c18;
+  color: #ffffff;
 }
