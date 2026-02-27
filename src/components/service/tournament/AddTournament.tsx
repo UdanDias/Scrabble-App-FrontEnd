@@ -45,7 +45,7 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="dark-modal">
             <Modal.Header closeButton>
                 <Modal.Title>Add Tournament</Modal.Title>
             </Modal.Header>
@@ -68,8 +68,8 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
                 </FloatingLabel>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Close</Button>
-                <Button variant="primary" onClick={handleSubmit}>Save Tournament</Button>
+                <Button className="btn-edit" onClick={handleClose}>Close</Button>
+                <Button className="btn-create" onClick={handleSubmit}>Save Tournament</Button>
             </Modal.Footer>
         </Modal>
     )

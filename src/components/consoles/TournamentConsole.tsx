@@ -336,10 +336,10 @@ export function TournamentConsole() {
         await showRoundSelector(selectedTournament)
     }
 
-    // Row "Rounds" button — directly pick round for that tournament
-    const handleViewRoundsForRow = async (tournament: Tournament) => {
-        await showRoundSelector(tournament)
-    }
+    // // Row "Rounds" button — directly pick round for that tournament
+    // const handleViewRoundsForRow = async (tournament: Tournament) => {
+    //     await showRoundSelector(tournament)
+    // }
 
     // Shared round selector logic
     const showRoundSelector = async (tournament: Tournament) => {
@@ -363,7 +363,7 @@ export function TournamentConsole() {
 
         const { value: roundId } = await Swal.fire({
             title: tournament.tournamentName,
-            html: `<p class="text-muted mb-0">Select a round to view games</p>`,
+            html: `<p style="color:#bfd0e1d1;margin:0">Select a round to view games</p>`,
             input: "select",
             inputOptions: roundOptions,
             inputPlaceholder: "Select a round",

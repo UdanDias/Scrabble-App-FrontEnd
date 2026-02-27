@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Accordion, Modal, Badge, Spinner } from "react-bootstrap"
+import { Accordion, Modal, Badge, Spinner, Button } from "react-bootstrap"
 import GetGamesByRound from "./GetGamesByRound"
 
 interface Game {
@@ -48,7 +48,7 @@ const RoundGamesModal = ({ show, handleClose, roundId, roundNumber, tournamentNa
     }
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="lg" className="dark-modal">
             <Modal.Header closeButton>
                 <Modal.Title>
                     {tournamentName} — Round {roundNumber}
@@ -57,13 +57,13 @@ const RoundGamesModal = ({ show, handleClose, roundId, roundNumber, tournamentNa
             <Modal.Body>
                 {loading ? (
                     <div className="text-center py-4">
-                        <Spinner animation="border" />
-                        <p className="mt-2">Loading games...</p>
+                        <Spinner animation="border" style={{color: '#e0d318d4'}} />
+                        <p className="mt-2 profile-value">Loading games...</p>
                     </div>
                 ) : games.length === 0 ? (
-                    <p className="text-center text-muted py-3">No games found for this round.</p>
+                    <p className="text-center profile-value py-3">No games found for this round.</p>
                 ) : (
-                    <Accordion>
+                    <Accordion className="leaderboard-accordion">
                         {games.map((game, index) => (
                             <Accordion.Item eventKey={String(index)} key={game.gameId}>
                                 <Accordion.Header>
@@ -101,10 +101,10 @@ const RoundGamesModal = ({ show, handleClose, roundId, roundNumber, tournamentNa
                 )}
             </Modal.Body>
             <Modal.Footer>
-                <button className="btn btn-secondary" onClick={handleClose}>Close</button>
+                <Button className="btn-edit" onClick={handleClose}>Close</Button>
             </Modal.Footer>
         </Modal>
-    )
+    );
 }
 
 export default RoundGamesModal
