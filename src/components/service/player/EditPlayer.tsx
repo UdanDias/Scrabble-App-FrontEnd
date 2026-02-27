@@ -68,7 +68,7 @@ const handlesave=async()=>{
 
     return(
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className="dark-modal">
                 <Modal.Header closeButton>
                 <Modal.Title>Edit Player</Modal.Title>
                 </Modal.Header>
@@ -182,10 +182,10 @@ const handlesave=async()=>{
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button className="btn-edit" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handlesave}>
+                <Button className="btn-create" onClick={handlesave}>
                     Update
                 </Button>
                 </Modal.Footer>

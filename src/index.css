@@ -647,3 +647,77 @@ code {
   background-color: #0d0c18;
   color: #ffffff;
 }
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Modal //////////////////////////////////////////////////////////////////// */
+.dark-modal .modal-content {
+  background-color: #060413 !important;
+  border: 1px solid rgba(224, 211, 24, 0.15) !important;
+  box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8) !important;
+}
+
+.dark-modal .modal-header {
+  background-color: #060413 !important;
+  border-bottom: 1px solid rgba(224, 211, 24, 0.15) !important;
+}
+
+.dark-modal .modal-title {
+  color: #e0d318d4 !important;
+  font-family: 'Lobster Two', cursive;
+  letter-spacing: 2px;
+  width: 100%;              /* add this */
+  text-align: center;       /* add this */
+}
+
+.dark-modal .modal-body {
+  background-color: #060413 !important;
+}
+
+.dark-modal .modal-footer {
+  background-color: #060413 !important;
+  border-top: 1px solid rgba(224, 211, 24, 0.15) !important;
+}
+
+/* close button */
+.dark-modal .btn-close {
+  filter: invert(1);
+}
+
+/* floating labels */
+.dark-modal .form-control,
+.dark-modal .form-select {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1d1 !important;
+}
+
+.dark-modal .form-control:focus,
+.dark-modal .form-select:focus {
+  background-color: #0d0c18 !important;
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #bfd0e1d1 !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+}
+
+.dark-modal .form-control::placeholder {
+  color: rgba(191, 208, 225, 0.3) !important;
+}
+
+.dark-modal .floating-label,
+.dark-modal .form-floating label {
+  color: #e0d318d4 !important;
+}
+
+.dark-modal .form-select option {
+  background-color: #0d0c18;
+  color: #bfd0e1d1;
+}
+
+.dark-modal .card {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1d1 !important;
+}
+
+.dark-modal .card strong {
+  color: #e0d318d4 !important;
+}
