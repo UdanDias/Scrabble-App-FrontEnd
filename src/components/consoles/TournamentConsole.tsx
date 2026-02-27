@@ -246,10 +246,10 @@ const loadData = async (setData: React.Dispatch<React.SetStateAction<Tournament[
 
 const getStatusBadge = (status: string) => {
     switch (status) {
-        case "UPCOMING": return <Badge bg="primary">Upcoming</Badge>
-        case "ONGOING": return <Badge bg="success">Ongoing</Badge>
-        case "FINISHED": return <Badge bg="secondary">Finished</Badge>
-        default: return <Badge bg="light" text="dark">{status}</Badge>
+        case "UPCOMING": return <span className="badge-upcoming">Upcoming</span>
+        case "ONGOING": return <span className="badge-ongoing">Ongoing</span>
+        case "FINISHED": return <span className="badge-finished">Finished</span>
+        default: return <span className="badge-default">{status}</span>
     }
 }
 

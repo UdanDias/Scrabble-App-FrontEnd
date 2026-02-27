@@ -154,6 +154,8 @@ code {
   border-color: rgba(255, 255, 255, 0.06) !important;
   font-size: 0.9rem;
   font-weight: bold;
+  vertical-align: middle;
+
 }
 
 /* alternating rows */
@@ -225,6 +227,7 @@ code {
   letter-spacing: 1px;
   font-size: 0.8rem;
   transition: all 0.2s ease;
+ 
 }
 .btn-edit:hover {
   background-color: rgba(118, 121, 118, 0.2) !important;
@@ -287,4 +290,40 @@ code {
 
 .custom-navbar .btn:hover {
   background-color: rgba(224, 211, 24, 0.15) !important;
+}
+/* ///////////////////////////////////////////////////////////////////////////////////// Badges //////////////////////////////////////////////////////////////////// */
+.badge-upcoming,
+.badge-ongoing,
+.badge-finished,
+.badge-default {
+  border-radius: 20px;        /* rounded pill shape */
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  display: inline-block;      /* proper sizing around text */
+  text-align: center;
+  white-space: nowrap;        /* prevents text wrapping */
+}
+.badge-upcoming {
+  background-color: transparent;
+  border: 1px solid #a78bfabd;
+  color: #a78bfabd;              /* purple */
+}
+
+.badge-ongoing {
+  background-color: transparent;
+  border: 1px solid #fb923cc8;
+  color: #fb923cc8;              /* orange */
+}
+
+.badge-finished {
+  background-color: transparent;
+  border: 1px solid #94a3b8;
+  color: #94a3b8;              /* slate grey */
+}
+
+.badge-default {
+  background-color: transparent;
+  border: 1px solid #f472b6;
+  color: #f472b6;              /* pink */
 }
