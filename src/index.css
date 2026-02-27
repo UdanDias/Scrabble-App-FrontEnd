@@ -390,7 +390,7 @@ code {
 /* accordion body */
 /* accordion body */
 .leaderboard-accordion .accordion-body {
-  background-color: #30312f !important;
+  background-color: #21231f !important;
   color: #bfd0e1d1 !important;
   border-color: rgba(255, 255, 255, 0.06) !important;
   padding: 12px 16px;
@@ -412,7 +412,7 @@ code {
 
 .leaderboard-accordion .leaderboard-inner-table th,
 .leaderboard-accordion .leaderboard-inner-table td {
-  background-color: #40413f !important;
+  background-color: #2e2f2dc1 !important;
   border: none !important;
   padding: 8px 12px;
   font-size: 0.8rem;
@@ -439,6 +439,7 @@ code {
   text-align: left;
   padding-right: 40px;       /* space between value and next label */
   width: auto;
+  font-weight: bold;
 }
 
 /* rank badge container */
