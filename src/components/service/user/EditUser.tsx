@@ -72,7 +72,7 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
 
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className="dark-modal">
                 <Modal.Header closeButton>
                     <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
@@ -216,10 +216,10 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button className="btn-edit"onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button className="btn-create" onClick={handleSave}>
                         Update
                     </Button>
                 </Modal.Footer>
