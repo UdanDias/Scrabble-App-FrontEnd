@@ -22,13 +22,13 @@ function AppLayout() {
   const isAuthPage = ['/', '/signin', '/signup'].includes(location.pathname);
 
   return (
-    <div style={{ paddingTop: '60px' }}>        {/* Always pad for navbar */}
-        <NavBar />                               {/* Always show navbar */}
+    <div style={{ paddingTop: '60px', maxWidth: '100vw', overflowX: 'hidden' }}>
+        <NavBar />
         <div style={{ display: 'flex' }}>
-            {!isAuthPage && <Sidebar />}         {/* Still hide sidebar on auth pages */}
+            {!isAuthPage && <Sidebar />}
             <div style={{ 
                 marginLeft: isAuthPage ? '0' : '220px', 
-                width: isAuthPage ? '100%' : 'calc(100% - 220px)',
+                width: isAuthPage ? '100vw' : 'calc(100vw - 220px)',
                 boxSizing: 'border-box',
                 backgroundColor: '#0d1117',
                 minHeight: '100vh' 

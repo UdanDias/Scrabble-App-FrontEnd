@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import {SignInTask} from "../service/auth/Auth"
 import { AuthProvider, useAuth } from "./AuthProvider";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 interface SignIn{
     email:string;
     password:string;
@@ -17,18 +18,42 @@ export const SignIn=()=>{
             SetUser((prev)=>({...prev,[e.target.name]:e.target.value}))
     
         }
-        const handleOnSubmit= async (e:React.ChangeEvent<HTMLFormElement>)=>{
+        const handleOnSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
             e.preventDefault();
-            const token=await SignInTask(user)
-            console.log(token);
-            SetUser({
-                
-                email:"",
-                password:""
-            })
-            login(token)
-            navigate("/player")
-        }
+            try {
+                const token = await SignInTask(user);
+                SetUser({ email: "", password: "" });
+                login(token);
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({ icon: "success", title: "Signed in successfully" });
+
+                navigate("/player");
+            } catch (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({ icon: "error", title: "Invalid email or password" });
+            }
+        };
         const {login}=useAuth();
         const navigate=useNavigate()
     return (
