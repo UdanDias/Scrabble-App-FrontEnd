@@ -70,6 +70,7 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
 
                 <FloatingLabel label="Status" className="mb-3">
                     <Form.Select name="status" value={details.status} onChange={handleOnChange}>
+                        <option value="" disabled>Select Tournament Status</option>
                         <option value="UPCOMING">Upcoming</option>
                         <option value="ONGOING">Ongoing</option>
                         <option value="FINISHED">Finished</option>
