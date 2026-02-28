@@ -325,15 +325,19 @@ export function GameConsole() {
                 cancelButtonText: "Cancel",
             })
 
-            // Block if skipped or cancelled
-            if (tournamentSkipped || !tournamentId) {
-                Swal.fire({
-                    title: "Tournament Required",
-                    text: "You must select a tournament to add a game.",
-                    icon: "error"
-                })
-                return
-            }
+            
+           // After tournament selection
+                if (tournamentSkipped) {
+                    return  // silent abort
+                }
+                if (!tournamentId) {
+                    Swal.fire({
+                        title: "No Tournament Selected",
+                        text: "Please select a tournament before proceeding.",
+                        icon: "warning"
+                    })
+                    return
+                }
 
             const rounds: Round[] = await GetRoundsByTournament(tournamentId)
 
@@ -362,12 +366,15 @@ export function GameConsole() {
                 cancelButtonText: "Cancel",
             })
 
-            // Block if skipped or cancelled
-            if (roundSkipped || !selectedRoundId) {
+         // After round selection
+            if (roundSkipped) {
+                return  // silent abort
+            }
+            if (!selectedRoundId) {
                 Swal.fire({
-                    title: "Round Required",
-                    text: "You must select a round to add a game.",
-                    icon: "error"
+                    title: "No Round Selected",
+                    text: "Please select a round before proceeding.",
+                    icon: "warning"
                 })
                 return
             }

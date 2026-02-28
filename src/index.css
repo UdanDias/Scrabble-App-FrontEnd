@@ -789,11 +789,11 @@ code {
   color: #ffffff !important;
 }
 
-.swal2-icon {
+/* .swal2-icon {
   border-color: rgba(224, 211, 24, 0.4) !important;
   color: #e0d318d4 !important;
   margin: 0 0.6em 0 0 !important;
-}
+} */
 
 .swal2-backdrop-show {
   background-color: rgba(0, 0, 0, 0.7) !important;
@@ -842,6 +842,21 @@ code {
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
+}
+/* Regular popups (non-toast) — icon centered above title */
+.swal2-popup:not(.swal2-toast) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.swal2-popup:not(.swal2-toast) .swal2-icon {
+  margin: 1.5em auto 0.6em auto !important;
+}
+.swal2-icon {
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #e0d318d4 !important;
+  /* remove the margin override that was pushing it left */
 }
 /* ///////////////////////////////////////////////////////////////////////////////////// Sidebar //////////////////////////////////////////////////////////////////// */
 .sidebar {

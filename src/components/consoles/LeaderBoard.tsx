@@ -132,7 +132,7 @@ export function LeaderBoard() {
                             </tr>
                         </thead>
                     </Table>
-                    <Accordion className="leaderboard-accordion">
+                    <Accordion className="leaderboard-accordion" >
                         {rankedPlayerData.length === 0 ? (
                             <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>
                                 No players found for this tournament.
