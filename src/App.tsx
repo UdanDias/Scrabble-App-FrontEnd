@@ -26,13 +26,16 @@ function AppLayout() {
         <NavBar />
         <div style={{ display: 'flex' }}>
             {!isAuthPage && <Sidebar />}
-            <div style={{ 
-                marginLeft: isAuthPage ? '0' : '220px', 
-                width: isAuthPage ? '100vw' : 'calc(100vw - 220px)',
-                boxSizing: 'border-box',
-                backgroundColor: '#0d1117',
-                minHeight: '100vh' 
-            }}>
+            <div
+            style={{
+              flex: 1,
+              marginLeft: isAuthPage ? 0 : '220px',
+              boxSizing: 'border-box',
+              backgroundColor: '#0d1117',
+              minHeight: '100vh',
+              overflowX: 'hidden'
+            }}
+>
           <Routes>
             <Route path="/" element={<Navigate to="/signin" />} />
             <Route path="/signin" element={<SignIn />} />

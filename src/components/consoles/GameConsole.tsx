@@ -45,6 +45,7 @@ interface PlayerIdToName {
     lastName: string;
 }
 
+
 /* ===========================
    LOAD GAME DATA
 =========================== */
@@ -180,6 +181,128 @@ export function GameConsole() {
             });
         }
     };
+    const handleAddClick = async () => {
+        let roundId: string | null = null
+
+        try {
+            const tournaments: Tournament[] = await GetTournaments()
+
+            if (tournaments.length === 0) {
+                Swal.fire({
+                    title: "No Tournaments",
+                    text: "Please create a tournament and a round before adding a game.",
+                    icon: "warning"
+                })
+                return
+            }
+
+            const tournamentOptions: Record<string, string> = {}
+            tournaments.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+
+            const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
+                title: "Select Tournament",
+                html: `<p style="color:#bfd0e1d1;margin:0">Select a tournament for this game</p>`,
+                input: "select",
+                inputOptions: tournamentOptions,
+                inputPlaceholder: "Select a tournament",
+                showCancelButton: true,
+                confirmButtonText: "Next",
+                cancelButtonText: "Cancel",
+            })
+  // After tournament selection
+                if (tournamentSkipped) {
+                    return  // silent abort
+                }
+                if (!tournamentId) {
+                    Swal.fire({
+                        title: "No Tournament Selected",
+                        text: "Please select a tournament before proceeding.",
+                        icon: "warning"
+                    })
+                    return
+                }
+
+            const rounds: Round[] = await GetRoundsByTournament(tournamentId)
+
+            if (rounds.length === 0) {
+                Swal.fire({
+                    title: "No Rounds",
+                    text: "This tournament has no rounds. Please add a round first.",
+                    icon: "warning"
+                })
+                return
+            }
+
+            const roundOptions: Record<string, string> = {}
+            rounds.forEach(r => {
+                roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
+            })
+
+            const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
+                title: "Select Round",
+                html: `<p style="color:#bfd0e1d1;margin:0">Select a round for this game</p>`,
+                input: "select",
+                inputOptions: roundOptions,
+                inputPlaceholder: "Select a round",
+                showCancelButton: true,
+                confirmButtonText: "Next",
+                cancelButtonText: "Cancel",
+            })
+   if (roundSkipped) {
+                return  // silent abort
+            }
+            if (!selectedRoundId) {
+                Swal.fire({
+                  title: "No Round Selected",
+                    text: "Please select a round before proceeding.",
+                    icon: "warning"
+                })
+                return
+            }
+
+            roundId = selectedRoundId
+
+        } catch (error) {
+            console.error("Error fetching tournaments/rounds", error)
+            return
+        }
+
+        // Step 3 — pick game type (only reached if tournament + round selected)
+        const result = await Swal.fire({
+            title: 'Select Game Type',
+            icon: 'question',
+            showConfirmButton: true,
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Regular Game',
+            denyButtonText: 'Bye Game',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#510dfd',
+            denyButtonColor: '#19876f',
+            cancelButtonColor: '#6c757d',
+            customClass: {
+                icon: 'custom-swal-icon',
+                confirmButton: 'swal2-confirm',
+                denyButton: 'swal2-deny',
+                cancelButton: 'swal2-cancel'
+            },
+            didOpen: () => {
+                const icon = document.querySelector('.custom-swal-icon')
+                if (icon) {
+                    (icon as HTMLElement).style.borderColor = '#fcad2d';
+                    (icon as HTMLElement).style.color = '#f4b339';
+                }
+            }
+        })
+
+        SetSelectedRoundId(roundId)
+
+        if (result.isConfirmed) {
+            SetShowAddGameModal(true)
+        } else if (result.isDenied) {
+            SetShowAddByeGameModal(true)
+        }
+    }
 
     /* ===========================
        TABLE HEADERS
@@ -208,7 +331,7 @@ export function GameConsole() {
         <div className="console-page">
 
             <div className="create-button d-flex justify-content-end p-2">
-                <Button className="btn-create" onClick={() => SetShowAddGameModal(true)}>
+                <Button className="btn-create" onClick={() => handleAddClick()}>
                     + Add Game
                 </Button>
             </div>
