@@ -1083,3 +1083,19 @@ code {
 .sidebar-dropdown .dropdown-toggle::after {
   filter: invert(1);
 }
+
+/* //////////////////////////////////////////////////////////////  Select ///////////////////////////////////////////////// */
+/* Select hover effect */
+select:hover,
+.form-select:hover {
+  border-color: rgba(224, 211, 24, 0.6) !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+  transition: all 0.2s ease;
+}
+
+select:focus,
+.form-select:focus {
+  border-color: rgba(224, 211, 24, 0.8) !important;
+  box-shadow: 0 0 12px rgba(224, 211, 24, 0.3) !important;
+  outline: none !important;
+}
