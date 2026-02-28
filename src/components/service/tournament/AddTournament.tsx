@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
 import CreateTournament from "./CreateTournament"
+import Swal from "sweetalert2"
 
 interface Tournament {
     tournamentId: string
@@ -36,11 +37,35 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
     const handleSubmit = async () => {
         try {
             const created = await CreateTournament(details)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Created Tournament Successfully" });
+
             handleAdd(created)
             refreshTable()
             handleClose()
         } catch (error) {
-            console.error("Error creating tournament", error)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Tournament Creation Failed" });
         }
     }
 

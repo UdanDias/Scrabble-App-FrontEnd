@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
 import CreateRound from "./CreateRound"
+import Swal from "sweetalert2"
 
 interface Round {
     roundId: string
@@ -37,10 +38,35 @@ const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps)
     const handleSubmit = async () => {
         try {
             const created = await CreateRound(details)
+             const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Added Round Successfully" });
+
             handleAdd(created)
             handleClose()
         } catch (error) {
-            console.error("Error creating round", error)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: " Failed To Add a Round" });
+
         }
     }
 
