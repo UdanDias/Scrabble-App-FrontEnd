@@ -337,6 +337,7 @@ export function Profile() {
     const handleSave = async () => {
         if (!editData) return;
         try {
+            const { age, ...dataToSend } = editData;
             await UpdatePlayer(editData);
             await fetchData();    // re-fetch everything instead of relying on returned value
             handleEditClose();
@@ -556,15 +557,7 @@ export function Profile() {
                             onChange={handleOnChange}
                         />
                     </FloatingLabel>
-                    <FloatingLabel label="Age" className="mb-3">
-                        <Form.Control
-                            type="number"
-                            name="age"
-                            placeholder="Age"
-                            value={editData?.age ?? ""}
-                            onChange={handleOnChange}
-                        />
-                    </FloatingLabel>
+                    
                     <FloatingLabel label="Gender" className="mb-3">
                         <Form.Select
                             name="gender"
