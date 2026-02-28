@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import UpdatePlayer from "./UpdatePlayer";
 import Swal from "sweetalert2";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 
 interface Player{
@@ -89,7 +91,12 @@ const handlesave=async()=>{
 
 
     }
+    
 }
+   const genderOptions = [
+        { value: "Male", label: "Male" },
+        { value: "Female", label: "Female" }
+    ];
 
     return(
         <>
@@ -135,13 +142,19 @@ const handlesave=async()=>{
                         onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="floatingInput" label="Gender" className="mb-3">
-                        <Form.Select name="gender" value={playerDetails.gender} onChange={handleOnChange}>
-                            <option value="" disabled>Select Gender</option> 
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </Form.Select>
-                    </FloatingLabel>
+                     <div className="mb-3">
+                                    <ReactSelect
+                                        options={genderOptions}
+                                        styles={customStyles}
+                                        placeholder="Select Gender"
+                                        menuPortalTarget={document.body}
+                                        menuPosition="fixed"
+                                        value={genderOptions.find(o => o.value === playerDetails.gender) ?? null}
+                                        onChange={(selected) =>
+                                            SetPlayerDetails(prev => ({ ...prev, gender: selected?.value ?? "" }))
+                                        }
+                                    />
+                                </div>
                     
                     <FloatingLabel controlId="floatingInput" label="Date of Birth" className="mb-3">
                         <Form.Control 

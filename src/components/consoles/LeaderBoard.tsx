@@ -7,6 +7,7 @@ import FetchToken from "../service/auth/FetchToken";
 import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoardByTournament";
 import Swal from "sweetalert2";
 import Select from "react-select";
+import { customStyles } from "../service/styles/CustomStyles";
 interface RankedPlayerData {
     playerId: string;
     firstName: string;
@@ -78,53 +79,7 @@ const tournamentOptions = [
 //         backgroundColor: "rgba(224, 211, 24, 0.2)"
 //     }),
 // };
-const customStyles = {
-    control: (base: any, state: any) => ({
-        ...base,
-        backgroundColor: "#0d0c18",
-        border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "rgba(224, 211, 24, 0.3)"}`,
-        borderRadius: "8px",
-        boxShadow: state.isFocused ? "0 0 12px rgba(224, 211, 24, 0.3)" : "none",
-        "&:hover": {
-            borderColor: "rgba(224, 211, 24, 0.6)",
-            boxShadow: "0 0 8px rgba(224, 211, 24, 0.2)"
-        }
-    }),
-    valueContainer: (base: any) => ({
-        ...base,
-        justifyContent: "center",
-    }),
-    menu: (base: any) => ({
-        ...base,
-        backgroundColor: "#0d0c18",
-        border: "1px solid rgba(224, 211, 24, 0.2)",
-        borderRadius: "8px",
-    }),
-    option: (base: any, state: any) => ({
-        ...base,
-        backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
-        color: state.isFocused ? "#ffffff" : "#bfd0e1d1",
-        cursor: "pointer",
-        textAlign: "center" as const,
-        "&:active": {
-            backgroundColor: "rgba(224, 211, 24, 0.25)"
-        }
-    }),
-    singleValue: (base: any) => ({
-        ...base,
-        color: "#bfd0e1d1",
-        textAlign: "center" as const,
-    }),
-    dropdownIndicator: (base: any) => ({
-        ...base,
-        color: "rgba(224, 211, 24, 0.6)",
-        "&:hover": { color: "#e0d318d4" }
-    }),
-    indicatorSeparator: (base: any) => ({
-        ...base,
-        backgroundColor: "rgba(224, 211, 24, 0.2)"
-    }),
-};
+
 
     const sortPlayers = (players: RankedPlayerData[]) => {
         return [...players].sort((a, b) => {

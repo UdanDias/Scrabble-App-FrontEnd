@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import CreatePlayer from "./CreatePlayer";
 import Swal from "sweetalert2";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 
 interface Player{
@@ -92,6 +94,10 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
             Toast.fire({ icon: "error", title: "Player Creation Failed" });
         }
     }
+    const genderOptions = [
+        { value: "Male", label: "Male" },
+        { value: "Female", label: "Female" }
+    ];
     
     return(
         <>
@@ -128,13 +134,19 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
                                     onChange={handleOnChange} />
                                 </FloatingLabel> */}
 
-                                <FloatingLabel controlId="floatingInput" label="Gender" className="mb-3">
-                                    <Form.Select name="gender" value={newPlayerDetails.gender} onChange={handleOnChange}>
-                                        <option value="" disabled>Select Gender</option> 
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </Form.Select>
-                                </FloatingLabel>
+                                <div className="mb-3">
+                                    <ReactSelect
+                                        options={genderOptions}
+                                        styles={customStyles}
+                                        placeholder="Select Gender"
+                                        menuPortalTarget={document.body}
+                                        menuPosition="fixed"
+                                        value={genderOptions.find(o => o.value === newPlayerDetails.gender) ?? null}
+                                        onChange={(selected) =>
+                                            SetNewPlayerDetails(prev => ({ ...prev, gender: selected?.value ?? "" }))
+                                        }
+                                    />
+                                </div>
                                 
                                 <FloatingLabel controlId="floatingInput" label="Date of Birth" className="mb-3">
                                     <Form.Control 

@@ -4,6 +4,7 @@ import FetchToken from "../auth/FetchToken";
 const updateGameUrl="http://localhost:8081/scrabbleapp2026/api/v1/game/updategame"
 const UpdateGame=async(updatedGame:any)=>{
     try {
+        console.log("Sending update:", JSON.stringify(updatedGame, null, 2));
         const response= await axios.patch(`${updateGameUrl}?gameId=${updatedGame.gameId}`,updatedGame,
             {headers:{
                 Authorization:FetchToken()

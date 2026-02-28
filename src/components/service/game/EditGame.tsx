@@ -5,6 +5,8 @@ import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import UpdateGame from "./UpdateGame";
 import { getPlayer } from "../player/GetPlayer";
 import Swal from "sweetalert2";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 interface Game {
     gameId: string;
@@ -75,31 +77,26 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
     // Populate form when selectedRow changes (edit-specific logic)
   useEffect(() => {
     if (selectedRow && players.length > 0) {
-        // selectedRow has resolved names, find back the IDs
-        const player1 = players.find(p => 
+        const player1 = players.find(p =>
             `${p.firstName} ${p.lastName}` === selectedRow.player1Id
         );
-        const player2 = players.find(p => 
+        const player2 = players.find(p =>
             `${p.firstName} ${p.lastName}` === selectedRow.player2Id
         );
 
         const { isgameTied, isByeGame, margin, winnerId, ...rest } = selectedRow;
+        
+        // Store raw roundId separately — selectedRow.roundId is already resolved to display name
+        // We need to get the real roundId from somewhere else
+        setRawRoundId((selectedRow as any).roundId ?? "");
+        
         SetGameData({
             ...rest,
             player1Id: player1?.playerId ?? selectedRow.player1Id,
             player2Id: player2?.playerId ?? selectedRow.player2Id,
         });
-    } else if (!selectedRow) {
-        SetGameData({
-            gameId: "",
-            player1Id: "",
-            player2Id: "",
-            score1: 0,
-            score2: 0,
-            gameDate: ""
-        });
     }
-}, [selectedRow, players]); // ← also add players as dependency
+}, [selectedRow, players]);
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         SetGameData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -107,7 +104,12 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
 
     const handleSave = async () => {
         try {
-            const updatedGameDetails = await UpdateGame(gameData);
+            const { ...dataToSend } = gameData as any;
+        delete dataToSend.roundId;  // ← remove resolved display name
+        delete dataToSend.bye;
+        delete dataToSend.gameTied;
+
+        const updatedGameDetails = await UpdateGame(dataToSend);
              const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -139,6 +141,8 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
     };
     const selectedPlayer1 = players.find(p => p.playerId === gameData.player1Id);
     const selectedPlayer2 = players.find(p => p.playerId === gameData.player2Id);
+
+    const [rawRoundId, setRawRoundId] = useState<string>("");
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
             <Modal.Header closeButton>
@@ -157,43 +161,46 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                     />
                 </FloatingLabel>
                 {!loadingPlayers && players.length > 0 && gameData.player1Id !== undefined ? (
-                <FloatingLabel label="Player 1" className="mb-3">
-                    <Form.Select
-                    name="player1Id"
-                    value={gameData.player1Id}
-                    onChange={handleOnChange}
-                    >
-                    <option value="">Select Player 1</option>
-                    {players.map((p) => (
-                        <option key={p.playerId} value={p.playerId}>
-                        {p.firstName} {p.lastName}
-                        </option>
-                    ))}
-                    </Form.Select>
-                </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={players.map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))}
+                            styles={customStyles}
+                            placeholder="Select Player 1"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={
+                                gameData.player1Id
+                                    ? { value: gameData.player1Id, label: `${players.find(p => p.playerId === gameData.player1Id)?.firstName} ${players.find(p => p.playerId === gameData.player1Id)?.lastName}` }
+                                    : null
+                            }
+                            onChange={(selected) =>
+                                SetGameData(prev => ({ ...prev, player1Id: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
                 ) : (
-                <div>Loading players...</div>
+                    <div>Loading players...</div>
                 )}
-
                 {!loadingPlayers && players.length > 0 && gameData.player2Id !== undefined && (
-                <FloatingLabel label="Player 2" className="mb-3">
-                    <Form.Select
-                    name="player2Id"
-                    value={gameData.player2Id}
-                    onChange={handleOnChange}
-                    >
-                    <option value="">Select Player 2</option>
-                    {players.map((p) => (
-                        <option
-                        key={p.playerId}
-                        value={p.playerId}
-                        disabled={p.playerId === gameData.player1Id}
-                        >
-                        {p.firstName} {p.lastName}
-                        </option>
-                    ))}
-                    </Form.Select>
-                </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={players
+                                .filter(p => p.playerId !== gameData.player1Id)
+                                .map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))}
+                            styles={customStyles}
+                            placeholder="Select Player 2"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={
+                                gameData.player2Id
+                                    ? { value: gameData.player2Id, label: `${players.find(p => p.playerId === gameData.player2Id)?.firstName} ${players.find(p => p.playerId === gameData.player2Id)?.lastName}` }
+                                    : null
+                            }
+                            onChange={(selected) =>
+                                SetGameData(prev => ({ ...prev, player2Id: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
                 )}
 
                 <FloatingLabel label="Score 1" className="mb-3">
