@@ -1,14 +1,44 @@
 import { Button, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router"; 
 import { useAuth } from "../auth/AuthProvider";
+import Swal from "sweetalert2";
 
 function NavBar(){
     const navigate = useNavigate();
     const { isAuthenticated, logout } = useAuth();
 
     const handleOnClick = () => {
-        logout();
-        navigate("/signin");
+        try {
+            logout();
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "warning", title: "You Logged Out" });
+            navigate("/signin");
+        } catch (error) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: " Failed to Log Out" });
+        }
+        
+        
     };
 
     return (

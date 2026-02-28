@@ -182,6 +182,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import UpdateGame from "./UpdateGame";
 import { getPlayer } from "../player/GetPlayer";
+import Swal from "sweetalert2";
 
 interface Game {
     gameId: string;
@@ -259,11 +260,33 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
     const handleSave = async () => {
         try {
             const updatedGameDetails = await UpdateGame(gameData);
+             const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Game Updated Successfully" });
             handleClose();
             handleUpdate(updatedGameDetails);
         } catch (error) {
-            console.error("Error occurred while updating game", error);
-            throw error;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Updating Game Failed" });
         }
     };
 
