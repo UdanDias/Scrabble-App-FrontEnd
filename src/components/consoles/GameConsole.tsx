@@ -150,10 +150,32 @@ export function GameConsole() {
     const handleDelete = async (gameId: string) => {
         try {
             await DeleteGame(gameId);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Deleted Player Successfully" });
             SetGameData(gameData.filter(game => game.gameId !== gameId))
         } catch (error) {
-            console.error("error while deleting game", error)
-            throw error
+           const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Player Deletion Failed" });
         }
     }
 

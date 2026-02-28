@@ -6,6 +6,7 @@ import EditPlayer from '../service/player/EditPlayer';
 import DeletePlayer from '../service/player/DeletePlayer';
 import AddPlayer from '../service/player/AddPlayer';
 import { GamesByPlayer } from '../service/player/GamesByPlayer';
+import Swal from 'sweetalert2';
 
 
 interface Player{
@@ -40,8 +41,47 @@ export  function PlayerConsole(){
     const [showGamesByPlayerModal,setShowGamesByPlayerModal]=useState(false);
 
     const handleDelete=async(playerId:string)=>{
-        await DeletePlayer(playerId);
-        SetPlayerData(playerData.filter(player=>player.playerId!==playerId))
+        try {
+            const confirm = await Swal.fire({
+            title: "Are You Sure?",
+            text: `This Will Delete The Player.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, Delete It!"
+        })
+        if (!confirm.isConfirmed) return;
+            await DeletePlayer(playerId);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Deleted Player Successfully" });
+            SetPlayerData(playerData.filter(player=>player.playerId!==playerId))
+        } catch (error) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Player Deletion Failed" });
+        }
+        
     }
 
     const handleOnUpdate=async(updatedPlayer:Player)=>{
