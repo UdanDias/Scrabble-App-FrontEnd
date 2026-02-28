@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { AddByeGame } from "../service/game/AddByeGame";
 import GetTournaments from "../service/tournament/GetTournaments";
 import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament";
+import { getPlayer } from "../service/player/GetPlayer";
 
 interface Game {
     gameId: string;
@@ -33,16 +34,45 @@ interface Round {
     roundNumber: number;
     roundName: string;
 }
-
-const loadGameData = async (SetGameData: React.Dispatch<SetStateAction<Game[]>>) => {
-    try {
-        const gameDetails = await GetGames();
-        SetGameData(gameDetails)
-    } catch (error) {
-        console.error("Error while fetching game Data", error)
-        throw error;
-    }
+interface PlayerIdToName {
+    playerId: string;
+    firstName: string;
+    lastName: string;
 }
+
+// const loadGameData = async (SetGameData: React.Dispatch<SetStateAction<Game[]>>) => {
+//     try {
+//         const gameDetails = await GetGames();
+//         SetGameData(gameDetails)
+//     } catch (error) {
+//         console.error("Error while fetching game Data", error)
+//         throw error;
+//     }
+// }
+    const loadGameData = async (
+        SetGameData: React.Dispatch<SetStateAction<Game[]>>,
+        players: PlayerIdToName[]
+    ) => {
+        try {
+            const gameDetails = await GetGames();
+            
+            const resolvedGames = gameDetails.map((game: Game) => {
+                const player1 = players.find(p => p.playerId === game.player1Id);
+                const player2 = players.find(p => p.playerId === game.player2Id);
+                const winner  = players.find(p => p.playerId === game.winnerId);
+                return {
+                    ...game,
+                    player1Id: player1 ? `${player1.firstName} ${player1.lastName}` : game.player1Id,
+                    player2Id: player2 ? `${player2.firstName} ${player2.lastName}` : game.player2Id,
+                    winnerId:  winner  ? `${winner.firstName}  ${winner.lastName}`  : game.winnerId,
+                };
+            });
+
+            SetGameData(resolvedGames);
+        } catch (error) {
+            console.error("Error while fetching game Data", error);
+        }
+    };
 
 export function GameConsole() {
     const [gameData, SetGameData] = useState<Game[]>([]);
@@ -51,12 +81,26 @@ export function GameConsole() {
     const [showAddGameModal, SetShowAddGameModal] = useState(false)
     const [showAddByeGameModal, SetShowAddByeGameModal] = useState(false)
     const [selectedRoundId, SetSelectedRoundId] = useState<string | null>(null)  // ← new
+    const [players, setPlayers] = useState<PlayerIdToName[]>([]);
+
 
     useEffect(() => {
-        loadGameData(SetGameData)
-    }, [])
+        const init = async () => {
+            try {
+                const playersList = await getPlayer();  // wait for players
+                setPlayers(playersList);                // set state
+                loadGameData(SetGameData, playersList); // pass directly, don't rely on state
+            } catch (error) {
+                console.error("error during init", error);
+            }
+        };
+        init();
+    }, []);
 
-    const refreshTable = () => { loadGameData(SetGameData) }
+    const refreshTable = async () => {
+        const playersList = await getPlayer();
+        loadGameData(SetGameData, playersList);
+    };
 
     const handleEdit = (row: Game) => {
         SetSelectedRow(null)
@@ -192,8 +236,8 @@ export function GameConsole() {
 
     const theads: string[] = [
         "Game Id",
-        "Player1 Id", 
-        "Player2 Id",
+        "Player1 Name", 
+        "Player2 Name",
         "Score 1", 
         "Score 2", 
         "Margin",

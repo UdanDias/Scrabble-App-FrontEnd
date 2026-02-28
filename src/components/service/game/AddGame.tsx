@@ -176,19 +176,8 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
 
     // Fetch all players on mount
     useEffect(() => {
-        // const fetchPlayers = async () => {
-        //     try {
-        //         const response = await fetch("/api/players"); // adjust to your endpoint
-        //         const data = await response.json();
-        //         setPlayers(data);
-        //     } catch (err) {
-        //         console.error("Failed to fetch players", err);
-        //     }
-        // };
-        // fetchPlayers();
+       
         fetchPlayers();
-
-        
     }, []);
 
     // Reset form when modal opens
