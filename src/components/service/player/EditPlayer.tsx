@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import UpdatePlayer from "./UpdatePlayer";
+import Swal from "sweetalert2";
 
 
 interface Player{
@@ -58,12 +59,35 @@ const handlesave=async()=>{
     try {
         const updatedPlayer=await UpdatePlayer(playerDetails);
         handleUpdate(updatedPlayer)
-        
+         const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Player Updated Successfully" });
         refreshTable()
         handleClose()
     } catch (error) {
-        console.error("Error updating player",error)
-        throw error;
+        const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Updating Player failed" });
+
+
     }
 }
 
