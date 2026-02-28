@@ -34,7 +34,7 @@ export function LeaderBoard(){
 
     useEffect(()=>{
         handlePopulateLeaderBoard()
-    })
+    },[])
     return(
         <>
             <div className="leaderboard-page">
