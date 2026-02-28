@@ -27,6 +27,7 @@ export function LeaderBoard() {
     const [rankedPlayerData, SetRankedPlayerData] = useState<RankedPlayerData[]>([]);
     const [tournaments, setTournaments] = useState<Tournament[]>([]);
     const [selectedTournamentId, setSelectedTournamentId] = useState<string>("");
+    const [activeKey, setActiveKey] = useState<string | null>(null);
 
     const sortPlayers = (players: RankedPlayerData[]) => {
         return [...players].sort((a, b) => {
@@ -97,6 +98,7 @@ export function LeaderBoard() {
     const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const val = e.target.value;
         setSelectedTournamentId(val);
+        setActiveKey(null); // collapse all
         handlePopulateLeaderBoard(val || undefined);
     };
 
@@ -132,7 +134,11 @@ export function LeaderBoard() {
                             </tr>
                         </thead>
                     </Table>
-                    <Accordion className="leaderboard-accordion" >
+                    <Accordion 
+                        className="leaderboard-accordion"
+                        activeKey={activeKey ?? undefined}
+                        onSelect={(key) => setActiveKey(key as string | null)}
+                    >
                         {rankedPlayerData.length === 0 ? (
                             <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>
                                 No players found for this tournament.
