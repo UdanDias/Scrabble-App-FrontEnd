@@ -203,63 +203,183 @@ export function GameConsole() {
     // Step 1: select tournament
     // Step 2: select round
     // Step 3: select game type
-    const handleAddClick = async () => {
+    // const handleAddClick = async () => {
 
-        // Step 1 — pick tournament (optional, can cancel to skip)
+    //     // Step 1 — pick tournament (optional, can cancel to skip)
+    //     let roundId: string | null = null
+
+    //     try {
+    //         const tournaments: Tournament[] = await GetTournaments()
+
+    //         if (tournaments.length > 0) {
+    //             const tournamentOptions: Record<string, string> = {}
+    //             tournaments.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+
+    //             const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
+    //                 title: "Select Tournament",
+    //                 html: `<p style="color:#bfd0e1d1;margin:0"> Select a tournament for this game</p>`,
+    //                 input: "select",
+    //                 inputOptions: tournamentOptions,
+    //                 inputPlaceholder: "Select a tournament",
+    //                 showCancelButton: true,
+    //                 confirmButtonText: "Next",
+    //                 cancelButtonText: "Skip",
+    //                 customClass: { popup: 'swal-dark' }
+    //             })
+
+    //             if (!tournamentSkipped && tournamentId) {
+    //                 // Step 2 — pick round
+    //                 const rounds: Round[] = await GetRoundsByTournament(tournamentId)
+
+    //                 if (rounds.length > 0) {
+    //                     const roundOptions: Record<string, string> = {}
+    //                     rounds.forEach(r => {
+    //                         roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
+    //                     })
+
+    //                     const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
+    //                         title: "Select Round",
+    //                         html: `<p style="color:#bfd0e1d1;margin:0" >Select a round for this game, or cancel to skip</p>`,
+    //                         input: "select",
+    //                         inputOptions: roundOptions,
+    //                         inputPlaceholder: "Select a round",
+    //                         showCancelButton: true,
+    //                         confirmButtonText: "Next",
+    //                         cancelButtonText: "Skip",
+    //                         customClass: { popup: 'swal-dark' }
+    //                     })
+
+    //                     if (!roundSkipped && selectedRoundId) {
+    //                         roundId = selectedRoundId
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching tournaments/rounds", error)
+    //     }
+
+    //     // Step 3 — pick game type
+    //     const result = await Swal.fire({
+    //         title: 'Select Game Type',
+    //         icon: 'question',
+    //         showConfirmButton: true,
+    //         showDenyButton: true,
+    //         showCancelButton: true,
+    //         confirmButtonText: 'Regular Game',
+    //         denyButtonText: 'Bye Game',
+    //         cancelButtonText: 'Cancel',
+    //         confirmButtonColor: '#510dfd',
+    //         denyButtonColor: '#19876f',
+    //         cancelButtonColor: '#6c757d',
+    //         customClass: {
+    //         icon: 'custom-swal-icon',
+    //         confirmButton: 'swal2-confirm',   /* ← add these */
+    //         denyButton: 'swal2-deny',
+    //         cancelButton: 'swal2-cancel'
+    //     },
+    //         didOpen: () => {
+    //             const icon = document.querySelector('.custom-swal-icon')
+    //             if (icon) {
+    //                 (icon as HTMLElement).style.borderColor = '#fcad2d'
+    //                 ;(icon as HTMLElement).style.color = '#f4b339'
+    //             }
+    //         }
+    //     })
+
+    //     // Save roundId to state before opening modal
+    //     SetSelectedRoundId(roundId)
+
+    //     if (result.isConfirmed) {
+    //         SetShowAddGameModal(true)
+    //     } else if (result.isDenied) {
+    //         SetShowAddByeGameModal(true)
+    //     }
+    // }
+    const handleAddClick = async () => {
         let roundId: string | null = null
 
         try {
             const tournaments: Tournament[] = await GetTournaments()
 
-            if (tournaments.length > 0) {
-                const tournamentOptions: Record<string, string> = {}
-                tournaments.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
-
-                const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
-                    title: "Select Tournament",
-                    html: `<p style="color:#bfd0e1d1;margin:0"> Select a tournament for this game</p>`,
-                    input: "select",
-                    inputOptions: tournamentOptions,
-                    inputPlaceholder: "Select a tournament",
-                    showCancelButton: true,
-                    confirmButtonText: "Next",
-                    cancelButtonText: "Skip",
-                    customClass: { popup: 'swal-dark' }
+            if (tournaments.length === 0) {
+                Swal.fire({
+                    title: "No Tournaments",
+                    text: "Please create a tournament and a round before adding a game.",
+                    icon: "warning"
                 })
-
-                if (!tournamentSkipped && tournamentId) {
-                    // Step 2 — pick round
-                    const rounds: Round[] = await GetRoundsByTournament(tournamentId)
-
-                    if (rounds.length > 0) {
-                        const roundOptions: Record<string, string> = {}
-                        rounds.forEach(r => {
-                            roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
-                        })
-
-                        const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
-                            title: "Select Round",
-                            html: `<p style="color:#bfd0e1d1;margin:0" >Select a round for this game, or cancel to skip</p>`,
-                            input: "select",
-                            inputOptions: roundOptions,
-                            inputPlaceholder: "Select a round",
-                            showCancelButton: true,
-                            confirmButtonText: "Next",
-                            cancelButtonText: "Skip",
-                            customClass: { popup: 'swal-dark' }
-                        })
-
-                        if (!roundSkipped && selectedRoundId) {
-                            roundId = selectedRoundId
-                        }
-                    }
-                }
+                return
             }
+
+            const tournamentOptions: Record<string, string> = {}
+            tournaments.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+
+            const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
+                title: "Select Tournament",
+                html: `<p style="color:#bfd0e1d1;margin:0">Select a tournament for this game</p>`,
+                input: "select",
+                inputOptions: tournamentOptions,
+                inputPlaceholder: "Select a tournament",
+                showCancelButton: true,
+                confirmButtonText: "Next",
+                cancelButtonText: "Cancel",
+            })
+
+            // Block if skipped or cancelled
+            if (tournamentSkipped || !tournamentId) {
+                Swal.fire({
+                    title: "Tournament Required",
+                    text: "You must select a tournament to add a game.",
+                    icon: "error"
+                })
+                return
+            }
+
+            const rounds: Round[] = await GetRoundsByTournament(tournamentId)
+
+            if (rounds.length === 0) {
+                Swal.fire({
+                    title: "No Rounds",
+                    text: "This tournament has no rounds. Please add a round first.",
+                    icon: "warning"
+                })
+                return
+            }
+
+            const roundOptions: Record<string, string> = {}
+            rounds.forEach(r => {
+                roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
+            })
+
+            const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
+                title: "Select Round",
+                html: `<p style="color:#bfd0e1d1;margin:0">Select a round for this game</p>`,
+                input: "select",
+                inputOptions: roundOptions,
+                inputPlaceholder: "Select a round",
+                showCancelButton: true,
+                confirmButtonText: "Next",
+                cancelButtonText: "Cancel",
+            })
+
+            // Block if skipped or cancelled
+            if (roundSkipped || !selectedRoundId) {
+                Swal.fire({
+                    title: "Round Required",
+                    text: "You must select a round to add a game.",
+                    icon: "error"
+                })
+                return
+            }
+
+            roundId = selectedRoundId
+
         } catch (error) {
             console.error("Error fetching tournaments/rounds", error)
+            return
         }
 
-        // Step 3 — pick game type
+        // Step 3 — pick game type (only reached if tournament + round selected)
         const result = await Swal.fire({
             title: 'Select Game Type',
             icon: 'question',
@@ -273,21 +393,20 @@ export function GameConsole() {
             denyButtonColor: '#19876f',
             cancelButtonColor: '#6c757d',
             customClass: {
-            icon: 'custom-swal-icon',
-            confirmButton: 'swal2-confirm',   /* ← add these */
-            denyButton: 'swal2-deny',
-            cancelButton: 'swal2-cancel'
-        },
+                icon: 'custom-swal-icon',
+                confirmButton: 'swal2-confirm',
+                denyButton: 'swal2-deny',
+                cancelButton: 'swal2-cancel'
+            },
             didOpen: () => {
                 const icon = document.querySelector('.custom-swal-icon')
                 if (icon) {
-                    (icon as HTMLElement).style.borderColor = '#fcad2d'
-                    ;(icon as HTMLElement).style.color = '#f4b339'
+                    (icon as HTMLElement).style.borderColor = '#fcad2d';
+                    (icon as HTMLElement).style.color = '#f4b339';
                 }
             }
         })
 
-        // Save roundId to state before opening modal
         SetSelectedRoundId(roundId)
 
         if (result.isConfirmed) {
