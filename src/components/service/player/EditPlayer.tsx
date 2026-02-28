@@ -58,6 +58,7 @@ const handlesave=async()=>{
     try {
         const updatedPlayer=await UpdatePlayer(playerDetails);
         handleUpdate(updatedPlayer)
+        
         refreshTable()
         handleClose()
     } catch (error) {

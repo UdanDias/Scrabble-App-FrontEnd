@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import CreatePlayer from "./CreatePlayer";
+import Swal from "sweetalert2";
 
 
 interface Player{
@@ -59,12 +60,36 @@ const AddPlayer=({show,handleClose,handleAdd,refreshTable}:AddPlayerProps)=>{
         try {
             const newlyAddedPlayer=await CreatePlayer(newPlayerDetails);
             handleAdd(newlyAddedPlayer);
+            
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({ icon: "success", title: "Player Created successfully" });
+
             refreshTable()
             handleClose()
 
         } catch (error) {
-            console.error("Error while adding player",error)
-            throw error;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Player Creation Failed" });
         }
     }
     
