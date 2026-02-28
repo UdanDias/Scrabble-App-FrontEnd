@@ -225,6 +225,7 @@ import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament"
 import GetTournaments from "../service/tournament/GetTournaments"
 import RoundGamesModal from "../service/tournament/RoundGamesModal"
 import AddRound from "../service/tournament/AddRound"
+import DeleteRound from "../service/tournament/DeleteRound"
 // import AddRound from "./service/tournament/AddRound"
 
 interface Tournament {
@@ -269,22 +270,98 @@ export function TournamentConsole() {
         loadData(setTournamentData)
     }, [])
 
-    const handleDelete = async (tournamentId: string) => {
-        const result = await Swal.fire({
+    const handleDelete = async (tournament: Tournament) => {
+    // Step 1 — ask what to delete
+    const result = await Swal.fire({
+        title: "What do you want to delete?",
+        icon: "warning",
+        showConfirmButton: true,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Tournament",
+        denyButtonText: "Round",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#d33",
+        denyButtonColor: "#e0a800",
+        cancelButtonColor: "#6c757d",
+    })
+
+    if (result.isConfirmed) {
+        // Delete tournament
+        const confirm = await Swal.fire({
             title: "Are you sure?",
-            text: "This will delete the tournament and all its rounds and games.",
+            text: `This will delete "${tournament.tournamentName}" and all its rounds and games.`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
+            cancelButtonColor: "#6c757d",
             confirmButtonText: "Yes, delete it!"
         })
-        if (result.isConfirmed) {
-            await DeleteTournament(tournamentId)
-            setTournamentData(prev => prev.filter(t => t.tournamentId !== tournamentId))
-            Swal.fire("Deleted!", "Tournament has been deleted.", "success")
+
+        if (confirm.isConfirmed) {
+            try {
+                await DeleteTournament(tournament.tournamentId)
+                setTournamentData(prev => prev.filter(t => t.tournamentId !== tournament.tournamentId))
+                Swal.fire("Deleted!", "Tournament has been deleted.", "success")
+            } catch (error) {
+                Swal.fire("Error", "Failed to delete tournament.", "error")
+            }
+        }
+
+    } else if (result.isDenied) {
+        // Delete round — fetch rounds first
+        let rounds: Round[] = []
+        try {
+            rounds = await GetRoundsByTournament(tournament.tournamentId)
+        } catch {
+            Swal.fire("Error", "Failed to fetch rounds.", "error")
+            return
+        }
+
+        if (rounds.length === 0) {
+            Swal.fire("No Rounds", `${tournament.tournamentName} has no rounds to delete.`, "info")
+            return
+        }
+
+        const roundOptions: Record<string, string> = {}
+        rounds.forEach(r => { roundOptions[r.roundId] = `Round ${r.roundNumber}` })
+
+        const { value: roundId } = await Swal.fire({
+            title: "Select Round to Delete",
+            html: `<p style="color:#bfd0e1d1;margin:0">Select a round from "${tournament.tournamentName}"</p>`,
+            input: "select",
+            inputOptions: roundOptions,
+            inputPlaceholder: "Select a round",
+            showCancelButton: true,
+            confirmButtonText: "Delete Round",
+            confirmButtonColor: "#d33",
+            inputValidator: (value) =>
+                new Promise(resolve => value ? resolve(undefined) : resolve("Please select a round"))
+        })
+
+        if (roundId) {
+            const selectedRound = rounds.find(r => r.roundId === roundId)
+            const confirm = await Swal.fire({
+                title: "Are you sure?",
+                text: `This will delete Round ${selectedRound?.roundNumber} and all its games.`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Yes, delete it!"
+            })
+
+            if (confirm.isConfirmed) {
+                try {
+                    await DeleteRound(roundId)  // you'll need this service
+                    Swal.fire("Deleted!", `Round ${selectedRound?.roundNumber} has been deleted.`, "success")
+                } catch (error) {
+                    Swal.fire("Error", "Failed to delete round.", "error")
+                }
+            }
         }
     }
+}
 
     const handleEdit = (row: Tournament) => {
         setSelectedRow(row)
@@ -428,7 +505,7 @@ export function TournamentConsole() {
                                             <Button className="btn-edit" variant="secondary" onClick={() => handleEdit(row)}>
                                                 Edit
                                             </Button>
-                                            <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row.tournamentId)}>
+                                            <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row)}>
                                                 Delete
                                             </Button>
                                         </div>
