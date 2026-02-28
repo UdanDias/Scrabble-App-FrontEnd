@@ -126,7 +126,7 @@ import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import CreateGame from "./CreateGame";
 import { getPlayer } from "../player/GetPlayer";
 
-interface Player {
+interface PlayerIdToName {
     playerId: string;
     firstName: string;
     lastName: string;
@@ -153,7 +153,7 @@ interface AddGameProps {
 }
 
 export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps) {
-    const [players, SetPlayers] = useState<Player[]>([]);
+    const [players, SetPlayers] = useState<PlayerIdToName[]>([]);
 
     const [newGameData, SetNewGameData] = useState<Omit<Game, "gameId" | "margin" | "winnerId" | "isgameTied" | "isByeGame">>({
         player1Id: "",

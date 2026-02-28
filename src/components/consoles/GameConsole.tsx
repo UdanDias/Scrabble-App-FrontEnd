@@ -84,6 +84,36 @@ export function GameConsole() {
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
 
 
+
+    const resolveNames = (game: Game) => {
+        const player1 = players.find(p => p.playerId === game.player1Id);
+        const player2 = players.find(p => p.playerId === game.player2Id);
+        const winner  = players.find(p => p.playerId === game.winnerId);
+        return {
+            ...game,
+            player1Id: player1 ? `${player1.firstName} ${player1.lastName}` : game.player1Id,
+            player2Id: player2 ? `${player2.firstName} ${player2.lastName}` : game.player2Id,
+            winnerId:  winner  ? `${winner.firstName} ${winner.lastName}`   : game.winnerId,
+        };
+    };
+
+    const handleUpdate = (updatedGame: Game) => {
+        const resolved = resolveNames(updatedGame);
+        SetGameData(gameData.map(game => game.gameId === resolved.gameId ? resolved : game));
+        refreshTable()
+    };
+
+    const handleOnAdd = (newGame: Game) => {
+        const resolved = resolveNames(newGame);
+        SetGameData(prev => ([...prev, resolved]));
+        refreshTable()
+    };
+
+    const handleOnAddBye = (newByeGame: Game) => {
+        const resolved = resolveNames(newByeGame);
+        SetGameData(prev => ([...prev, resolved]));
+        refreshTable()
+    };
     useEffect(() => {
         const init = async () => {
             try {
@@ -113,9 +143,9 @@ export function GameConsole() {
         SetSelectedRow(null)
     }
 
-    const handleUpdate = (updatedGame: Game) => {
-        SetGameData(gameData.map(game => game.gameId === updatedGame.gameId ? updatedGame : game))
-    }
+    // const handleUpdate = (updatedGame: Game) => {
+    //     SetGameData(gameData.map(game => game.gameId === updatedGame.gameId ? updatedGame : game))
+    // }
 
     const handleDelete = async (gameId: string) => {
         try {
@@ -127,15 +157,15 @@ export function GameConsole() {
         }
     }
 
-    const handleOnAdd = (newGame: Game) => {
-        SetGameData(prev => ([...prev, newGame]))
-        refreshTable()
-    }
+    // const handleOnAdd = (newGame: Game) => {
+    //     SetGameData(prev => ([...prev, newGame]))
+    //     refreshTable()
+    // }
 
-    const handleOnAddBye = (newByeGame: Game) => {
-        SetGameData(prev => ([...prev, newByeGame]))
-        refreshTable()
-    }
+    // const handleOnAddBye = (newByeGame: Game) => {
+    //     SetGameData(prev => ([...prev, newByeGame]))
+    //     refreshTable()
+    // }
 
     // Step 1: select tournament
     // Step 2: select round

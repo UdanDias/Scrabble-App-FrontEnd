@@ -1,6 +1,7 @@
 import React,{ useEffect, useState } from "react";
 import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import { CreateByeGame } from "./CreateGame";
+import { getPlayer } from "../player/GetPlayer";
 
 interface Game{
     gameId:string;
@@ -27,18 +28,30 @@ interface AddByeGameprops{
     handleAdd :(newByeGame:Game)=>void;
     roundId:string|null;
 }
+
+interface PlayerIdToName {
+    playerId: string;
+    firstName: string;
+    lastName: string;
+}
 export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops){
     const [byeGameData,SetByeGameData]= useState<ByeGame>({
         playerId:"",
         gameDate:"",
         
     })
+    const [players,SetPlayers]=useState<PlayerIdToName[]>([]);
 
-    const handleOnChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const fetchPlayers=async()=>{
+        const playersList=await getPlayer();
+        SetPlayers(playersList);
+    }
+    const handleOnChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>)=>{
         SetByeGameData((prev)=>({...prev,[e.target.name]:e.target.value}))
     }
     useEffect(()=>{
         if(show){
+            fetchPlayers();
             SetByeGameData({
                 playerId:"",
                 gameDate:"",
@@ -68,13 +81,19 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                 <Modal.Body>
                     
                     
-                    <FloatingLabel controlId="floatingInput" label="Player Id" className="mb-3">
-                        <Form.Control 
-                        type="text" 
-                        name="playerId" 
-                        placeholder="Player Id"
-                        value={byeGameData.playerId?? ""}
-                        onChange={handleOnChange} />
+                    <FloatingLabel label="Player" className="mb-3">
+                        <Form.Select
+                            name="playerId"
+                            value={byeGameData.playerId ?? ""}
+                            onChange={handleOnChange}
+                        >
+                            <option value="" disabled>Select Player</option>
+                            {players.map((player) => (
+                                <option key={player.playerId} value={player.playerId}>
+                                    {player.firstName} {player.lastName}
+                                </option>
+                            ))}
+                        </Form.Select>
                     </FloatingLabel>
 
                     <FloatingLabel controlId="floatingInput" label="Game Date" className="mb-3">
