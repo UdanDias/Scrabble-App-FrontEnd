@@ -198,6 +198,7 @@ code {
   right: 0;
   z-index: 1;
   background-color: #060413 !important;
+  /* background-color: #060413 !important; */
 }
 
 .console-table tbody tr:nth-child(even) td:last-child {
@@ -205,7 +206,7 @@ code {
 }
 
 .console-table tbody tr:hover td:last-child {
-  background-color: #272730b2 !important;
+  background-color: #272730 !important; 
 }
 /* ///////////////////////////////////////////////////////////////////////////////////// Buttons /////////////////////////////////////////////////////////////////// */
 
