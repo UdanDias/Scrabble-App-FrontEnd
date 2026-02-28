@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import {SignUpTask} from "../service/auth/Auth"
 import { useAuth } from "./AuthProvider";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 interface SignUp {
     firstName: string;
@@ -37,27 +38,48 @@ export const SignUp=()=>{
         SetUser((prev)=>({...prev,[e.target.name]:e.target.value}))
 
     }
-    const handleOnSubmit= async (e:React.ChangeEvent<HTMLFormElement>)=>{
+    
+
+    const handleOnSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const token=await SignUpTask(user)
-        console.log(token);
-        SetUser({
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            role: "",
-            age: 0,
-            gender: "",
-            dob: "",
-            phone: "",
-            address: "",
-            faculty: "",
-            academicLevel: ""
-        })
-        login(token)
-        navigate("/player")
-    }
+        try {
+            const token = await SignUpTask(user);
+            SetUser({
+                firstName: "", lastName: "", email: "", password: "",
+                role: "", age: 0, gender: "", dob: "", phone: "",
+                address: "", faculty: "", academicLevel: ""
+            });
+            login(token);
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Registered successfully" });
+
+            navigate("/player");
+        } catch (error) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Registration failed" });
+        }
+    };
     const navigate=useNavigate()
     const {login} = useAuth();
     

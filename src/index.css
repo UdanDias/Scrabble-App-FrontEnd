@@ -792,6 +792,7 @@ code {
 .swal2-icon {
   border-color: rgba(224, 211, 24, 0.4) !important;
   color: #e0d318d4 !important;
+  margin: 0 0.6em 0 0 !important;
 }
 
 .swal2-backdrop-show {
@@ -815,6 +816,7 @@ code {
 }
 
 .swal2-popup.swal2-toast {
+  display: flex !important;
   pointer-events: all !important;
   width: auto !important;
   max-width: 380px !important;
@@ -822,7 +824,7 @@ code {
   flex-direction: row !important;
   align-items: center !important;
   padding: 0.625em 1em !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 3px 4px rgb(117, 94, 8) !important;
 }
 
 .swal2-popup.swal2-toast .swal2-title {
@@ -830,6 +832,16 @@ code {
   letter-spacing: 1px !important;
   margin: 0 !important;
   font-family: inherit !important;
+  text-align: center !important;
+  flex: 1 !important;
+}
+/* Remove internal spacing that breaks centering */
+.swal2-popup.swal2-toast .swal2-title,
+.swal2-popup.swal2-toast .swal2-html-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
 }
 /* ///////////////////////////////////////////////////////////////////////////////////// Sidebar //////////////////////////////////////////////////////////////////// */
 .sidebar {
