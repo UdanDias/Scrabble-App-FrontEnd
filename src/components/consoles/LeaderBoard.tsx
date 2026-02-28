@@ -18,19 +18,28 @@ export function LeaderBoard(){
 
     const [rankedPlayerData,SetRankedPlayerData]=useState<RankedPlayerData[]>([])
 
-    const handlePopulateLeaderBoard=async()=>{
+    const handlePopulateLeaderBoard = async () => {
         try {
-            const rankedPlayerDetails=await GetPlayersByRank();
-            if(rankedPlayerDetails && rankedPlayerDetails.length>0){
-                SetRankedPlayerData(rankedPlayerDetails)
-            }else{
-                SetRankedPlayerData([])
+            const rankedPlayerDetails = await GetPlayersByRank();
+            if (rankedPlayerDetails && rankedPlayerDetails.length > 0) {
+                const sorted = [...rankedPlayerDetails].sort((a: RankedPlayerData, b: RankedPlayerData) => {
+                    // players with no games always go last
+                    if (a.totalGamesPlayed === 0 && b.totalGamesPlayed > 0) return 1;
+                    if (a.totalGamesPlayed > 0 && b.totalGamesPlayed === 0) return -1;
+                    // both have no games — keep original order
+                    if (a.totalGamesPlayed === 0 && b.totalGamesPlayed === 0) return 0;
+                    // both played — sort by rank
+                    return a.playerRank - b.playerRank;
+                });
+                SetRankedPlayerData(sorted);
+            } else {
+                SetRankedPlayerData([]);
             }
-        } catch (error) {
-            console.error("Error fetching ranked player data",error)
-            throw error ;
+        } catch (error: any) {
+            if (error?.response?.status === 401) return;
+            console.error("Error fetching ranked player data", error);
         }
-    }
+    };
 
     useEffect(()=>{
         handlePopulateLeaderBoard()
