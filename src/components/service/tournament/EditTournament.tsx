@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
 import UpdateTournament from "./UpdateTournament"
+import Swal from "sweetalert2"
 
 interface Tournament {
     tournamentId: string
@@ -36,11 +37,35 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
     const handleSave = async () => {
         try {
             const updated = await UpdateTournament(details)
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Tournament Details Updated Successfully" });
             handleUpdate(updated)
             refreshTable()
             handleClose()
         } catch (error) {
-            console.error("Error updating tournament", error)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Failed to Update Tournament" });
+
         }
     }
 
