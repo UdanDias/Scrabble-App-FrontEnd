@@ -149,6 +149,17 @@ export function GameConsole() {
 
     const handleDelete = async (gameId: string) => {
         try {
+            const confirm = await Swal.fire({
+            title: "Are You Sure?",
+            text: `This Will Delete The Game.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, Delete It!"
+        })
+            if (!confirm.isConfirmed) return;
+
             await DeleteGame(gameId);
             const Toast = Swal.mixin({
                 toast: true,
@@ -161,7 +172,7 @@ export function GameConsole() {
                     toast.onmouseleave = Swal.resumeTimer;
                 }
             });
-            Toast.fire({ icon: "success", title: "Deleted Player Successfully" });
+            Toast.fire({ icon: "success", title: "Deleted Game Successfully" });
             SetGameData(gameData.filter(game => game.gameId !== gameId))
         } catch (error) {
            const Toast = Swal.mixin({
@@ -175,7 +186,7 @@ export function GameConsole() {
                     toast.onmouseleave = Swal.resumeTimer;
                 }
             });
-            Toast.fire({ icon: "error", title: "Player Deletion Failed" });
+            Toast.fire({ icon: "error", title: "Game Deletion Failed" });
         }
     }
 
@@ -304,7 +315,7 @@ export function GameConsole() {
         <>
         <div className="console-page">
             <div className="create-button d-flex justify-content-end p-2">
-                <Button className="btn-create" variant="success" onClick={handleAddClick}>Add Game</Button>
+                <Button className="btn-create" variant="success" onClick={handleAddClick}>+ Add Game</Button>
             </div>
             <div className="console-table-container">
                 <div className="console-table-wrapper">

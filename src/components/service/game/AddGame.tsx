@@ -125,6 +125,7 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import CreateGame from "./CreateGame";
 import { getPlayer } from "../player/GetPlayer";
+import Swal from "sweetalert2";
 
 interface PlayerIdToName {
     playerId: string;
@@ -198,9 +199,37 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
     };
 
     const handleSave = async () => {
-        const newGameDetails = await CreateGame({ ...newGameData, roundId });
-        handleAdd(newGameDetails);
-        handleClose();
+        try {
+            const newGameDetails = await CreateGame({ ...newGameData, roundId });
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({ icon: "success", title: "Added Game Successfully" });
+            handleAdd(newGameDetails);
+            handleClose();
+        } catch (error) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Game Addition Failed" });
+        }
+        
     };
 
     return (

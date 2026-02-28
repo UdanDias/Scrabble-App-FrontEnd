@@ -2,6 +2,7 @@ import React,{ useEffect, useState } from "react";
 import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import { CreateByeGame } from "./CreateGame";
 import { getPlayer } from "../player/GetPlayer";
+import Swal from "sweetalert2";
 
 interface Game{
     gameId:string;
@@ -62,13 +63,36 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
     },[show])
     const handleSave=async()=>{
         try {
-            console.log("Sending:", byeGameData) 
+             
             const byeGameDetails=await CreateByeGame({...byeGameData,roundId})
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Added Bye Game Successfully" });
             handleAdd(byeGameDetails)
             handleClose()
         } catch (error) {
-            console.error("Error while creating a Bye game",error)
-            throw error;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Bye Game Addition Failed" });
+
         }
         
     }

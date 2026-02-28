@@ -48,7 +48,7 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
                     toast.onmouseleave = Swal.resumeTimer;
                 }
             });
-            Toast.fire({ icon: "success", title: "Tournament Details Updated Successfully" });
+            Toast.fire({ icon: "success", title: "Tournament Updated Successfully" });
             handleUpdate(updated)
             refreshTable()
             handleClose()
