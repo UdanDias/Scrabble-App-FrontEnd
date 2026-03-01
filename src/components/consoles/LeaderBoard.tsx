@@ -302,11 +302,11 @@ const tournamentOptions = [
                                             </table>
                                         </div>
                                         <div className="leaderboard-rank-badge">
-                                            <span className={`badge fs-6 ${
-                                                player.playerRank === 1 ? "bg-warning text-dark" :
-                                                player.playerRank === 2 ? "bg-secondary" :
-                                                player.playerRank === 3 ? "bg-danger" :
-                                                "bg-primary"
+                                            <span className={`rank-badge ${
+                                                player.playerRank === 1 ? "rank-badge-gold" :
+                                                player.playerRank === 2 ? "rank-badge-silver" :
+                                                player.playerRank === 3 ? "rank-badge-bronze" :
+                                                "rank-badge-default"
                                             }`}>
                                                 Rank #{player.playerRank}
                                             </span>
