@@ -9,6 +9,8 @@ import { AddByeGame } from "../service/game/AddByeGame";
 import GetTournaments from "../service/tournament/GetTournaments";
 import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament";
 import { getPlayer } from "../service/player/GetPlayer";
+import { SelectModal } from "./Selectmodal";
+
 
 interface Game {
     gameId: string;
@@ -45,7 +47,6 @@ interface PlayerIdToName {
     lastName: string;
 }
 
-
 /* ===========================
    LOAD GAME DATA
 =========================== */
@@ -55,7 +56,6 @@ const loadGameData = async (
 ) => {
     try {
         const gameDetails: GameWithRoundId[] = await GetGames();
-
         const tournaments: Tournament[] = await GetTournaments();
         const roundMap: Record<string, string> = {};
 
@@ -70,7 +70,6 @@ const loadGameData = async (
             const player1 = players.find(p => p.playerId === game.player1Id);
             const player2 = players.find(p => p.playerId === game.player2Id);
             const winner  = players.find(p => p.playerId === game.winnerId);
-
             return {
                 ...game,
                 player1Id: player1 ? `${player1.firstName} ${player1.lastName}` : game.player1Id,
@@ -81,7 +80,6 @@ const loadGameData = async (
         });
 
         SetGameData(resolvedGames);
-
     } catch (error) {
         console.error("Error while fetching game Data", error);
     }
@@ -90,7 +88,6 @@ const loadGameData = async (
 /* ===========================
    COMPONENT
 =========================== */
-
 export function GameConsole() {
 
     const [gameData, SetGameData] = useState<GameWithRoundId[]>([]);
@@ -100,6 +97,26 @@ export function GameConsole() {
     const [showAddByeGameModal, SetShowAddByeGameModal] = useState(false);
     const [selectedRoundId, SetSelectedRoundId] = useState<string | null>(null);
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
+
+    // SelectModal state
+    const [selectModal, setSelectModal] = useState<{
+        show: boolean;
+        title: string;
+        subtitle?: string;
+        options: { value: string; label: string }[];
+        placeholder: string;
+        confirmText: string;
+        onConfirm: (value: string) => void;
+    }>({
+        show: false,
+        title: "",
+        options: [],
+        placeholder: "",
+        confirmText: "Next",
+        onConfirm: () => {},
+    });
+
+    const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }));
 
     /* ===========================
        INITIAL LOAD
@@ -125,18 +142,9 @@ export function GameConsole() {
     /* ===========================
        CRUD HANDLERS
     =========================== */
-
-    const handleUpdate = async () => {
-        await refreshTable();
-    };
-
-    const handleOnAdd = async () => {
-        await refreshTable();
-    };
-
-    const handleOnAddBye = async () => {
-        await refreshTable();
-    };
+    const handleUpdate = async () => { await refreshTable(); };
+    const handleOnAdd = async () => { await refreshTable(); };
+    const handleOnAddBye = async () => { await refreshTable(); };
 
     const handleEdit = (row: GameWithRoundId) => {
         SetSelectedRow(row);
@@ -154,248 +162,160 @@ export function GameConsole() {
                 cancelButtonColor: "#6c757d",
                 confirmButtonText: "Yes, Delete It!"
             });
-
             if (!confirm.isConfirmed) return;
-
             await DeleteGame(gameId);
-
             await refreshTable();
-
-            Swal.fire({
-                toast: true,
-                position: "top-end",
-                icon: "success",
-                title: "Deleted Game Successfully",
-                showConfirmButton: false,
-                timer: 3000
-            });
-
+            Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Deleted Game Successfully", showConfirmButton: false, timer: 3000 });
         } catch {
-            Swal.fire({
-                toast: true,
-                position: "top-end",
-                icon: "error",
-                title: "Game Deletion Failed",
-                showConfirmButton: false,
-                timer: 3000
-            });
+            Swal.fire({ toast: true, position: "top-end", icon: "error", title: "Game Deletion Failed", showConfirmButton: false, timer: 3000 });
         }
     };
+
+    /* ===========================
+       ADD GAME FLOW
+       Step 1 → Tournament
+       Step 2 → Round
+       Step 3 → Game Type
+    =========================== */
     const handleAddClick = async () => {
-        let roundId: string | null = null
-
+        let tournaments: Tournament[] = [];
         try {
-            const tournaments: Tournament[] = await GetTournaments()
-
-            if (tournaments.length === 0) {
-                Swal.fire({
-                    title: "No Tournaments",
-                    text: "Please create a tournament and a round before adding a game.",
-                    icon: "warning"
-                })
-                return
-            }
-
-            const tournamentOptions: Record<string, string> = {}
-            tournaments.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
-
-            const { value: tournamentId, isDismissed: tournamentSkipped } = await Swal.fire({
-                title: "Select Tournament",
-                html: `<p style="color:#bfd0e1d1;margin:0">Select a tournament for this game</p>`,
-                input: "select",
-                inputOptions: tournamentOptions,
-                inputPlaceholder: "Select a tournament",
-                showCancelButton: true,
-                confirmButtonText: "Next",
-                cancelButtonText: "Cancel",
-            })
-  // After tournament selection
-                if (tournamentSkipped) {
-                    return  // silent abort
-                }
-                if (!tournamentId) {
-                    Swal.fire({
-                        title: "No Tournament Selected",
-                        text: "Please select a tournament before proceeding.",
-                        icon: "warning"
-                    })
-                    return
-                }
-
-            const rounds: Round[] = await GetRoundsByTournament(tournamentId)
-
-            if (rounds.length === 0) {
-                Swal.fire({
-                    title: "No Rounds",
-                    text: "This tournament has no rounds. Please add a round first.",
-                    icon: "warning"
-                })
-                return
-            }
-
-            const roundOptions: Record<string, string> = {}
-            rounds.forEach(r => {
-                roundOptions[r.roundId] = `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`
-            })
-
-            const { value: selectedRoundId, isDismissed: roundSkipped } = await Swal.fire({
-                title: "Select Round",
-                html: `<p style="color:#bfd0e1d1;margin:0">Select a round for this game</p>`,
-                input: "select",
-                inputOptions: roundOptions,
-                inputPlaceholder: "Select a round",
-                showCancelButton: true,
-                confirmButtonText: "Next",
-                cancelButtonText: "Cancel",
-            })
-   if (roundSkipped) {
-                return  // silent abort
-            }
-            if (!selectedRoundId) {
-                Swal.fire({
-                  title: "No Round Selected",
-                    text: "Please select a round before proceeding.",
-                    icon: "warning"
-                })
-                return
-            }
-
-            roundId = selectedRoundId
-
-        } catch (error) {
-            console.error("Error fetching tournaments/rounds", error)
-            return
+            tournaments = await GetTournaments();
+        } catch {
+            Swal.fire("Error", "Failed to fetch tournaments.", "error");
+            return;
         }
 
-        // Step 3 — pick game type (only reached if tournament + round selected)
-        const result = await Swal.fire({
-            title: 'Select Game Type',
-            icon: 'question',
-            showConfirmButton: true,
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'Regular Game',
-            denyButtonText: 'Bye Game',
-            cancelButtonText: 'Cancel',
-            confirmButtonColor: '#510dfd',
-            denyButtonColor: '#19876f',
-            cancelButtonColor: '#6c757d',
-            customClass: {
-                icon: 'custom-swal-icon',
-                confirmButton: 'swal2-confirm',
-                denyButton: 'swal2-deny',
-                cancelButton: 'swal2-cancel'
+        if (tournaments.length === 0) {
+            Swal.fire("No Tournaments", "Please create a tournament and a round before adding a game.", "warning");
+            return;
+        }
+
+        // Step 1 — select tournament
+        const tournamentOptions = tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }));
+
+        setSelectModal({
+            show: true,
+            title: "Select Tournament",
+            subtitle: "Select a tournament for this game",
+            options: tournamentOptions,
+            placeholder: "Select a tournament",
+            confirmText: "Next",
+            onConfirm: async (tournamentId) => {
+                closeSelectModal();
+
+                let rounds: Round[] = [];
+                try {
+                    rounds = await GetRoundsByTournament(tournamentId);
+                } catch {
+                    Swal.fire("Error", "Failed to fetch rounds.", "error");
+                    return;
+                }
+
+                if (rounds.length === 0) {
+                    Swal.fire("No Rounds", "This tournament has no rounds. Please add a round first.", "warning");
+                    return;
+                }
+
+                // Step 2 — select round
+                const roundOptions = rounds.map(r => ({
+                    value: r.roundId,
+                    label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
+                }));
+
+                setSelectModal({
+                    show: true,
+                    title: "Select Round",
+                    subtitle: "Select a round for this game",
+                    options: roundOptions,
+                    placeholder: "Select a round",
+                    confirmText: "Next",
+                    onConfirm: async (roundId) => {
+                        closeSelectModal();
+                        SetSelectedRoundId(roundId);
+
+                        // Step 3 — select game type
+                        const result = await Swal.fire({
+                            title: "Select Game Type",
+                            icon: "question",
+                            showConfirmButton: true,
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: "Regular Game",
+                            denyButtonText: "Bye Game",
+                            cancelButtonText: "Cancel",
+                            confirmButtonColor: "#510dfd",
+                            denyButtonColor: "#19876f",
+                            cancelButtonColor: "#6c757d",
+                        });
+
+                        if (result.isConfirmed) {
+                            SetShowAddGameModal(true);
+                        } else if (result.isDenied) {
+                            SetShowAddByeGameModal(true);
+                        }
+                    },
+                });
             },
-            didOpen: () => {
-                const icon = document.querySelector('.custom-swal-icon')
-                if (icon) {
-                    (icon as HTMLElement).style.borderColor = '#fcad2d';
-                    (icon as HTMLElement).style.color = '#f4b339';
-                }
-            }
-        })
-
-        SetSelectedRoundId(roundId)
-
-        if (result.isConfirmed) {
-            SetShowAddGameModal(true)
-        } else if (result.isDenied) {
-            SetShowAddByeGameModal(true)
-        }
-    }
+        });
+    };
 
     /* ===========================
        TABLE HEADERS
     =========================== */
-
     const theads: string[] = [
-        "Game Id",
-        "Player1 Name",
-        "Player2 Name",
-        "Score 1",
-        "Score 2",
-        "Margin",
-        "Game Tied",
-        "Winner",
-        "Game Date",
-        "Is Bye Game",
-        "Round",
-        "Action"
+        "Game Id", "Player1 Name", "Player2 Name",
+        "Score 1", "Score 2", "Margin",
+        "Game Tied", "Winner", "Game Date",
+        "Is Bye Game", "Round", "Action"
     ];
 
     /* ===========================
        RENDER
     =========================== */
-
     return (
         <div className="console-page">
 
             <div className="create-button d-flex justify-content-end p-2">
-                <Button className="btn-create" onClick={() => handleAddClick()}>
+                <Button className="btn-create" onClick={handleAddClick}>
                     + Add Game
                 </Button>
             </div>
-<div className="console-table-container">
-  
-  <div className="console-table-wrapper">
 
-    <Table
-      striped
-      bordered
-      hover
-      className="console-table text-center align-middle"
-    >
-      <thead>
-        <tr>
-          {theads.map(head => (
-            <th key={head}>{head}</th>
-          ))}
-        </tr>
-      </thead>
-
-      <tbody>
-        {gameData.map(row => (
-          <tr key={row.gameId}>
-
-            <td>{row.gameId}</td>
-            <td>{row.player1Id}</td>
-            <td>{row.player2Id}</td>
-            <td>{row.score1}</td>
-            <td>{row.score2}</td>
-            <td>{row.margin}</td>
-            <td>{row.isgameTied ? "Yes" : "No"}</td>
-            <td>{row.winnerId}</td>
-            <td>{row.gameDate}</td>
-            <td>{row.isByeGame ? "Yes" : "No"}</td>
-            <td>{row.roundId}</td>
-
-            <td>
-              <div className="d-flex justify-content-center gap-2">
-                <Button
-                  className="btn-edit"
-                  onClick={() => handleEdit(row)}
-                >
-                  Edit
-                </Button>
-
-                <Button
-                  className="btn-delete"
-                  onClick={() => handleDelete(row.gameId)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </td>
-
-          </tr>
-        ))}
-      </tbody>
-
-    </Table>
-
-  </div>
-
-</div>
+            <div className="console-table-container">
+                <div className="console-table-wrapper">
+                    <Table striped bordered hover className="console-table text-center align-middle">
+                        <thead>
+                            <tr>
+                                {theads.map(head => <th key={head}>{head}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {gameData.map(row => (
+                                <tr key={row.gameId}>
+                                    <td>{row.gameId}</td>
+                                    <td>{row.player1Id}</td>
+                                    <td>{row.player2Id}</td>
+                                    <td>{row.score1}</td>
+                                    <td>{row.score2}</td>
+                                    <td>{row.margin}</td>
+                                    <td>{row.isgameTied ? "Yes" : "No"}</td>
+                                    <td>{row.winnerId}</td>
+                                    <td>{row.gameDate}</td>
+                                    <td>{row.isByeGame ? "Yes" : "No"}</td>
+                                    <td>{row.roundId}</td>
+                                    <td>
+                                        <div className="d-flex justify-content-center gap-2">
+                                            <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
+                                            <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
 
             <EditGame
                 show={showEditGameModal}
@@ -417,6 +337,17 @@ export function GameConsole() {
                 handleClose={() => SetShowAddByeGameModal(false)}
                 handleAdd={handleOnAddBye}
                 roundId={selectedRoundId}
+            />
+
+            <SelectModal
+                show={selectModal.show}
+                title={selectModal.title}
+                subtitle={selectModal.subtitle}
+                options={selectModal.options}
+                placeholder={selectModal.placeholder}
+                confirmText={selectModal.confirmText}
+                onConfirm={selectModal.onConfirm}
+                onCancel={closeSelectModal}
             />
 
         </div>
