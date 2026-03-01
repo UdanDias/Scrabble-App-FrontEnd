@@ -126,6 +126,8 @@ import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import CreateGame from "./CreateGame";
 import { getPlayer } from "../player/GetPlayer";
 import Swal from "sweetalert2";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 interface PlayerIdToName {
     playerId: string;
@@ -231,6 +233,10 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
         }
         
     };
+    const playerOptions = players.map(p => ({
+        value: p.playerId,
+        label: `${p.firstName} ${p.lastName}`
+    }));
 
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
@@ -239,39 +245,33 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
             </Modal.Header>
             <Modal.Body>
 
-                {/* Player 1 Dropdown */}
-                <FloatingLabel label="Player 1" className="mb-3">
-                    <Form.Select
-                        name="player1Id"
-                        value={newGameData.player1Id}
-                        onChange={handleOnChange}
-                    >
-                        <option value="">Select Player 1</option>
-                        {players.map((p) => (
-                            <option key={p.playerId} value={p.playerId}>
-                                {p.firstName} {p.lastName}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </FloatingLabel>
+                <div className="mb-3">
+                    <ReactSelect
+                        options={playerOptions}
+                        styles={customStyles}
+                        placeholder="Select Player 1"
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        value={playerOptions.find(o => o.value === newGameData.player1Id) ?? null}
+                        onChange={(selected) =>
+                            SetNewGameData(prev => ({ ...prev, player1Id: selected?.value ?? "" }))
+                        }
+                    />
+                </div>
 
-                {/* Player 2 Dropdown */}
-                <FloatingLabel label="Player 2" className="mb-3">
-                    <Form.Select
-                        name="player2Id"
-                        value={newGameData.player2Id}
-                        onChange={handleOnChange}
-                    >
-                        <option value="">Select Player 2</option>
-                        {players
-                            .filter((p) => p.playerId !== newGameData.player1Id) // prevent same player twice
-                            .map((p) => (
-                                <option key={p.playerId} value={p.playerId}>
-                                    {p.firstName} {p.lastName}
-                                </option>
-                            ))}
-                    </Form.Select>
-                </FloatingLabel>
+                <div className="mb-3">
+                    <ReactSelect
+                        options={playerOptions.filter(o => o.value !== newGameData.player1Id)}
+                        styles={customStyles}
+                        placeholder="Select Player 2"
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        value={playerOptions.find(o => o.value === newGameData.player2Id) ?? null}
+                        onChange={(selected) =>
+                            SetNewGameData(prev => ({ ...prev, player2Id: selected?.value ?? "" }))
+                        }
+                    />
+                </div>
 
                 <FloatingLabel label="Score 1" className="mb-3">
                     <Form.Control

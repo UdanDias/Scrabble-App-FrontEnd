@@ -3,6 +3,8 @@ import { Modal, FloatingLabel, Form, Button } from "react-bootstrap";
 import { CreateByeGame } from "./CreateGame";
 import { getPlayer } from "../player/GetPlayer";
 import Swal from "sweetalert2";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 interface Game{
     gameId:string;
@@ -96,6 +98,10 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
         }
         
     }
+    const playerOptions = players.map(p => ({
+        value: p.playerId,
+        label: `${p.firstName} ${p.lastName}`
+    }));
     return (
         <>
             <Modal show={show} onHide={handleClose} className="dark-modal">
@@ -105,7 +111,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                 <Modal.Body>
                     
                     
-                    <FloatingLabel label="Player" className="mb-3">
+                    {/* <FloatingLabel label="Player" className="mb-3">
                         <Form.Select
                             name="playerId"
                             value={byeGameData.playerId ?? ""}
@@ -118,7 +124,20 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                                 </option>
                             ))}
                         </Form.Select>
-                    </FloatingLabel>
+                    </FloatingLabel> */}
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={playerOptions}
+                            styles={customStyles}
+                            placeholder="Select Player "
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={playerOptions.find(o => o.value === byeGameData.playerId) ?? null}
+                            onChange={(selected) =>
+                                SetByeGameData(prev => ({ ...prev, playerId: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
 
                     <FloatingLabel controlId="floatingInput" label="Game Date" className="mb-3">
                         <Form.Control 
