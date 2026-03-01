@@ -237,6 +237,8 @@ import { getPlayerIdFromToken } from "../service/auth/GetPlayerId";
 import { getGamesByPlayer, getSelectedPlayer } from "../service/player/GetPlayer";
 import { GetSelectedPerformance } from "../service/performance/GetPlayersByRank";
 import UpdatePlayer from "../service/player/UpdatePlayer";
+import ReactSelect from "react-select";
+import { customStyles } from "../service/styles/CustomStyles";
 
 interface Player {
     playerId: string;
@@ -562,18 +564,19 @@ export function Profile() {
                         />
                     </FloatingLabel>
                     
-                    <FloatingLabel label="Gender" className="mb-3">
-                        <Form.Select
-                            name="gender"
-                            value={editData?.gender ?? ""}
-                            onChange={(e) => setEditData((prev) => prev ? { ...prev, gender: e.target.value } : prev)}
-                        >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </Form.Select>
-                    </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={genderOptions}
+                            styles={customStyles}
+                            placeholder="Select Gender"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={genderOptions.find(o => o.value === editData?.gender) ?? null}
+                            onChange={(selected) =>
+                            setEditData(prev => prev ? { ...prev, gender: selected?.value ?? "" } : prev)
+}
+                        />
+                    </div>
                     <FloatingLabel label="Date of Birth" className="mb-3">
                         <Form.Control
                             type="date"
