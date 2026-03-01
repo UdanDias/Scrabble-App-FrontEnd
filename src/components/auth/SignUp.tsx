@@ -64,7 +64,7 @@ export const SignUp=()=>{
             });
             Toast.fire({ icon: "success", title: "Registered successfully" });
 
-            navigate("/player");
+            navigate("/homeafter");
         } catch (error) {
             const Toast = Swal.mixin({
                 toast: true,
@@ -88,7 +88,7 @@ export const SignUp=()=>{
         <div className="auth-container d-flex flex-column justify-content-center align-items-center vh-100">
             <div className="auth-border-signup">
                 <div className=" d-flex flex-column align-items-center mb-3">
-                    <h1 className="auth-font">Sign Up</h1>
+                    <h1 className="h-hero-title-auth">SCRABBLIX</h1>
                 </div>
                 <Form onSubmit={handleOnSubmit}>
                      <div className="signup-form-container">
@@ -153,7 +153,7 @@ export const SignUp=()=>{
                      </div>
                     
                     <div className="d-flex justify-content-center mt-2">
-                        <Button  className="btn-create"  type="submit">Register</Button>
+                        <Button  className="h-btn-outline"  type="submit">Register</Button>
                     </div>
                 </Form>
             </div>

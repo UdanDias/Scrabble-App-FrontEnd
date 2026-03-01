@@ -16,9 +16,15 @@ import { UserConsole } from './components/consoles/UserConsole';
 import { LeaderBoard } from './components/consoles/LeaderBoard';
 import Sidebar from './components/consoles/SideBar';
 import NavBar from './components/consoles/NavBar';
+import { Home } from './components/consoles/Home';
+// import { Home } from './components/consoles/Home';
+// import { UnAuthHome } from './components/consoles/unAuthHome';
+import { HomeAfter } from './components/consoles/HomeAfter';
+
+
 function AppLayout() {
   const location = useLocation();
-  const isAuthPage = ['/', '/signin', '/signup'].includes(location.pathname);
+  const isAuthPage = ['/', '/signin', '/signup', '/home', '/homeafter'].includes(location.pathname);
 
   return (
     <div style={{ paddingTop: '60px' }}>
@@ -36,7 +42,11 @@ function AppLayout() {
           }}
         >
           <Routes>
-            <Route path="/" element={<Navigate to="/signin" />} />
+            <Route path="/" element={<Navigate to="/signin" />}/>
+            {/* <Route path="/unauthhome" element={<UnAuthHome />} />  */}
+            <Route path="/home" element={<Home />} /> 
+            <Route path="/homeafter" element={<HomeAfter />} />
+
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/profile" element={<Profile />} />
