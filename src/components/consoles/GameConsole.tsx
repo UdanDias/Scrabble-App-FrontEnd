@@ -97,6 +97,7 @@ export function GameConsole() {
     const [showAddByeGameModal, SetShowAddByeGameModal] = useState(false);
     const [selectedRoundId, SetSelectedRoundId] = useState<string | null>(null);
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
+    
 
     // SelectModal state
     const [selectModal, setSelectModal] = useState<{

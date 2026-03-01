@@ -20,6 +20,7 @@ import { Home } from './components/consoles/Home';
 // import { Home } from './components/consoles/Home';
 // import { UnAuthHome } from './components/consoles/unAuthHome';
 import { HomeAfter } from './components/consoles/HomeAfter';
+import Footer from './components/consoles/Footer';
 
 
 function AppLayout() {
@@ -38,9 +39,12 @@ function AppLayout() {
             backgroundColor: '#0d1117',
             minHeight: '100vh',
             overflowX: 'hidden',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            display: 'flex',           // ← add
+            flexDirection: 'column', 
           }}
         >
+          <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/signin" />}/>
             {/* <Route path="/unauthhome" element={<UnAuthHome />} />  */}
@@ -56,6 +60,9 @@ function AppLayout() {
             <Route path="/game" element={<GameConsole />} />
             <Route path="/leaderboard" element={<LeaderBoard />} />
           </Routes>
+          </div>
+          <Footer />
+          
         </div>
       </div>
     </div>
