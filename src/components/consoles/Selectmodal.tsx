@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReactSelect from "react-select";
-import { customStyles } from "../styles/CustomStyles";
+import { customStyles } from "../service/styles/CustomStyles";
 
 interface SelectOption {
     value: string;
@@ -35,7 +35,7 @@ export const SelectModal = ({
 
     const handleConfirm = () => {
         if (!selected) {
-            setError(`Please select a ${title.toLowerCase().includes("round") ? "round" : "tournament"} to proceed.`);
+            setError(`Please select a ${placeholder.toLowerCase().includes("round") ? "round" : "tournament"} to proceed.`);
             return;
         }
         setError("");

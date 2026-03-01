@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
 import UpdateTournament from "./UpdateTournament"
 import Swal from "sweetalert2"
+import ReactSelect from "react-select"
+import { customStyles } from "../styles/CustomStyles"
 
 interface Tournament {
     tournamentId: string
@@ -68,6 +70,11 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
 
         }
     }
+    const statusOptions = [
+    { value: "UPCOMING", label: "Upcoming" },
+    { value: "ONGOING", label: "Ongoing" },
+    { value: "FINISHED", label: "Finished" },
+]
 
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
@@ -93,14 +100,19 @@ const EditTournament = ({ show, selectedRow, handleClose, handleUpdate, refreshT
                         onChange={handleOnChange} />
                 </FloatingLabel>
 
-                <FloatingLabel label="Status" className="mb-3">
-                    <Form.Select name="status" value={details.status} onChange={handleOnChange}>
-                        <option value="" disabled>Select Tournament Status</option>
-                        <option value="UPCOMING">Upcoming</option>
-                        <option value="ONGOING">Ongoing</option>
-                        <option value="FINISHED">Finished</option>
-                    </Form.Select>
-                </FloatingLabel>
+                <div className="mb-3">
+                    <ReactSelect
+                        options={statusOptions}
+                        styles={customStyles}
+                        placeholder="Select Status"
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        value={statusOptions.find(o => o.value === details.status) ?? null}
+                        onChange={(selected) =>
+                            setDetails(prev => ({ ...prev, status: selected?.value ?? "" }))
+                        }
+                    />
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button className="btn-edit" onClick={handleClose}>Close</Button>

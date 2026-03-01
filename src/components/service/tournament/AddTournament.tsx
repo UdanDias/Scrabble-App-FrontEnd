@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap"
 import CreateTournament from "./CreateTournament"
 import Swal from "sweetalert2"
+import ReactSelect from "react-select"
+import { customStyles } from "../styles/CustomStyles"
 
 interface Tournament {
     tournamentId: string
@@ -68,6 +70,11 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
             Toast.fire({ icon: "error", title: "Tournament Creation Failed" });
         }
     }
+    const statusOptions = [
+    { value: "UPCOMING", label: "Upcoming" },
+    { value: "ONGOING", label: "Ongoing" },
+    { value: "FINISHED", label: "Finished" },
+]
 
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
@@ -83,14 +90,19 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
                         value={details.tournamentName}
                         onChange={handleOnChange} />
                 </FloatingLabel>
-
-                <FloatingLabel label="Status" className="mb-3">
-                    <Form.Select name="status" value={details.status} onChange={handleOnChange}>
-                        <option value="UPCOMING">Upcoming</option>
-                        <option value="ONGOING">Ongoing</option>
-                        <option value="COMPLETED">Completed</option>
-                    </Form.Select>
-                </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={statusOptions}
+                            styles={customStyles}
+                            placeholder="Select Status"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={statusOptions.find(o => o.value === details.status) ?? null}
+                            onChange={(selected) =>
+                                setDetails(prev => ({ ...prev, status: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button className="btn-edit" onClick={handleClose}>Close</Button>
