@@ -7,6 +7,7 @@ import DeletePlayer from '../service/player/DeletePlayer';
 import AddPlayer from '../service/player/AddPlayer';
 import { GamesByPlayer } from '../service/player/GamesByPlayer';
 import Swal from 'sweetalert2';
+import BulkAddPlayer from '../service/player/Bulkaddplayer';
 
 
 interface Player{
@@ -39,6 +40,7 @@ export  function PlayerConsole(){
     const [showEditPlayerModal,SetShowEditPlayerModal]= useState(false)
     const [showAddPlayerModal,SetShowAddPlayerModal]=useState(false);
     const [showGamesByPlayerModal,setShowGamesByPlayerModal]=useState(false);
+    const [showBulkModal, setShowBulkModal] = useState(false);
 
     const handleDelete=async(playerId:string)=>{
         try {
@@ -147,6 +149,9 @@ export  function PlayerConsole(){
                 <Button className="btn-create" onClick={()=>SetShowAddPlayerModal(true)}>
                     + Create Player
                 </Button>
+                <Button className="btn-view" onClick={() => setShowBulkModal(true)}>
+                    + Bulk Add
+                </Button>
             </div>
             
             <div className="console-table-container">
@@ -198,6 +203,11 @@ export  function PlayerConsole(){
                 show={showGamesByPlayerModal}
                 handleClose={handleCloseGames}
                 selectedRow={selectedRow}
+                />
+                <BulkAddPlayer
+                    show={showBulkModal}
+                    handleClose={() => setShowBulkModal(false)}
+                    refreshTable={() => loadData(SetPlayerData)}
                 />
             </div>
         </div>
