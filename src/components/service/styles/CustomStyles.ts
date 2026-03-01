@@ -2,10 +2,12 @@ export const customStyles = {
     control: (base: any, state: any) => ({
         ...base,
         backgroundColor: "#0d0c18",
-        border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "rgba(224, 211, 24, 0.3)"}`,
+        border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "#151321"}`,
         borderRadius: "8px",
         boxShadow: "none",
+        outline: "none",
         "&:hover": {
+            outline: "none",
             borderColor: "rgba(224, 211, 24, 0.6)",
             boxShadow: "none"
         }

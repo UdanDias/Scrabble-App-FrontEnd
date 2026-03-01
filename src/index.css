@@ -8,6 +8,8 @@ body {
   background-color: #0d1117;
   min-height: 100vh;
   padding: 0;
+  padding-right: 0 !important;
+  overflow: hidden auto;
 }
 
 code {
@@ -473,19 +475,21 @@ code {
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 1.0rem!important;
+  font-weight: bold;
 }
 
 .leaderboard-accordion .accordion-item {
   background-color: #060413 !important;
   border-color: rgba(255, 255, 255, 0.06) !important;
+  
 }
 
 .leaderboard-accordion .accordion-button {
   background-color: #060413 !important;
   color: #bfd0e1d1 !important;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.9rem!important;
   border-color: rgba(255, 255, 255, 0.06) !important;
   box-shadow: none !important;
 }
@@ -514,6 +518,7 @@ code {
   border-color: rgba(255, 255, 255, 0.06) !important;
   padding: 12px 16px;
   overflow: hidden;
+  
 }
 
 .leaderboard-accordion .leaderboard-inner-table {
@@ -535,7 +540,7 @@ code {
   background-color: #2e2f2dc1 !important;
   border: none !important;
   padding: 8px 12px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -858,6 +863,9 @@ code {
   color: #e0d318d4 !important;
   /* remove the margin override that was pushing it left */
 }
+body.swal2-shown > [aria-hidden="true"] {
+  filter: none !important;
+}
 /* ///////////////////////////////////////////////////////////////////////////////////// Sidebar //////////////////////////////////////////////////////////////////// */
 .sidebar {
   width: 220px;
@@ -1098,4 +1106,67 @@ select:focus,
   border-color: rgba(224, 211, 24, 0.8) !important;
   box-shadow: 0 0 12px rgba(224, 211, 24, 0.3) !important;
   outline: none !important;
+}
+
+/* ///////////////////////////////////////////////////////////////////////////////////// input type Autofill Fix //////////////////////////////////////////////////////////////////// */
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #262431 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #bfd0e1 ;
+ 
+  transition: background-color 5000s ease-in-out 0s; */
+
+  /* ///////////////////////////////////////////////////////////////////////////////////// Autofill Fix - Auth Pages //////////////////////////////////////////////////////////////////// */
+.auth-border-login input:-webkit-autofill,
+.auth-border-login input:-webkit-autofill:hover,
+.auth-border-login input:-webkit-autofill:focus,
+.auth-border-login input:-webkit-autofill:active,
+.auth-border-signup input:-webkit-autofill,
+.auth-border-signup input:-webkit-autofill:hover,
+.auth-border-signup input:-webkit-autofill:focus,
+.auth-border-signup input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #262431 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #bfd0e1;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ///////////////////////////////////////////////////////////////////////////////////// Autofill Fix - Console Pages //////////////////////////////////////////////////////////////////// */
+.console-page input:-webkit-autofill,
+.console-page input:-webkit-autofill:hover,
+.console-page input:-webkit-autofill:focus,
+.console-page input:-webkit-autofill:active,
+.dark-modal input:-webkit-autofill,
+.dark-modal input:-webkit-autofill:hover,
+.dark-modal input:-webkit-autofill:focus,
+.dark-modal input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #0d0c18 inset !important;
+  -webkit-text-fill-color: #bfd0e1 !important;
+  caret-color: #bfd0e1;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+  /* ///////////////////////////////////////////////////////////////////////////////////// Global Input Override //////////////////////////////////////////////////////////////////// */
+.console-page input.form-control,
+.dark-modal input.form-control {
+  background-color: #0d0c18 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #bfd0e1 !important;
+}
+
+.console-page input.form-control:focus,
+.dark-modal input.form-control:focus {
+  background-color: #0d0c18 !important;
+  border-color: rgba(224, 211, 24, 0.4) !important;
+  color: #bfd0e1 !important;
+  box-shadow: 0 0 8px rgba(224, 211, 24, 0.2) !important;
+}
+
+.console-page input.form-control::placeholder,
+.dark-modal input.form-control::placeholder {
+  color: rgba(191, 208, 225, 0.3) !important;
 }

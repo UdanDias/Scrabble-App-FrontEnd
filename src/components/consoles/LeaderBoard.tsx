@@ -154,6 +154,86 @@ const tournamentOptions = [
         handlePopulateLeaderBoard(val || undefined);
     };
 
+    const customStyles = {
+        // control: (base: any, state: any) => ({
+        //     ...base,
+        //     backgroundColor: "#0d0c18",
+        //     border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "#151321"}`,
+        //     borderRadius: "8px",
+        //     boxShadow: "none",
+        //     outline: "none",
+        //     "&:hover": {
+        //         outline: "none",
+        //         borderColor: "rgba(224, 211, 24, 0.6)",
+        //         boxShadow: "none"
+        //     }
+        // }),
+        control: (base: any, state: any) => ({
+            ...base,
+            backgroundColor: "#0d0c18",
+            border: `1px solid ${state.isFocused ? "#e0d318" : "#e0d318"}`,
+            borderRadius: "8px",
+            boxShadow: state.isFocused ? "0 0 12px rgba(224, 211, 24, 0.4)" : "0 0 6px rgba(224, 211, 24, 0.15)",
+            outline: state.isFocused ? "1px solid #e0d318" : "1px solid rgba(224, 211, 24, 0.2)",
+            "&:hover": {
+                borderColor: "rgba(224, 211, 24, 0.6)",
+                boxShadow: "0 0 10px rgba(224, 211, 24, 0.3)",
+                outline: "1px solid rgba(224, 211, 24, 0.4)",
+            }
+        }),
+        valueContainer: (base: any) => ({
+            ...base,
+            justifyContent: "center",
+        }),
+        option: (base: any, state: any) => ({
+            ...base,
+            backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
+            color: state.isFocused ? "#e0d31877" : "#bfd0e1d1",
+            cursor: "pointer",
+            textAlign: "center" as const,
+            "&:active": {
+                backgroundColor: "rgba(6, 6, 2, 0.25)"
+            }
+        }),
+        singleValue: (base: any) => ({
+            ...base,
+            color: "#fcd809",
+            textAlign: "center" as const,
+            fontSize: "1.7rem",
+        }),
+        dropdownIndicator: (base: any) => ({
+            ...base,
+            color: "rgba(224, 211, 24, 0.6)",
+            "&:hover": { color: "#e0d318d4" }
+        }),
+        indicatorSeparator: (base: any) => ({
+            ...base,
+            backgroundColor: "rgba(224, 211, 24, 0.2)"
+        }),
+        menu: (base: any) => ({
+            ...base,
+            backgroundColor: "#0d0c18",
+            border: "1px solid rgba(224, 211, 24, 0.2)",
+            borderRadius: "8px",
+            zIndex: 9999,
+        }),
+        menuList: (base: any) => ({
+            ...base,
+            backgroundColor: "#0d0c18",
+            borderRadius: "8px",
+            padding: 0,
+        }),
+        menuPortal: (base: any) => ({
+            ...base,
+            zIndex: 9999,
+        }),
+        placeholder: (base: any) => ({
+            ...base,
+            color: "#e0d318d4",
+            textAlign: "center" as const,
+        }),
+    };
+
     return (
         <div className="leaderboard-page">
             <div className="console-table-container">
@@ -197,7 +277,7 @@ const tournamentOptions = [
                                             <div className="rank-divider" style={{ width: "45px" }}>
                                                 #{player.playerRank}
                                             </div>
-                                            <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "18px" }}>
+                                            <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem" }}>
                                                 {player.firstName} {player.lastName}
                                             </div>
                                         </div>
