@@ -67,9 +67,9 @@ const RoundGamesModal = ({ show, handleClose, roundId, roundNumber, tournamentNa
                         {games.map((game, index) => (
                             <Accordion.Item eventKey={String(index)} key={game.gameId}>
                                 <Accordion.Header>
-                                    Game {String(index + 1).padStart(2, "0")}
-                                    {game.bye && <Badge bg="secondary" className="ms-2">Bye</Badge>}
-                                    {game.gameTied && <Badge bg="warning" text="dark" className="ms-2">Tied</Badge>}
+                                    Game {String(index + 1).padStart(2, "0")}  
+                                    {game.bye && <span className="game-status game-status-bye ms-2" >Bye</span>}
+                                    {game.gameTied && <span className="game-status game-status-tied ms-2">Tied</span>}
                                 </Accordion.Header>
                                 <Accordion.Body>
                                     <div className="card p-3">
