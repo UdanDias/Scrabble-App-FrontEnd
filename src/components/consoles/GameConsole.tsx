@@ -10,6 +10,7 @@ import GetTournaments from "../service/tournament/GetTournaments";
 import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament";
 import { getPlayer } from "../service/player/GetPlayer";
 import { SelectModal } from "./Selectmodal";
+import { ConsoleHeader } from "./ConsoleHeader";
 
 
 interface Game {
@@ -276,6 +277,16 @@ export function GameConsole() {
     =========================== */
     return (
         <div className="console-page">
+            <ConsoleHeader
+                title="Game Console"
+                subtitle="Manage and track all tournament games"
+                icon={
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 8v4l3 3"/>
+                    </svg>
+                }
+            />
 
             <div className="create-button d-flex justify-content-end p-2">
                 <Button className="btn-create" onClick={handleAddClick}>

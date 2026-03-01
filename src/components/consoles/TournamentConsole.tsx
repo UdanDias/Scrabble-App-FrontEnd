@@ -227,6 +227,7 @@ import RoundGamesModal from "../service/tournament/RoundGamesModal"
 import AddRound from "../service/tournament/AddRound"
 import DeleteRound from "../service/tournament/DeleteRound"
 import { SelectModal } from "./Selectmodal"
+import { ConsoleHeader } from "./ConsoleHeader"
 // import AddRound from "./service/tournament/AddRound"
 
 interface Tournament {
@@ -549,6 +550,16 @@ export function TournamentConsole() {
     return (
         <>
         <div className="console-page">
+            <ConsoleHeader
+                title="Tournament Console"
+                subtitle="Oversee tournaments, rounds and standings"
+                icon={
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
+                        <path d="M6 3h12l2 6c0 3.3-2.7 6-6 6H10C6.7 15 4 12.3 4 9L6 3z"/>
+                        <path d="M12 15v4M8 20h8"/>
+                    </svg>
+                }
+            />
             {/* Top right buttons */}
             <div className="create-button d-flex justify-content-end gap-2 p-2">
                 <Button className="btn-view" variant="info" onClick={handleViewRoundsClick}>

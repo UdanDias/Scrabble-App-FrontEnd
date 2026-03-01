@@ -8,6 +8,7 @@ import AddPlayer from '../service/player/AddPlayer';
 import { GamesByPlayer } from '../service/player/GamesByPlayer';
 import Swal from 'sweetalert2';
 import BulkAddPlayer from '../service/player/Bulkaddplayer';
+import { ConsoleHeader } from './ConsoleHeader';
 
 
 interface Player{
@@ -145,6 +146,16 @@ export  function PlayerConsole(){
     return(
         <>
         <div className="console-page">
+            <ConsoleHeader
+                title="Player Console"
+                subtitle="Manage registered players and their profiles"
+                icon={
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                }
+            />
             <div className="create-button d-flex justify-content-end d-flex gap-2 ">
                 <Button className="btn-create" onClick={()=>SetShowAddPlayerModal(true)}>
                     + Create Player

@@ -42,6 +42,7 @@ function AppLayout() {
             boxSizing: 'border-box',
             display: 'flex',           // ← add
             flexDirection: 'column', 
+            
           }}
         >
           <div style={{ flex: 1 }}>

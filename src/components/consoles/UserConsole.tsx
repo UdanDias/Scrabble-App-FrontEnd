@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import GetUsers from '../service/user/GetUser';
 import DeleteUser from '../service/user/DeleteUser';
 import EditUser from '../service/user/EditUser';
+import { ConsoleHeader } from './ConsoleHeader';
 
 
 interface User {
@@ -88,6 +89,18 @@ export  function UserConsole(){
             <Button  variant="success" onClick={()=>SetShowAddUserModal(true)}>Create User</Button>
         </div> */}
         <div className="console-page">
+            <ConsoleHeader
+                title="User Console"
+                subtitle="Manage user accounts and roles"
+                icon={
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
+                        <circle cx="9" cy="8" r="3"/>
+                        <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+                        <path d="M16 5c1.7 0 3 1.3 3 3s-1.3 3-3 3"/>
+                        <path d="M21 20c0-3-1.8-5.5-5-6"/>
+                    </svg>
+                }
+            />
             <div className="console-table-container">
                 <div className="console-table-wrapper">
                     <Table striped bordered hover className="console-table" >
