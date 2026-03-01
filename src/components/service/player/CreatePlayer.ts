@@ -16,4 +16,5 @@ const CreatePlayer=async(newPlayer:any)=>{
     }
     
 }
+
 export default CreatePlayer

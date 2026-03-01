@@ -145,11 +145,11 @@ export  function PlayerConsole(){
     return(
         <>
         <div className="console-page">
-            <div className="create-button d-flex justify-content-end  ">
+            <div className="create-button d-flex justify-content-end d-flex gap-2 ">
                 <Button className="btn-create" onClick={()=>SetShowAddPlayerModal(true)}>
                     + Create Player
                 </Button>
-                <Button className="btn-view" onClick={() => setShowBulkModal(true)}>
+                <Button className="btn-view " onClick={() => setShowBulkModal(true)}>
                     + Bulk Add
                 </Button>
             </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import axios from "axios";
+import FetchToken from "../auth/FetchToken";
 
 interface BulkAddPlayerProps {
     show: boolean;
@@ -68,7 +69,9 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
             await axios.post(
                 "http://localhost:8081/scrabbleapp2026/api/v1/player/addplayers/bulk",
                 parsed,
-                { headers: { "Content-Type": "application/json" } }
+                { headers: { "Content-Type": "application/json",
+                    Authorization:FetchToken()
+                 } }
             );
 
             const Toast = Swal.mixin({
