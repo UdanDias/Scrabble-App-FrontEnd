@@ -42,9 +42,9 @@ const RoundGamesModal = ({ show, handleClose, roundId, roundNumber, tournamentNa
     }, [show, roundId])
 
     const getGameResult = (game: Game) => {
-        if (game.bye) return <Badge bg="secondary" className="fs-6">Bye Game</Badge>
-        if (game.gameTied) return <Badge bg="warning" text="dark" className="fs-6">Game Tied</Badge>
-        return <Badge bg="info" className="fs-6">Completed</Badge>
+        if (game.bye) return <span className="game-status game-status-bye">Bye Game</span>
+        if (game.gameTied) return <span className="game-status game-status-tied">Game Tied</span>
+        return <span className="game-status game-status-completed">Completed</span>
     }
 
     return (

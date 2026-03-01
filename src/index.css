@@ -456,6 +456,32 @@ code {
   color: #f472b6;
 }
 
+.game-status {
+  background-color: transparent;
+  border-radius: 20px;
+  padding: 4px 16px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.game-status-bye {
+  border: 1px solid #497abf;
+  color: #6692d0;
+  box-shadow: 0 0 8px rgba(148, 163, 184, 0.3);
+}
+
+.game-status-tied {
+  border: 1px solid #5a5649;
+  color: #c4c2b8e9;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.game-status-completed {
+  border: 1px solid #53d59fc8;
+  color: #61d0a2c9;
+  box-shadow: 0 0 8px rgba(0, 255, 149, 0.3);
+}
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Leaderboard //////////////////////////////////////////////////////////////////// */
 .leaderboard-page {
