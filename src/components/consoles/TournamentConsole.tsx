@@ -226,6 +226,7 @@ import GetTournaments from "../service/tournament/GetTournaments"
 import RoundGamesModal from "../service/tournament/RoundGamesModal"
 import AddRound from "../service/tournament/AddRound"
 import DeleteRound from "../service/tournament/DeleteRound"
+import { SelectModal } from "./Selectmodal"
 // import AddRound from "./service/tournament/AddRound"
 
 interface Tournament {
@@ -385,33 +386,57 @@ export function TournamentConsole() {
     }
 
     // Top right "View Rounds" — pick tournament then round
+    // const handleViewRoundsClick = async () => {
+    //     if (tournamentData.length === 0) {
+    //         Swal.fire("No Tournaments", "There are no tournaments yet.", "info")
+    //         return
+    //     }
+
+    //     const tournamentOptions: Record<string, string> = {}
+    //     tournamentData.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+
+    //     const { value: tournamentId } = await Swal.fire({
+    //         title: "Select Tournament",
+    //         input: "select",
+    //         inputOptions: tournamentOptions,
+    //         inputPlaceholder: "Select a tournament",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Next",
+    //         inputValidator: (value) =>
+    //             new Promise(resolve => value ? resolve(undefined) : resolve("Please select a tournament"))
+    //     })
+
+    //     if (!tournamentId) {
+    //         return
+    //     }
+
+    //     const selectedTournament = tournamentData.find(t => t.tournamentId === tournamentId)!
+    //     await showRoundSelector(selectedTournament)
+    // }
     const handleViewRoundsClick = async () => {
         if (tournamentData.length === 0) {
-            Swal.fire("No Tournaments", "There are no tournaments yet.", "info")
-            return
+            Swal.fire("No Tournaments", "There are no tournaments yet.", "info");
+            return;
         }
 
-        const tournamentOptions: Record<string, string> = {}
-        tournamentData.forEach(t => { tournamentOptions[t.tournamentId] = t.tournamentName })
+        const options = tournamentData.map(t => ({
+            value: t.tournamentId,
+            label: t.tournamentName,
+        }));
 
-        const { value: tournamentId } = await Swal.fire({
+        setSelectModal({
+            show: true,
             title: "Select Tournament",
-            input: "select",
-            inputOptions: tournamentOptions,
-            inputPlaceholder: "Select a tournament",
-            showCancelButton: true,
-            confirmButtonText: "Next",
-            inputValidator: (value) =>
-                new Promise(resolve => value ? resolve(undefined) : resolve("Please select a tournament"))
-        })
-
-        if (!tournamentId) {
-            return
-        }
-
-        const selectedTournament = tournamentData.find(t => t.tournamentId === tournamentId)!
-        await showRoundSelector(selectedTournament)
-    }
+            options,
+            placeholder: "Select a tournament",
+            confirmText: "Next",
+            onConfirm: async (tournamentId) => {
+                closeSelectModal();
+                const selectedTournament = tournamentData.find(t => t.tournamentId === tournamentId)!;
+                await showRoundSelector(selectedTournament);
+            },
+        });
+    };
 
     // // Row "Rounds" button — directly pick round for that tournament
     // const handleViewRoundsForRow = async (tournament: Tournament) => {
@@ -419,45 +444,81 @@ export function TournamentConsole() {
     // }
 
     // Shared round selector logic
+    // const showRoundSelector = async (tournament: Tournament) => {
+    //     let rounds: Round[] = []
+    //     try {
+    //         rounds = await GetRoundsByTournament(tournament.tournamentId)
+    //     } catch {
+    //         Swal.fire("Error", "Failed to fetch rounds.", "error")
+    //         return
+    //     }
+
+    //     if (rounds.length === 0) {
+    //         Swal.fire("No Rounds", `${tournament.tournamentName} has no rounds yet.`, "info")
+    //         return
+    //     }
+
+    //     const roundOptions: Record<string, string> = {}
+    //     rounds.forEach(r => {
+    //         roundOptions[r.roundId] = `Round ${r.roundNumber}`
+    //     })
+
+    //     const { value: roundId } = await Swal.fire({
+    //         title: tournament.tournamentName,
+    //         html: `<p style="color:#bfd0e1d1;margin:0">Select a round to view games</p>`,
+    //         input: "select",
+    //         inputOptions: roundOptions,
+    //         inputPlaceholder: "Select a round",
+    //         showCancelButton: true,
+    //         confirmButtonText: "View Games",
+    //         inputValidator: (value) =>
+    //             new Promise(resolve => value ? resolve(undefined) : resolve("Please select a round"))
+    //     })
+
+    //     if (roundId) {
+    //         const selectedRound = rounds.find(r => r.roundId === roundId)
+    //         setSelectedRoundId(roundId)
+    //         setSelectedRoundNumber(selectedRound?.roundNumber ?? null)
+    //         setSelectedTournamentName(tournament.tournamentName)
+    //         setShowRoundGamesModal(true)
+    //     }
+    // }
     const showRoundSelector = async (tournament: Tournament) => {
-        let rounds: Round[] = []
+        let rounds: Round[] = [];
         try {
-            rounds = await GetRoundsByTournament(tournament.tournamentId)
+            rounds = await GetRoundsByTournament(tournament.tournamentId);
         } catch {
-            Swal.fire("Error", "Failed to fetch rounds.", "error")
-            return
+            Swal.fire("Error", "Failed to fetch rounds.", "error");
+            return;
         }
 
         if (rounds.length === 0) {
-            Swal.fire("No Rounds", `${tournament.tournamentName} has no rounds yet.`, "info")
-            return
+            Swal.fire("No Rounds", `${tournament.tournamentName} has no rounds yet.`, "info");
+            return;
         }
 
-        const roundOptions: Record<string, string> = {}
-        rounds.forEach(r => {
-            roundOptions[r.roundId] = `Round ${r.roundNumber}`
-        })
+        const options = rounds.map(r => ({
+            value: r.roundId,
+            label: `Round ${r.roundNumber}`,
+        }));
 
-        const { value: roundId } = await Swal.fire({
+        setSelectModal({
+            show: true,
             title: tournament.tournamentName,
-            html: `<p style="color:#bfd0e1d1;margin:0">Select a round to view games</p>`,
-            input: "select",
-            inputOptions: roundOptions,
-            inputPlaceholder: "Select a round",
-            showCancelButton: true,
-            confirmButtonText: "View Games",
-            inputValidator: (value) =>
-                new Promise(resolve => value ? resolve(undefined) : resolve("Please select a round"))
-        })
-
-        if (roundId) {
-            const selectedRound = rounds.find(r => r.roundId === roundId)
-            setSelectedRoundId(roundId)
-            setSelectedRoundNumber(selectedRound?.roundNumber ?? null)
-            setSelectedTournamentName(tournament.tournamentName)
-            setShowRoundGamesModal(true)
-        }
-    }
+            subtitle: "Select a round to view games",
+            options,
+            placeholder: "Select a round",
+            confirmText: "View Games",
+            onConfirm: (roundId) => {
+                closeSelectModal();
+                const selectedRound = rounds.find(r => r.roundId === roundId);
+                setSelectedRoundId(roundId);
+                setSelectedRoundNumber(selectedRound?.roundNumber ?? null);
+                setSelectedTournamentName(tournament.tournamentName);
+                setShowRoundGamesModal(true);
+            },
+        });
+    };
 
     const tHeads = [
         "Tournament ID",
@@ -465,6 +526,25 @@ export function TournamentConsole() {
         "Status",
         "Action"
     ]
+    const [selectModal, setSelectModal] = useState<{
+        show: boolean;
+        title: string;
+        subtitle?: string;
+        options: { value: string; label: string }[];
+        placeholder: string;
+        confirmText: string;
+        onConfirm: (value: string) => void;
+    }>({
+        show: false,
+        title: "",
+        options: [],
+        placeholder: "",
+        confirmText: "Next",
+        onConfirm: () => {},
+    });
+
+    const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }));
+
 
     return (
         <>
@@ -546,6 +626,16 @@ export function TournamentConsole() {
                 tournamentId={selectedTournamentId}
                 handleClose={() => setShowAddRoundModal(false)}
                 handleAdd={() => setShowAddRoundModal(false)}
+            />
+            <SelectModal
+                show={selectModal.show}
+                title={selectModal.title}
+                subtitle={selectModal.subtitle}
+                options={selectModal.options}
+                placeholder={selectModal.placeholder}
+                confirmText={selectModal.confirmText}
+                onConfirm={selectModal.onConfirm}
+                onCancel={closeSelectModal}
             />
         </div>
         </>

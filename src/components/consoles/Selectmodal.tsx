@@ -1,5 +1,6 @@
+import { useState } from "react";
 import ReactSelect from "react-select";
-import { customStyles } from "../service/styles/CustomStyles";
+import { customStyles } from "../styles/CustomStyles";
 
 interface SelectOption {
     value: string;
@@ -27,13 +28,25 @@ export const SelectModal = ({
     onConfirm,
     onCancel,
 }: SelectModalProps) => {
+    const [selected, setSelected] = useState<SelectOption | null>(null);
+    const [error, setError] = useState<string>("");
+
     if (!show) return null;
 
-    let selected: SelectOption | null = null;
-
     const handleConfirm = () => {
-        if (!selected) return;
+        if (!selected) {
+            setError(`Please select a ${title.toLowerCase().includes("round") ? "round" : "tournament"} to proceed.`);
+            return;
+        }
+        setError("");
+        setSelected(null);
         onConfirm(selected.value);
+    };
+
+    const handleCancel = () => {
+        setError("");
+        setSelected(null);
+        onCancel();
     };
 
     return (
@@ -44,7 +57,7 @@ export const SelectModal = ({
                 zIndex: 99999,
                 display: "flex", alignItems: "center", justifyContent: "center",
             }}
-            onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+            onClick={(e) => { if (e.target === e.currentTarget) handleCancel(); }}
         >
             <div style={{
                 backgroundColor: "#060413",
@@ -76,42 +89,38 @@ export const SelectModal = ({
                 )}
 
                 {/* react-select */}
-                <div style={{ marginBottom: "24px" }}>
+                <div style={{ marginBottom: "8px" }}>
                     <ReactSelect
                         options={options}
                         styles={customStyles}
                         placeholder={placeholder}
                         menuPosition="fixed"
-                        onChange={(opt) => { selected = opt as SelectOption; }}
+                        value={selected}
+                        onChange={(opt) => {
+                            setSelected(opt as SelectOption);
+                            setError("");
+                        }}
                     />
                 </div>
 
-                {/* buttons */}
+                {/* error message */}
+                {error && (
+                    <p style={{
+                        color: "#ff6b6b",
+                        fontSize: "0.78rem",
+                        textAlign: "center",
+                        marginBottom: "16px",
+                        letterSpacing: "0.5px",
+                    }}>
+                        ⚠ {error}
+                    </p>
+                )}
+
+                {/* no error spacing */}
+                {!error && <div style={{ marginBottom: "16px" }} />}
+
+                {/* buttons — confirm first, cancel second */}
                 <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-                    <button
-                        onClick={onCancel}
-                        style={{
-                            background: "transparent",
-                            border: "1px solid #767976",
-                            color: "#c8d0c8",
-                            padding: "8px 24px",
-                            borderRadius: "6px",
-                            cursor: "pointer",
-                            letterSpacing: "1px",
-                            fontSize: "0.85rem",
-                            transition: "all 0.2s ease",
-                        }}
-                        onMouseEnter={e => {
-                            (e.target as HTMLButtonElement).style.backgroundColor = "rgba(118,121,118,0.2)";
-                            (e.target as HTMLButtonElement).style.color = "#fff";
-                        }}
-                        onMouseLeave={e => {
-                            (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
-                            (e.target as HTMLButtonElement).style.color = "#c8d0c8";
-                        }}
-                    >
-                        Cancel
-                    </button>
                     <button
                         onClick={handleConfirm}
                         style={{
@@ -135,6 +144,31 @@ export const SelectModal = ({
                         }}
                     >
                         {confirmText}
+                    </button>
+
+                    <button
+                        onClick={handleCancel}
+                        style={{
+                            background: "transparent",
+                            border: "1px solid #767976",
+                            color: "#c8d0c8",
+                            padding: "8px 24px",
+                            borderRadius: "6px",
+                            cursor: "pointer",
+                            letterSpacing: "1px",
+                            fontSize: "0.85rem",
+                            transition: "all 0.2s ease",
+                        }}
+                        onMouseEnter={e => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "rgba(118,121,118,0.2)";
+                            (e.target as HTMLButtonElement).style.color = "#fff";
+                        }}
+                        onMouseLeave={e => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
+                            (e.target as HTMLButtonElement).style.color = "#c8d0c8";
+                        }}
+                    >
+                        Cancel
                     </button>
                 </div>
             </div>
