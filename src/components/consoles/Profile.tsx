@@ -449,65 +449,72 @@ export function Profile() {
                         </div>
 
                         {/* Games Card */}
-                        <div className="profile-card d-flex flex-column" style={{ width: '50%' }}>
-                            <h3 className="profile-card-title">Games</h3>
-                            <div className="console-table-wrapper" style={{ flex: 1, maxHeight: 'none', overflow: 'visible' }}>
-                                {games && games.length === 0 ? (
-                                    <p className="text-center profile-value">No games found.</p>
-                                ) : (
-                                    <Accordion className="leaderboard-accordion">
-                                        {games?.map((game, index) => (
-                                            <Accordion.Item eventKey={String(index)} key={game.gameId}>
-                                                <Accordion.Header>Game {index + 1}</Accordion.Header>
-                                                <Accordion.Body>
-                                                    <div className="leaderboard-inner-table-wrapper">
-                                                        <table className="profile-games-table w-100">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th>Game ID</th>
-                                                                    <td>{game.gameId}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Date</th>
-                                                                    <td>{game.gameDate}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Player 1</th>
-                                                                    <td>{game.player1Name}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Player 2</th>
-                                                                    <td>{game.player2Name}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Score</th>
-                                                                    <td>{game.score1} - {game.score2}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Margin</th>
-                                                                    <td>{game.margin}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Winner</th>
-                                                                    <td>{game.winnerName}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Tied</th>
-                                                                    <td>{game.gameTied ? "Yes" : "No"}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div className="leaderboard-rank-badge">
-                                                        {getGameResult(game)}
-                                                    </div>
-                                                </Accordion.Body>
-                                            </Accordion.Item>
-                                        ))}
-                                    </Accordion>
-                                )}
+                        {/* Games Card */}
+                            <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
+                                <h3 className="profile-card-title">Games</h3>
+
+                                {/* ONLY ONE scroll container */}
+                                <div className="profile-scroll-area">
+                                    {games && games.length === 0 ? (
+                                        <p className="text-center profile-value">No games found.</p>
+                                    ) : (
+                                        <Accordion className="leaderboard-accordion" alwaysOpen>
+                                            {games?.map((game, index) => (
+                                                <Accordion.Item eventKey={String(index)} key={game.gameId}>
+                                                    <Accordion.Header>
+                                                        Game {index + 1}
+                                                    </Accordion.Header>
+
+                                                    <Accordion.Body>
+                                                        <div className="leaderboard-inner-table-wrapper">
+                                                            <table className="profile-games-table w-100">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th>Game ID</th>
+                                                                        <td>{game.gameId}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Date</th>
+                                                                        <td>{game.gameDate}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Player 1</th>
+                                                                        <td>{game.player1Name}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Player 2</th>
+                                                                        <td>{game.player2Name}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Score</th>
+                                                                        <td>{game.score1} - {game.score2}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Margin</th>
+                                                                        <td>{game.margin}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Winner</th>
+                                                                        <td>{game.winnerName}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Tied</th>
+                                                                        <td>{game.gameTied ? "Yes" : "No"}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div className="leaderboard-rank-badge">
+                                                            {getGameResult(game)}
+                                                        </div>
+                                                    </Accordion.Body>
+                                                </Accordion.Item>
+                                            ))}
+                                        </Accordion>
+                                    )}
+                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
