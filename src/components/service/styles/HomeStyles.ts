@@ -108,28 +108,30 @@ export const homeStyles = `
     margin-top: 36px;
     animation: hFadeUp .9s ease .3s both;
   }
-  .h-stile {
-    width: 52px; height: 58px;
-    background: #0f0d1f;
-    border: 1px solid rgba(224,211,24,0.14);
-    border-radius: 7px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 2px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.5);
-    transition: transform .2s, box-shadow .2s;
-    cursor: default;
-  }
+.h-stile {
+  width: 52px; height: 58px;
+  background: #0f0d1f;
+  border: 1px solid rgba(224,211,24,0.14);
+  border-radius: 7px;
+  display: flex;
+  align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  transition: transform .2s, box-shadow .2s;
+  cursor: default;
+  position: relative; /* ← add this */
+}
+.h-stile-letter {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 1.3rem; font-weight: 900; color: #e0d318;
+}
+.h-stile-pts {
+  position: absolute; /* ← add this */
+  bottom: 4px;        /* ← add this */
+  right: 5px;         /* ← add this */
+  font-size: .5rem; font-weight: 700;
+  color: rgba(224,211,24,0.55); letter-spacing: 1px;
+}
   .h-stile:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(224,211,24,0.22); }
-  .h-stile-letter {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 1.3rem; font-weight: 900; color: #e0d318;
-  }
-  .h-stile-pts {
-    font-size: .55rem; font-weight: 700;
-    color: rgba(224,211,24,0.55); letter-spacing: 1px;
-  }
-
   .h-hero-desc {
     max-width: 540px;
     font-size: .95rem; color: #bfd0e1;

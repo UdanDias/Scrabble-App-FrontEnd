@@ -50,7 +50,7 @@ export function Home() {
           {tiles.map(([l, p], i) => (
             <div className="h-stile" key={i}>
               <div className="h-stile-letter">{l}</div>
-              <div className="h-stile-pts">{p}pt</div>
+              <div className="h-stile-pts">{p}</div>
             </div>
           ))}
         </div>
