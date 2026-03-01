@@ -28,7 +28,7 @@ export const customStyles = {
     }),
     singleValue: (base: any) => ({
         ...base,
-        color: "#e0d318a1",
+        color: "#dae6f2d1",
         textAlign: "center" as const,
     }),
     dropdownIndicator: (base: any) => ({

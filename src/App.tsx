@@ -24,7 +24,7 @@ import { HomeAfter } from './components/consoles/HomeAfter';
 
 function AppLayout() {
   const location = useLocation();
-  const isAuthPage = ['/', '/signin', '/signup', '/home', '/homeafter'].includes(location.pathname);
+  const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
   return (
     <div style={{ paddingTop: '60px' }}>
