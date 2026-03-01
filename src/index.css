@@ -726,15 +726,15 @@ code {
   font-weight: bold;
   width: 30%;
 }
-/* Fixed height bottom cards (Performance + Games) */
+
 .profile-bottom-card {
-  height: 500px;              /* 👈 Set your fixed height here */
+  min-height: 200px;   /* 👈 minimum size */
+  max-height: 500px;   /* 👈 stop growing here */
   display: flex;
   flex-direction: column;
 }
-/* Scrollable content inside bottom cards */
+
 .profile-scroll-area {
-  flex: 1;
   overflow-y: auto;
 }
 .profile-scroll-area::-webkit-scrollbar {

@@ -412,7 +412,7 @@ export function Profile() {
                     <div className="d-flex gap-4 align-items-stretch">
 
                         {/* Performance Card */}
-                        <div className="profile-card" style={{ width: '50%' }}>
+                        <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
                             <h3 className="profile-card-title">Performance</h3>
                             <div className="leaderboard-inner-table-wrapper">
                                 <table className="profile-games-table w-100">
@@ -454,9 +454,11 @@ export function Profile() {
                                 <h3 className="profile-card-title">Games</h3>
 
                                 {/* ONLY ONE scroll container */}
-                                <div className="profile-scroll-area">
+                                <div className="profile-scroll-area" style={{ flex: 1 }}>
                                     {games && games.length === 0 ? (
-                                        <p className="text-center profile-value">No games found.</p>
+                                        <div className="d-flex justify-content-center align-items-center h-100">
+                                            <p className="profile-value">No games found.</p>
+                                        </div>
                                     ) : (
                                         <Accordion className="leaderboard-accordion" alwaysOpen>
                                             {games?.map((game, index) => (
