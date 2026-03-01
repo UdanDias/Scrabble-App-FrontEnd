@@ -352,6 +352,10 @@ export function Profile() {
         if (game.winnerId === player?.playerId) return <span className="badge bg-success fs-6">Won the Game</span>;
         return <span className="badge bg-danger fs-6">Lost the Game</span>;
     };
+    const genderOptions = [
+        { value: "Male", label: "Male" },
+        { value: "Female", label: "Female" },
+    ];
 
     return (
         <>

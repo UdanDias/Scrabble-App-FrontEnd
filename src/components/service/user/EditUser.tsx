@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import UpdateUser from "./UpdateUser";
+import ReactSelect from "react-select";
+import { customStyles } from "../styles/CustomStyles";
 
 interface User {
     userId: string;
@@ -69,7 +71,15 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
             throw error;
         }
     }
+    const genderOptions = [
+        { value: "Male", label: "Male" },
+        { value: "Female", label: "Female" },
+    ];
 
+    const roleOptions = [
+        { value: "ADMIN", label: "Admin" },
+        { value: "USER", label: "USER" },
+    ];
     return (
         <>
             <Modal show={show} onHide={handleClose} className="dark-modal">
@@ -124,15 +134,19 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                             onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel label="Gender" className="mb-3">
-                        <Form.Select name="gender" value={userDetails.gender} onChange={handleOnChange}>
-
-                            <option value="" disabled>Select a Gender</option>
-                            <option value="Male" disabled>Male</option>
-                            <option value="Female" disabled>Female</option>
-
-                        </Form.Select>
-                    </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={genderOptions}
+                            styles={customStyles}
+                            placeholder="Select Gender"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={genderOptions.find(o => o.value === userDetails.gender) ?? null}
+                            onChange={(selected) =>
+                                setUserDetails(prev => ({ ...prev, gender: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
 
                     <FloatingLabel label="Date of Birth" className="mb-3">
                         <Form.Control
@@ -161,14 +175,19 @@ const EditUser = ({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                             onChange={handleOnChange} />
                     </FloatingLabel>
 
-                    <FloatingLabel label="Role" className="mb-3">
-                        <Form.Control
-                            type="text"
-                            name="role"
-                            placeholder="Role"
-                            value={userDetails.role}
-                            onChange={handleOnChange} />
-                    </FloatingLabel>
+                    <div className="mb-3">
+                        <ReactSelect
+                            options={roleOptions}
+                            styles={customStyles}
+                            placeholder="Select Role"
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            value={roleOptions.find(o => o.value === userDetails.role) ?? null}
+                            onChange={(selected) =>
+                                setUserDetails(prev => ({ ...prev, role: selected?.value ?? "" }))
+                            }
+                        />
+                    </div>
 
                     <FloatingLabel label="Phone" className="mb-3">
                         <Form.Control
