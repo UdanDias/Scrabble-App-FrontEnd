@@ -240,6 +240,7 @@ import UpdatePlayer from "../service/player/UpdatePlayer";
 import ReactSelect from "react-select";
 import { customStyles } from "../service/styles/CustomStyles";
 import { ConsoleHeader } from "./ConsoleHeader";
+import Swal from "sweetalert2";
 
 interface Player {
     playerId: string;
@@ -337,17 +338,43 @@ export function Profile() {
     //         console.error("Error updating player:", error);
     //     }
     // };
+    // const handleSave = async () => {
+    //     if (!editData) return;
+    //     try {
+    //         const { age, ...dataToSend } = editData;
+    //         await UpdatePlayer(editData);
+    //         await fetchData();    // re-fetch everything instead of relying on returned value
+    //         handleEditClose();
+    //     } catch (error) {
+    //         console.error("Error updating player:", error);
+    //     }
+    // };
     const handleSave = async () => {
-        if (!editData) return;
-        try {
-            const { age, ...dataToSend } = editData;
-            await UpdatePlayer(editData);
-            await fetchData();    // re-fetch everything instead of relying on returned value
-            handleEditClose();
-        } catch (error) {
-            console.error("Error updating player:", error);
+    if (!editData) return;
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
         }
-    };
+    });
+
+    try {
+        const { age, ...dataToSend } = editData;
+        await UpdatePlayer(editData);
+        await fetchData();
+        handleEditClose();
+        Toast.fire({ icon: "success", title: "Player Updated Successfully" });
+    } catch (error) {
+        console.error("Error updating player:", error);
+        Toast.fire({ icon: "error", title: "Failed To Update Player" });
+    }
+};
 
     const getGameResult = (game: PlayerGame) => {
         if (game.bye) return <span className="badge-game-bye">Bye Game</span>;
