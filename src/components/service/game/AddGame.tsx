@@ -233,10 +233,17 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
         }
         
     };
-    const playerOptions = players.map(p => ({
+    // const playerOptions = players.map(p => ({
+    //     value: p.playerId,
+    //     label: `${p.firstName} ${p.lastName}`
+    // }));
+    const playerOptions = players
+    .map(p => ({
         value: p.playerId,
         label: `${p.firstName} ${p.lastName}`
-    }));
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));  // 👈 Add this
+    
 
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
