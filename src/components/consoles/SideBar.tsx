@@ -21,7 +21,7 @@ const Sidebar = () => {
             }
         });
         Toast.fire({ icon: "warning", title: "You logged out" });
-        navigate("/signin");
+        navigate("/home");
     };
 
     return (

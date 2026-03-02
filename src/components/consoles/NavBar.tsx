@@ -22,7 +22,7 @@ function NavBar(){
                 }
             });
             Toast.fire({ icon: "warning", title: "You Logged Out" });
-            navigate("/signin");
+            navigate("/home");
         } catch (error) {
             const Toast = Swal.mixin({
                 toast: true,
