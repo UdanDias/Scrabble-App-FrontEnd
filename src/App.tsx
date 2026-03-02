@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import { AuthProvider } from './components/auth/AuthProvider';
+import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import { SignIn } from './components/auth/SignIn';
 import { SignUp } from './components/auth/SignUp';
 
@@ -24,6 +24,8 @@ import Footer from './components/consoles/Footer';
 
 
 function AppLayout() {
+  const { role } = useAuth();
+  const isAdmin = role === "ROLE_ADMIN";
   const location = useLocation();
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
@@ -47,7 +49,7 @@ function AppLayout() {
         >
           <div style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<Navigate to="/signin" />}/>
+            <Route path="/" element={<Navigate to="/home" />}/>
             {/* <Route path="/unauthhome" element={<UnAuthHome />} />  */}
             <Route path="/home" element={<Home />} /> 
             <Route path="/homeafter" element={<HomeAfter />} />
@@ -55,10 +57,11 @@ function AppLayout() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/user" element={<UserConsole />} />
+            <Route path="/user" element={isAdmin ? <UserConsole /> : <Navigate to="/leaderboard" />} />
+            <Route path="/game" element={isAdmin ? <GameConsole /> : <Navigate to="/leaderboard" />} />
             <Route path="/player" element={<PlayerConsole />} />
             <Route path="/tournament" element={<TournamentConsole />} />
-            <Route path="/game" element={<GameConsole />} />
+            {/* <Route path="/game" element={<GameConsole />} /> */}
             <Route path="/leaderboard" element={<LeaderBoard />} />
           </Routes>
           </div>

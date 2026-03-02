@@ -4,7 +4,8 @@ import Swal from 'sweetalert2';
 import { useAuth } from '../auth/AuthProvider';
 
 const Sidebar = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, logout, role } = useAuth();
+    const isAdmin = role === "ROLE_ADMIN";
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -29,7 +30,6 @@ const Sidebar = () => {
             <Nav className="flex-column sidebar-nav">
                 {isAuthenticated && (
                     <>
-
                         <Nav.Link as={NavLink} to="/profile" className="sidebar-item">
                             <span className="sidebar-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -60,27 +60,31 @@ const Sidebar = () => {
                             <span className="sidebar-label">TOURNAMENT</span>
                         </Nav.Link>
 
-                        <Nav.Link as={NavLink} to="/game" className="sidebar-item">
-                            <span className="sidebar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="M12 8v4l3 3"/>
-                                </svg>
-                            </span>
-                            <span className="sidebar-label">GAME</span>
-                        </Nav.Link>
+                        {isAdmin && (
+                            <Nav.Link as={NavLink} to="/game" className="sidebar-item">
+                                <span className="sidebar-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M12 8v4l3 3"/>
+                                    </svg>
+                                </span>
+                                <span className="sidebar-label">GAME</span>
+                            </Nav.Link>
+                        )}
 
-                        <Nav.Link as={NavLink} to="/user" className="sidebar-item">
-                            <span className="sidebar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <circle cx="9" cy="8" r="3"/>
-                                    <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
-                                    <path d="M16 5c1.7 0 3 1.3 3 3s-1.3 3-3 3"/>
-                                    <path d="M21 20c0-3-1.8-5.5-5-6"/>
-                                </svg>
-                            </span>
-                            <span className="sidebar-label">USER</span>
-                        </Nav.Link>
+                        {isAdmin && (
+                            <Nav.Link as={NavLink} to="/user" className="sidebar-item">
+                                <span className="sidebar-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                        <circle cx="9" cy="8" r="3"/>
+                                        <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+                                        <path d="M16 5c1.7 0 3 1.3 3 3s-1.3 3-3 3"/>
+                                        <path d="M21 20c0-3-1.8-5.5-5-6"/>
+                                    </svg>
+                                </span>
+                                <span className="sidebar-label">USER</span>
+                            </Nav.Link>
+                        )}
 
                         <Nav.Link as={NavLink} to="/leaderboard" className="sidebar-item">
                             <span className="sidebar-icon">
@@ -95,7 +99,6 @@ const Sidebar = () => {
 
                         <div className="sidebar-footer">
                             <button className="sidebar-logout-btn" onClick={handleLogout}>
-                                {/* <span className="sidebar-icon">🚪</span> */}
                                 <span>LOG OUT</span>
                             </button>
                         </div>

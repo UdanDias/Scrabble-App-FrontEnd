@@ -350,10 +350,10 @@ export function Profile() {
     };
 
     const getGameResult = (game: PlayerGame) => {
-        if (game.bye) return <span className="badge bg-secondary fs-6">Bye Game</span>;
-        if (game.gameTied) return <span className="badge bg-warning text-dark fs-6">Game Tied</span>;
-        if (game.winnerId === player?.playerId) return <span className="badge bg-success fs-6">Won the Game</span>;
-        return <span className="badge bg-danger fs-6">Lost the Game</span>;
+        if (game.bye) return <span className="badge-game-bye">Bye Game</span>;
+        if (game.gameTied) return <span className="badge-game-tied">Game Tied</span>;
+        if (game.winnerId === player?.playerId) return <span className="badge-game-won">Won the Game</span>;
+        return <span className="badge-game-lost">Lost the Game</span>;
     };
     const genderOptions = [
         { value: "Male", label: "Male" },
@@ -444,10 +444,10 @@ export function Profile() {
                             </div>
                             <div className="d-flex justify-content-center mt-3">
                                 <span className={`badge fs-6 ${
-                                    performance?.playerRank === 1 ? "bg-warning text-dark" :
-                                    performance?.playerRank === 2 ? "bg-secondary" :
-                                    performance?.playerRank === 3 ? "bg-danger" :
-                                    "bg-primary"
+                                    performance?.playerRank === 1 ? "badge-rank-1" :
+                                    performance?.playerRank === 2 ? "badge-rank-2" :
+                                    performance?.playerRank === 3 ? "badge-rank-3" :
+                                    "badge-rank-default"
                                 }`}>
                                     Rank #{performance?.playerRank}
                                 </span>

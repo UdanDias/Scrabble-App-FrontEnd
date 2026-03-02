@@ -490,6 +490,7 @@ code {
   color: #75deb3c9;
   border-radius: 20px;
   padding:10px;
+  box-shadow: 0 0 8px #69f0b8c8;
 }
 .badge-game-lost {
   background-color: transparent;
@@ -497,6 +498,7 @@ code {
   color: #e95454;
   border-radius: 20px;
   padding:10px;
+  box-shadow: 0 0 8px #b73434;
 }
 .badge-game-tied {
   background-color: transparent;
@@ -504,6 +506,7 @@ code {
   color: #a7b1c1!important;
   border-radius: 20px;
   padding:10px;
+  box-shadow: 0 0 8px #747d88;
 }
 .badge-game-bye {
   background-color: transparent;
@@ -511,6 +514,40 @@ code {
   color: #5293ee;
   border-radius: 20px;
   padding:10px;
+  box-shadow: 0 0 8px #1d61c1;
+}
+.badge-rank-1 {
+  background-color: transparent;
+  border: 1px solid #e0d318d4;
+  color: #e0d318d4!important;
+  border-radius: 20px;
+  padding:10px;
+  box-shadow: 0 0 8px #e0d318d4;
+}
+.badge-rank-2 {
+  background-color: transparent;
+  border: 1px solid #9babc2;
+  color: #9babc2!important;
+  border-radius: 20px;
+  padding:10px;
+  box-shadow: 0 0 8px #9babc2;
+}
+.badge-rank-3 {
+  background-color: transparent;
+  border: 1px solid #be3c26;
+  color: #be3c26!important;
+  border-radius: 20px;
+  padding:10px;
+  box-shadow: 0 0 8px #be3c26;
+}
+
+  .badge-rank-default {
+  background-color: transparent;
+  border: 1px solid #1d61c1;
+  color: #5293ee!important;
+  border-radius: 20px;
+  padding:10px;
+  box-shadow: 0 0 8px #1d61c1;
 }
 
 .game-status {

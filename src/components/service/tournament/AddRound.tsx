@@ -15,9 +15,10 @@ interface AddRoundProps {
     tournamentId: string
     handleClose: () => void
     handleAdd: (newRound: Round) => void
+    defaultRoundNumber?: number
 }
 
-const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps) => {
+const AddRound = ({ show, tournamentId, handleClose, handleAdd , defaultRoundNumber = 1 }: AddRoundProps) => {
     const [details, setDetails] = useState({
         roundNumber: 1,
         tournamentId: ""
@@ -26,10 +27,10 @@ const AddRound = ({ show, tournamentId, handleClose, handleAdd }: AddRoundProps)
     useEffect(() => {
         if (show) {
             setDetails({
-            roundNumber: 1, 
+            roundNumber: defaultRoundNumber,
             tournamentId })
         }
-    }, [show, tournamentId])
+    }, [show, tournamentId,defaultRoundNumber])
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDetails(prev => ({ ...prev, [e.target.name]: e.target.value }))
