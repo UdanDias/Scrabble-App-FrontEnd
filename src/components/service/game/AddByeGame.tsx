@@ -63,10 +63,9 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
             })
         }
     },[show])
-    const handleSave=async()=>{
+    const handleSave = async () => {
         try {
-             
-            const byeGameDetails=await CreateByeGame({...byeGameData,roundId})
+            const byeGameDetails = await CreateByeGame({ ...byeGameData, roundId });
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -79,14 +78,37 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                 }
             });
             Toast.fire({ icon: "success", title: "Added Bye Game Successfully" });
-            handleAdd(byeGameDetails)
-            handleClose()
+            handleAdd(byeGameDetails);
+
+            // 👇 Ask if they want to add another
+            const result = await Swal.fire({
+                title: "Add Another Bye Game?",
+                text: "Do you want to add another bye game to this round?",
+                icon: "question",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                confirmButtonColor: "#510dfd",
+                cancelButtonColor: "#6c757d",
+            });
+
+            if (result.isConfirmed) {
+                // Reset form and keep modal open
+                SetByeGameData({
+                    playerId: "",
+                    gameDate: "",
+                });
+            } else {
+                handleClose();
+            }
+
         } catch (error) {
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
-                timer: 3000,
+                    timer: 3000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
@@ -94,10 +116,8 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                 }
             });
             Toast.fire({ icon: "error", title: "Bye Game Addition Failed" });
-
         }
-        
-    }
+    };
     // const playerOptions = players.map(p => ({
     //     value: p.playerId,
     //     label: `${p.firstName} ${p.lastName}`
