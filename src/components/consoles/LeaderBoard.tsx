@@ -8,6 +8,7 @@ import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoar
 import Swal from "sweetalert2";
 import Select from "react-select";
 import { customStyles } from "../service/styles/CustomStyles";
+import { ConsoleHeader } from "./ConsoleHeader";
 interface RankedPlayerData {
     playerId: string;
     firstName: string;
@@ -236,19 +237,23 @@ const tournamentOptions = [
 
     return (
         <div className="leaderboard-page">
+            <ConsoleHeader
+                title="Leaderboard"
+                subtitle="Tournament rankings and player standings"
+            />
             <div className="console-table-container">
                 <div className="mb-3" style={{ maxWidth: "400px", margin: "0 auto 16px auto" }}>
                     <Select
-    options={tournamentOptions}
-    styles={customStyles}
-    value={tournamentOptions.find(o => o.value === selectedTournamentId) ?? tournamentOptions[0]}
-    onChange={(selected) => {
-        const val = selected?.value ?? "";
-        setSelectedTournamentId(val);
-        setActiveKey(null);
-        handlePopulateLeaderBoard(val || undefined);
-    }}
-/>
+                        options={tournamentOptions}
+                        styles={customStyles}
+                        value={tournamentOptions.find(o => o.value === selectedTournamentId) ?? tournamentOptions[0]}
+                        onChange={(selected) => {
+                            const val = selected?.value ?? "";
+                            setSelectedTournamentId(val);
+                            setActiveKey(null);
+                            handlePopulateLeaderBoard(val || undefined);
+                        }}
+                    />
                 </div>
 
                 <div className="console-table-wrapper">

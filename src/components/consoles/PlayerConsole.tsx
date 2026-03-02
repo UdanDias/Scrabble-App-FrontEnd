@@ -149,12 +149,7 @@ export  function PlayerConsole(){
             <ConsoleHeader
                 title="Player Console"
                 subtitle="Manage registered players and their profiles"
-                icon={
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                    </svg>
-                }
+                
             />
             <div className="create-button d-flex justify-content-end d-flex gap-2 ">
                 <Button className="btn-create" onClick={()=>SetShowAddPlayerModal(true)}>

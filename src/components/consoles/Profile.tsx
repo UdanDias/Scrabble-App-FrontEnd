@@ -366,12 +366,7 @@ export function Profile() {
                 <ConsoleHeader
                     title="Profile"
                     subtitle={player ? `Welcome back, ${player.firstName} ${player.lastName} ✦` : "Loading..."}
-                    icon={
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(224,211,24,0.7)" strokeWidth="1.5">
-                            <circle cx="12" cy="8" r="4"/>
-                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                        </svg>
-                    }
+                    
                 />
                 <div className="console-table-container" style={{ width: '70%' }}>
 

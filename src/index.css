@@ -484,6 +484,35 @@ code {
   color: #f472b6;
 }
 
+.badge-game-won {
+  background-color: transparent;
+  border: 1px solid #69f0b8c8;
+  color: #75deb3c9;
+  border-radius: 20px;
+  padding:10px;
+}
+.badge-game-lost {
+  background-color: transparent;
+  border: 1px solid #b73434;
+  color: #e95454;
+  border-radius: 20px;
+  padding:10px;
+}
+.badge-game-tied {
+  background-color: transparent;
+  border: 1px solid #747d88;
+  color: #a7b1c1!important;
+  border-radius: 20px;
+  padding:10px;
+}
+.badge-game-bye {
+  background-color: transparent;
+  border: 1px solid #1d61c1;
+  color: #5293ee;
+  border-radius: 20px;
+  padding:10px;
+}
+
 .game-status {
   background-color: transparent;
   border-radius: 20px;
