@@ -24,11 +24,11 @@ import Footer from './components/consoles/Footer';
 
 
 function AppLayout() {
-  const { role } = useAuth();
+  const { role,loading } = useAuth();
   const isAdmin = role === "ROLE_ADMIN";
   const location = useLocation();
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
-
+  if(loading) return null;
   return (
     <div style={{ paddingTop: '60px' }}>
       <NavBar />

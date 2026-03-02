@@ -56,6 +56,7 @@ interface JwtPayload {
 interface AuthContextType {
     isAuthenticated: boolean;
     role: string | null;
+    loading:boolean;
     login: (token: string) => void;
     logout: () => void;
 }
@@ -65,6 +66,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, SetIsAuthenticated] = useState(false);
     const [role, setRole] = useState<string | null>(null);
+    const [loading,SetLoading]=useState(true)
 
     useEffect(() => {
         const token = localStorage.getItem("scrblToken");
@@ -73,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const decoded = jwtDecode<JwtPayload>(token);
             setRole(decoded.roles);  // "ROLE_ADMIN" or "ROLE_USER"
         }
+        SetLoading(false)
     }, []);
 
     const login = (token: string) => {  // no change to signature
@@ -89,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, role, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, role, loading,login, logout }}>
             {children}
         </AuthContext.Provider>
     );
