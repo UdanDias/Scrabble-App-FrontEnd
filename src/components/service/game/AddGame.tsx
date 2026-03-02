@@ -203,20 +203,46 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
     const handleSave = async () => {
         try {
             const newGameDetails = await CreateGame({ ...newGameData, roundId });
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
-                Toast.fire({ icon: "success", title: "Added Game Successfully" });
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "success", title: "Added Game Successfully" });
             handleAdd(newGameDetails);
-            handleClose();
+
+            // 👇 Ask if they want to add another
+            const result = await Swal.fire({
+                title: "Add Another Game?",
+                text: "Do you want to add another game to this round?",
+                icon: "question",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                confirmButtonColor: "#510dfd",
+                cancelButtonColor: "#6c757d",
+            });
+
+            if (result.isConfirmed) {
+                // Reset form and keep modal open
+                SetNewGameData({
+                    player1Id: "",
+                    player2Id: "",
+                    score1: 0,
+                    score2: 0,
+                    gameDate: ""
+                });
+            } else {
+                handleClose();
+            }
+
         } catch (error) {
             const Toast = Swal.mixin({
                 toast: true,
@@ -231,7 +257,6 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
             });
             Toast.fire({ icon: "error", title: "Game Addition Failed" });
         }
-        
     };
     // const playerOptions = players.map(p => ({
     //     value: p.playerId,

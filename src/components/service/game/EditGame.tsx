@@ -163,7 +163,9 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                 {!loadingPlayers && players.length > 0 && gameData.player1Id !== undefined ? (
                     <div className="mb-3">
                         <ReactSelect
-                            options={players.map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))}
+                            options={players
+                                .map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))
+                                .sort((a, b) => a.label.localeCompare(b.label))}
                             styles={customStyles}
                             placeholder="Select Player 1"
                             menuPortalTarget={document.body}
@@ -186,7 +188,8 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                         <ReactSelect
                             options={players
                                 .filter(p => p.playerId !== gameData.player1Id)
-                                .map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))}
+                                .map(p => ({ value: p.playerId, label: `${p.firstName} ${p.lastName}` }))
+                                .sort((a, b) => a.label.localeCompare(b.label))}
                             styles={customStyles}
                             placeholder="Select Player 2"
                             menuPortalTarget={document.body}

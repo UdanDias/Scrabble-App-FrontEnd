@@ -16,10 +16,20 @@ export const customStyles = {
         ...base,
         justifyContent: "center",
     }),
+    // option: (base: any, state: any) => ({
+    //     ...base,
+    //     backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
+    //     color: state.isFocused ? "#e0d31877" : "#bfd0e1d1",
+    //     cursor: "pointer",
+    //     textAlign: "center" as const,
+    //     "&:active": {
+    //         backgroundColor: "rgba(6, 6, 2, 0.25)"
+    //     }
+    // }),
     option: (base: any, state: any) => ({
         ...base,
         backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
-        color: state.isFocused ? "#e0d31877" : "#bfd0e1d1",
+        color: state.isSelected ? "#dae6f2d1" : state.isFocused ? "#e0d31877" : "#dae6f2d1",  // 👈
         cursor: "pointer",
         textAlign: "center" as const,
         "&:active": {
