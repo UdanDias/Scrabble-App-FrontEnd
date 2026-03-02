@@ -201,6 +201,7 @@ const tournamentOptions = [
             color: "#fcd809",
             textAlign: "center" as const,
             fontSize: "1.7rem",
+            fontWeight:"bold",
         }),
         dropdownIndicator: (base: any) => ({
             ...base,
@@ -237,10 +238,12 @@ const tournamentOptions = [
 
     return (
         <div className="leaderboard-page">
-            <ConsoleHeader
-                title="Leaderboard"
-                subtitle="Tournament rankings and player standings"
-            />
+            <div style={{ marginLeft: "-30px" }}>
+                <ConsoleHeader
+                    title="Leaderboard"
+                    subtitle="Tournament rankings and player standings"
+                />
+            </div>
             <div className="console-table-container">
                 <div className="mb-3" style={{ maxWidth: "400px", margin: "0 auto 16px auto" }}>
                     <Select
