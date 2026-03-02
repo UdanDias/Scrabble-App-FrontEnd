@@ -98,10 +98,18 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
         }
         
     }
-    const playerOptions = players.map(p => ({
-        value: p.playerId,
-        label: `${p.firstName} ${p.lastName}`
-    }));
+    // const playerOptions = players.map(p => ({
+    //     value: p.playerId,
+    //     label: `${p.firstName} ${p.lastName}`
+    // }));
+
+    const playerOptions = players
+        .map(p => ({
+            value: p.playerId,
+            label: `${p.firstName} ${p.lastName}`
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));  // 👈 Add this
+        
     return (
         <>
             <Modal show={show} onHide={handleClose} className="dark-modal">
