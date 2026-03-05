@@ -284,6 +284,7 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
                         placeholder="Select Player 1"
                         menuPortalTarget={document.body}
                         menuPosition="fixed"
+                        isSearchable={true} 
                         value={playerOptions.find(o => o.value === newGameData.player1Id) ?? null}
                         onChange={(selected) =>
                             SetNewGameData(prev => ({ ...prev, player1Id: selected?.value ?? "" }))
@@ -298,6 +299,7 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
                         placeholder="Select Player 2"
                         menuPortalTarget={document.body}
                         menuPosition="fixed"
+                        isSearchable={true} 
                         value={playerOptions.find(o => o.value === newGameData.player2Id) ?? null}
                         onChange={(selected) =>
                             SetNewGameData(prev => ({ ...prev, player2Id: selected?.value ?? "" }))

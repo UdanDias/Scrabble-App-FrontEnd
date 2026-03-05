@@ -72,4 +72,8 @@ export const customStyles = {
         color: "#e0d318d4",
         textAlign: "center" as const,
     }),
+    input: (base: any) => ({
+    ...base,
+    color: "#e0d318d4",  // golden color matching your theme
+}),
 };
