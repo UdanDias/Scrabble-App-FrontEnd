@@ -21,6 +21,7 @@ import { Home } from './components/consoles/Home';
 // import { UnAuthHome } from './components/consoles/unAuthHome';
 import { HomeAfter } from './components/consoles/HomeAfter';
 import Footer from './components/consoles/Footer';
+import { PairingsConsole } from './components/consoles/PairingConsole';
 
 
 function AppLayout() {
@@ -61,6 +62,7 @@ function AppLayout() {
             <Route path="/game" element={isAdmin ? <GameConsole /> : <Navigate to="/leaderboard" />} />
             <Route path="/player" element={<PlayerConsole />} />
             <Route path="/tournament" element={<TournamentConsole />} />
+            <Route path='/pairings' element={<PairingsConsole/>}/>
             {/* <Route path="/game" element={<GameConsole />} /> */}
             <Route path="/leaderboard" element={<LeaderBoard />} />
           </Routes>
