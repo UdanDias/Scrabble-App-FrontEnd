@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import GetTournaments from "../service/tournament/GetTournaments";
+import GetSwissPairings from "../service/performance/GetSwissPairings";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface PairingDTO {
@@ -68,7 +70,7 @@ const customStyles = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export const PairingsConsole: React.FC = () => {
-    const BASE_URL = "http://localhost:8080/api/v1";
+    const BASE_URL = "http://localhost:8081/api/v1";
 
     const [tournaments, setTournaments] = useState<Tournament[]>([]);
     const [selectedTournament, setSelectedTournament] = useState<{ value: string; label: string } | null>(null);
@@ -81,9 +83,7 @@ export const PairingsConsole: React.FC = () => {
     useEffect(() => {
         const fetchTournaments = async () => {
             try {
-                const res = await fetch(`${BASE_URL}/tournament/getalltournaments`);
-                if (!res.ok) throw new Error();
-                const data: Tournament[] = await res.json();
+                const data: Tournament[] = await GetTournaments();
                 setTournaments(data);
             } catch {
                 setError("Could not load tournaments.");
@@ -96,29 +96,25 @@ export const PairingsConsole: React.FC = () => {
 
     // Fetch pairings from backend when tournament changes
     useEffect(() => {
-        if (!selectedTournament) {
+    if (!selectedTournament) {
+        setPairings([]);
+        return;
+    }
+    const fetchPairings = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data: PairingDTO[] = await GetSwissPairings(selectedTournament.value);
+            setPairings(data);
+        } catch {
+            setError("Could not load pairings for this tournament.");
             setPairings([]);
-            return;
+        } finally {
+            setLoading(false);
         }
-        const fetchPairings = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const res = await fetch(
-                    `${BASE_URL}/performance/getswisspairing?tournamentId=${selectedTournament.value}`
-                );
-                if (!res.ok) throw new Error();
-                const data: PairingDTO[] = await res.json();
-                setPairings(data);
-            } catch {
-                setError("Could not load pairings for this tournament.");
-                setPairings([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPairings();
-    }, [selectedTournament]);
+    };
+    fetchPairings();
+}, [selectedTournament]);
 
     const tournamentOptions = tournaments.map((t) => ({
         value: t.tournamentId,
@@ -220,13 +216,13 @@ export const PairingsConsole: React.FC = () => {
 
             {/* Pairings table */}
             {!loading && selectedTournament && pairings.length > 0 && (
-                <div className="console-table-container" style={{ width: "75%", margin: "0 auto" }}>
+                <div className="console-table-container" style={{ width: "90%", margin: "0 auto" }}>
 
                     {/* Stats strip */}
-                    <div style={{ display: "flex", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
+                    {/* <div style={{ display: "flex", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
                         {[
                             { label: "BOARDS", value: boards },
-                            { label: "GROUPS", value: groupedPairings.size },
+                            // { label: "GROUPS", value: groupedPairings.size },
                             { label: "BYE", value: byePairing ? byePairing.player1Name : "None" },
                         ].map((stat) => (
                             <div
@@ -248,6 +244,55 @@ export const PairingsConsole: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+                    </div> */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                        {/* Left: BOARDS + GROUPS */}
+                        <div style={{ display: "flex", gap:"16px" }}>
+                            {[
+                                { label: "BOARDS", value: boards },
+                                // { label: "GROUPS", value: groupedPairings.size },
+                            ].map((stat) => (
+                                <div
+                                    key={stat.label}
+                                    style={{
+                                        background: "#0d0c18",
+                                        border: "1px solid rgba(224,211,24,0.15)",
+                                        borderRadius: "8px",
+                                        padding: "10px 20px",
+                                        textAlign: "center",
+                                        minWidth: "130px",
+                                    }}
+                                >
+                                    <div style={{ color: "#e0d318a0", fontSize: "0.65rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "4px" }}>
+                                        {stat.label}
+                                    </div>
+                                    <div style={{ color: "#dae6f2d1", fontWeight: "bold", fontSize: "0.95rem" }}>
+                                        {stat.value}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Right: BYE centered in remaining space */}
+                        <div style={{ flex: 1, display: "flex", justifyContent: "center",marginLeft: "-125px" }}>
+                            <div
+                                style={{
+                                    background: "#0d0c18",
+                                    border: "1px solid rgba(224,211,24,0.15)",
+                                    borderRadius: "8px",
+                                    padding: "10px 20px",
+                                    textAlign: "center",
+                                    minWidth: "130px",
+                                }}
+                            >
+                                <div style={{ color: "#e0d318a0", fontSize: "0.65rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "4px" }}>
+                                    BYE
+                                </div>
+                                <div style={{ color: "#dae6f2d1", fontWeight: "bold", fontSize: "0.95rem" }}>
+                                    {byePairing ? byePairing.player1Name : "None"}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Table */}
@@ -266,7 +311,7 @@ export const PairingsConsole: React.FC = () => {
                                 {Array.from(groupedPairings.entries()).map(([groupNum, groupPairings]) => (
                                     <React.Fragment key={groupNum}>
                                         {/* Group divider */}
-                                        <tr>
+                                        {/* <tr>
                                             <td
                                                 colSpan={5}
                                                 style={{
@@ -279,10 +324,9 @@ export const PairingsConsole: React.FC = () => {
                                                     backgroundColor: "#060413",
                                                 }}
                                             >
-                                                Group {groupNum}&nbsp;&nbsp;·&nbsp;&nbsp;
-                                                {winsDisplay(groupPairings[0].player1Wins)}W bracket
+                                                
                                             </td>
-                                        </tr>
+                                        </tr> */}
 
                                         {groupPairings.map((pair) => (
                                             <tr key={pair.boardNumber}>
@@ -293,9 +337,9 @@ export const PairingsConsole: React.FC = () => {
                                                 </td>
                                                 <td>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                        <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
+                                                        {/* <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
                                                             #{pair.player1Rank}
-                                                        </span>
+                                                        </span> */}
                                                         {pair.player1Name}
                                                     </div>
                                                 </td>
@@ -306,9 +350,9 @@ export const PairingsConsole: React.FC = () => {
                                                 </td>
                                                 <td>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                        <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
+                                                        {/* <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
                                                             #{pair.player2Rank}
-                                                        </span>
+                                                        </span> */}
                                                         {pair.player2Name}
                                                     </div>
                                                 </td>
@@ -349,9 +393,9 @@ export const PairingsConsole: React.FC = () => {
                                             </td>
                                             <td>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                    <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
+                                                    {/* <span style={{ fontSize: "0.7rem", color: "#e0d318a0", minWidth: "30px" }}>
                                                         #{byePairing.player1Rank}
-                                                    </span>
+                                                    </span> */}
                                                     {byePairing.player1Name}
                                                 </div>
                                             </td>
