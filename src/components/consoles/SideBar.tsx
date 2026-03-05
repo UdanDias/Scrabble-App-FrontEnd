@@ -97,6 +97,16 @@ const Sidebar = () => {
                             <span className="sidebar-label">LEADERBOARD</span>
                         </Nav.Link>
 
+                        <Nav.Link as={NavLink} to="/pairings" className="sidebar-item">
+                            <span className="sidebar-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    <path d="M8 6h13M8 12h13M8 18h13"/>
+                                    <path d="M3 6l1 1-1 1M3 12l1 1-1 1M3 18l1 1-1 1"/>
+                                </svg>
+                            </span>
+                            <span className="sidebar-label">PAIRINGS</span>
+                        </Nav.Link>
+
                         <div className="sidebar-footer">
                             <button className="sidebar-logout-btn" onClick={handleLogout}>
                                 <span>LOG OUT</span>
