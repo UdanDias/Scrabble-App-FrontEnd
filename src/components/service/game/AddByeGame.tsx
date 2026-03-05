@@ -160,6 +160,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                             placeholder="Select Player "
                             menuPortalTarget={document.body}
                             menuPosition="fixed"
+                            isSearchable={true}
                             value={playerOptions.find(o => o.value === byeGameData.playerId) ?? null}
                             onChange={(selected) =>
                                 SetByeGameData(prev => ({ ...prev, playerId: selected?.value ?? "" }))
