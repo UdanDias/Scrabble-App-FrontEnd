@@ -328,7 +328,7 @@ export function PlayerConsole() {
 
                 {/* Only show create buttons for admin */}
                 {isAdmin && (
-                    <div className="create-button d-flex justify-content-end gap-2">
+                    <div className="create-button d-flex justify-content-end gap-2 mt-3">
                         <Button className="btn-create" onClick={() => SetShowAddPlayerModal(true)}>
                             + Create Player
                         </Button>

@@ -65,7 +65,7 @@ export const customStyles = {
     }),
     menuPortal: (base: any) => ({
         ...base,
-        zIndex: 9999,
+        zIndex: 999999,
     }),
     placeholder: (base: any) => ({
         ...base,
