@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { Accordion, Table, Form } from "react-bootstrap";
+import { Accordion, Table } from "react-bootstrap";
 import { GetPlayersByRank } from "../service/performance/GetPlayersByRank";
 import GetTournaments from "../service/tournament/GetTournaments";
-import axios from "axios";
-import FetchToken from "../service/auth/FetchToken";
 import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoardByTournament";
+import { GetTeamLeaderboard } from "../service/team/GetTeamLeaderBoard";
 import Swal from "sweetalert2";
 import Select from "react-select";
-import { customStyles } from "../service/styles/CustomStyles";
 import { ConsoleHeader } from "./ConsoleHeader";
+
 interface RankedPlayerData {
     playerId: string;
     firstName: string;
@@ -20,67 +19,39 @@ interface RankedPlayerData {
     cumMargin: number;
 }
 
+interface RankedTeamData {
+    teamId: string;
+    teamName: string;
+    teamRank: number;
+    totalWins: number;
+    totalGamesPlayed: number;
+    avgMargin: number;
+    cumMargin: number;
+    members: { playerId: string; firstName: string; lastName: string }[];
+}
+
 interface Tournament {
     tournamentId: string;
     tournamentName: string;
 }
 
-export function LeaderBoard() {
-    const [rankedPlayerData, SetRankedPlayerData] = useState<RankedPlayerData[]>([]);
-    const [tournaments, setTournaments] = useState<Tournament[]>([]);
-    const [selectedTournamentId, setSelectedTournamentId] = useState<string>("");
-    const [activeKey, setActiveKey] = useState<string | null>(null);
-
-
-
-
-const tournamentOptions = [
-    { value: "", label: "All Tournaments" },
-    ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
+const tournamentTypeOptions = [
+    { value: "individual", label: "Individual" },
+    { value: "team", label: "Team" },
 ];
 
-// const customStyles = {
-//     control: (base: any, state: any) => ({
-//         ...base,
-//         backgroundColor: "#0d0c18",
-//         border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "rgba(224, 211, 24, 0.3)"}`,
-//         borderRadius: "8px",
-//         boxShadow: state.isFocused ? "0 0 12px rgba(224, 211, 24, 0.3)" : "none",
-//         "&:hover": {
-//             borderColor: "rgba(224, 211, 24, 0.6)",
-//             boxShadow: "0 0 8px rgba(224, 211, 24, 0.2)"
-//         }
-//     }),
-//     menu: (base: any) => ({
-//         ...base,
-//         backgroundColor: "#0d0c18",
-//         border: "1px solid rgba(224, 211, 24, 0.2)",
-//         borderRadius: "8px",
-//     }),
-//     option: (base: any, state: any) => ({
-//         ...base,
-//         backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
-//         color: state.isFocused ? "#ffffff" : "#bfd0e1d1",
-//         cursor: "pointer",
-//         "&:active": {
-//             backgroundColor: "rgba(224, 211, 24, 0.25)"
-//         }
-//     }),
-//     singleValue: (base: any) => ({
-//         ...base,
-//         color: "#bfd0e1d1"
-//     }),
-//     dropdownIndicator: (base: any) => ({
-//         ...base,
-//         color: "rgba(224, 211, 24, 0.6)",
-//         "&:hover": { color: "#e0d318d4" }
-//     }),
-//     indicatorSeparator: (base: any) => ({
-//         ...base,
-//         backgroundColor: "rgba(224, 211, 24, 0.2)"
-//     }),
-// };
+export function LeaderBoard() {
+    const [rankedPlayerData, SetRankedPlayerData] = useState<RankedPlayerData[]>([]);
+    const [rankedTeamData, setRankedTeamData] = useState<RankedTeamData[]>([]);
+    const [tournaments, setTournaments] = useState<Tournament[]>([]);
+    const [selectedTournamentId, setSelectedTournamentId] = useState<string>("");
+    const [tournamentType, setTournamentType] = useState<"individual" | "team">("individual");
+    const [activeKey, setActiveKey] = useState<string | null>(null);
 
+    const tournamentOptions = [
+        { value: "", label: "All Tournaments" },
+        ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
+    ];
 
     const sortPlayers = (players: RankedPlayerData[]) => {
         return [...players].sort((a, b) => {
@@ -91,240 +62,287 @@ const tournamentOptions = [
         });
     };
 
-    const handlePopulateLeaderBoard = async (tournamentId?: string) => {
-    try {
-        let leaderBoards;
+    const handlePopulateLeaderBoard = async (tournamentId?: string, type?: "individual" | "team") => {
+        const activeType = type ?? tournamentType;
+        setActiveKey(null);
 
-        if (tournamentId) {
-            try {
-                leaderBoards = await GetLeaderBoardByTournament(tournamentId);
-            } catch (error: any) {
-                // 404 or empty = no games played for this tournament
-                if (error?.response?.status === 404 || error?.response?.status === 400) {
-                    Swal.fire({
-                        title: "No Games Found",
-                        text: "No games have been played for this tournament yet.",
-                        icon: "warning"
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Failed to fetch leaderboard data.",
-                        icon: "error"
-                    });
-                }
-                SetRankedPlayerData([]);
+        if (activeType === "team") {
+            if (!tournamentId) {
+                setRankedTeamData([]);
                 return;
             }
-        } else {
-            leaderBoards = await GetPlayersByRank();
+            try {
+                const data = await GetTeamLeaderboard(tournamentId);
+                setRankedTeamData(data);
+            } catch {
+                Swal.fire({ title: "Error", text: "Failed to fetch team leaderboard.", icon: "error" });
+                setRankedTeamData([]);
+            }
+            return;
         }
 
-        if (leaderBoards && leaderBoards.length > 0) {
-            SetRankedPlayerData(sortPlayers(leaderBoards));
-        } else {
-            // API returned empty list — no games played
+        // Individual
+        try {
+            let leaderBoards;
             if (tournamentId) {
-                Swal.fire({
-                    title: "No Games Found",
-                    text: "No games have been played for this tournament yet.",
-                    icon: "warning"
-                });
+                try {
+                    leaderBoards = await GetLeaderBoardByTournament(tournamentId);
+                } catch (error: any) {
+                    if (error?.response?.status === 404 || error?.response?.status === 400) {
+                        Swal.fire({ title: "No Games Found", text: "No games have been played for this tournament yet.", icon: "warning" });
+                    } else {
+                        Swal.fire({ title: "Error", text: "Failed to fetch leaderboard data.", icon: "error" });
+                    }
+                    SetRankedPlayerData([]);
+                    return;
+                }
+            } else {
+                leaderBoards = await GetPlayersByRank();
             }
-            SetRankedPlayerData([]);
+            if (leaderBoards && leaderBoards.length > 0) {
+                SetRankedPlayerData(sortPlayers(leaderBoards));
+            } else {
+                if (tournamentId) {
+                    Swal.fire({ title: "No Games Found", text: "No games have been played for this tournament yet.", icon: "warning" });
+                }
+                SetRankedPlayerData([]);
+            }
+        } catch (error: any) {
+            if (error?.response?.status === 401) return;
+            console.error("Error fetching ranked player data", error);
         }
-    } catch (error: any) {
-        if (error?.response?.status === 401) return;
-        console.error("Error fetching ranked player data", error);
-    }
-};
+    };
 
     useEffect(() => {
         const init = async () => {
             const tournamentList = await GetTournaments();
             setTournaments(tournamentList);
-            handlePopulateLeaderBoard();
+            handlePopulateLeaderBoard(undefined, "individual");
         };
         init();
     }, []);
 
-    const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const val = e.target.value;
-        setSelectedTournamentId(val);
-        setActiveKey(null); // collapse all
-        handlePopulateLeaderBoard(val || undefined);
+    const handleTypeChange = (type: "individual" | "team") => {
+        setTournamentType(type);
+        setActiveKey(null);
+        SetRankedPlayerData([]);
+        setRankedTeamData([]);
+        handlePopulateLeaderBoard(selectedTournamentId || undefined, type);
     };
 
-    const customStyles = {
-        // control: (base: any, state: any) => ({
-        //     ...base,
-        //     backgroundColor: "#0d0c18",
-        //     border: `1px solid ${state.isFocused ? "rgba(224, 211, 24, 0.8)" : "#151321"}`,
-        //     borderRadius: "8px",
-        //     boxShadow: "none",
-        //     outline: "none",
-        //     "&:hover": {
-        //         outline: "none",
-        //         borderColor: "rgba(224, 211, 24, 0.6)",
-        //         boxShadow: "none"
-        //     }
-        // }),
+    // ── Shared select styles ──
+    const selectStyles = {
         control: (base: any, state: any) => ({
             ...base,
             backgroundColor: "#0d0c18",
             border: `1px solid ${state.isFocused ? "#e0d318" : "#e0d318"}`,
             borderRadius: "8px",
-            boxShadow: state.isFocused ? "0 0 12px rgba(224, 211, 24, 0.4)" : "0 0 6px rgba(224, 211, 24, 0.15)",
-            outline: state.isFocused ? "1px solid #e0d318" : "1px solid rgba(224, 211, 24, 0.2)",
-            "&:hover": {
-                borderColor: "rgba(224, 211, 24, 0.6)",
-                boxShadow: "0 0 10px rgba(224, 211, 24, 0.3)",
-                outline: "1px solid rgba(224, 211, 24, 0.4)",
-            }
+            boxShadow: state.isFocused ? "0 0 12px rgba(224,211,24,0.4)" : "0 0 6px rgba(224,211,24,0.15)",
+            outline: state.isFocused ? "1px solid #e0d318" : "1px solid rgba(224,211,24,0.2)",
+            "&:hover": { borderColor: "rgba(224,211,24,0.6)", boxShadow: "0 0 10px rgba(224,211,24,0.3)" }
         }),
-        valueContainer: (base: any) => ({
-            ...base,
-            justifyContent: "center",
-        }),
+        valueContainer: (base: any) => ({ ...base, justifyContent: "center" }),
         option: (base: any, state: any) => ({
             ...base,
-            backgroundColor: state.isFocused ? "rgba(224, 211, 24, 0.15)" : "#0d0c18",
+            backgroundColor: state.isFocused ? "rgba(224,211,24,0.15)" : "#0d0c18",
             color: state.isFocused ? "#e0d31877" : "#bfd0e1d1",
             cursor: "pointer",
             textAlign: "center" as const,
-            "&:active": {
-                backgroundColor: "rgba(6, 6, 2, 0.25)"
-            }
+            "&:active": { backgroundColor: "rgba(6,6,2,0.25)" }
         }),
-        singleValue: (base: any) => ({
-            ...base,
-            color: "#fcd809",
-            textAlign: "center" as const,
-            fontSize: "1.7rem",
-            fontWeight:"bold",
-        }),
-        dropdownIndicator: (base: any) => ({
-            ...base,
-            color: "rgba(224, 211, 24, 0.6)",
-            "&:hover": { color: "#e0d318d4" }
-        }),
-        indicatorSeparator: (base: any) => ({
-            ...base,
-            backgroundColor: "rgba(224, 211, 24, 0.2)"
-        }),
-        menu: (base: any) => ({
-            ...base,
-            backgroundColor: "#0d0c18",
-            border: "1px solid rgba(224, 211, 24, 0.2)",
-            borderRadius: "8px",
-            zIndex: 9999,
-        }),
-        menuList: (base: any) => ({
-            ...base,
-            backgroundColor: "#0d0c18",
-            borderRadius: "8px",
-            padding: 0,
-        }),
-        menuPortal: (base: any) => ({
-            ...base,
-            zIndex: 9999,
-        }),
-        placeholder: (base: any) => ({
-            ...base,
-            color: "#e0d318d4",
-            textAlign: "center" as const,
-        }),
+        singleValue: (base: any) => ({ ...base, color: "#fcd809", textAlign: "center" as const, fontSize: "1.4rem", fontWeight: "bold" }),
+        dropdownIndicator: (base: any) => ({ ...base, color: "rgba(224,211,24,0.6)", "&:hover": { color: "#e0d318d4" } }),
+        indicatorSeparator: (base: any) => ({ ...base, backgroundColor: "rgba(224,211,24,0.2)" }),
+        menu: (base: any) => ({ ...base, backgroundColor: "#0d0c18", border: "1px solid rgba(224,211,24,0.2)", borderRadius: "8px", zIndex: 9999 }),
+        menuList: (base: any) => ({ ...base, backgroundColor: "#0d0c18", borderRadius: "8px", padding: 0 }),
+        menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
+        placeholder: (base: any) => ({ ...base, color: "#e0d318d4", textAlign: "center" as const }),
+    };
+
+    const typeSelectStyles = {
+        ...selectStyles,
+        singleValue: (base: any) => ({ ...base, color: "#dae6f2d1", textAlign: "center" as const, fontSize: "0.9rem", fontWeight: "normal" }),
     };
 
     return (
         <div className="leaderboard-page">
             <div style={{ marginLeft: "-30px" }}>
-                <ConsoleHeader
-                    title="Leaderboard"
-                    subtitle="Tournament rankings and player standings"
-                />
+                <ConsoleHeader title="Leaderboard" subtitle="Tournament rankings and player standings" />
             </div>
             <div className="console-table-container">
-                <div className="mb-3" style={{ maxWidth: "400px", margin: "0 auto 16px auto" }}>
-                    <Select
-                        options={tournamentOptions}
-                        styles={customStyles}
-                        value={tournamentOptions.find(o => o.value === selectedTournamentId) ?? tournamentOptions[0]}
-                        onChange={(selected) => {
-                            const val = selected?.value ?? "";
-                            setSelectedTournamentId(val);
-                            setActiveKey(null);
-                            handlePopulateLeaderBoard(val || undefined);
-                        }}
-                    />
+
+                {/* Two dropdowns: tournament type + tournament selector */}
+                <div style={{ display: "flex", gap: "16px", maxWidth: "700px", margin: "0 auto 20px auto", alignItems: "center" }}>
+                    {/* Tournament type */}
+                    <div style={{ flex: "0 0 180px" }}>
+                        <Select
+                            options={tournamentTypeOptions}
+                            styles={typeSelectStyles}
+                            value={tournamentTypeOptions.find(o => o.value === tournamentType)}
+                            onChange={selected => {
+                                const val = (selected?.value ?? "individual") as "individual" | "team";
+                                handleTypeChange(val);
+                            }}
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                        />
+                    </div>
+
+                    {/* Tournament selector */}
+                    <div style={{ flex: 1 }}>
+                        <Select
+                            options={tournamentOptions}
+                            styles={selectStyles}
+                            value={tournamentOptions.find(o => o.value === selectedTournamentId) ?? tournamentOptions[0]}
+                            onChange={(selected) => {
+                                const val = selected?.value ?? "";
+                                setSelectedTournamentId(val);
+                                setActiveKey(null);
+                                handlePopulateLeaderBoard(val || undefined, tournamentType);
+                            }}
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                        />
+                    </div>
                 </div>
 
-                <div className="console-table-wrapper">
-                    <Table className="leaderboard-header-table" bordered>
-                        <thead>
-                            <tr>
-                                <th style={{ width: "60px", fontSize: "20px" }}>#Rank</th>
-                                <th style={{ paddingRight: "120px", textAlign: "center", fontSize: "20px" }}>Player</th>
-                            </tr>
-                        </thead>
-                    </Table>
-                    <Accordion 
-                        className="leaderboard-accordion"
-                        activeKey={activeKey ?? undefined}
-                        onSelect={(key) => setActiveKey(key as string | null)}
-                    >
-                        {rankedPlayerData.length === 0 ? (
+                {/* ── INDIVIDUAL leaderboard ── */}
+                {tournamentType === "individual" && (
+                    <div className="console-table-wrapper">
+                        <Table className="leaderboard-header-table" bordered>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "60px", fontSize: "20px" }}>#Rank</th>
+                                    <th style={{ paddingRight: "120px", textAlign: "center", fontSize: "20px" }}>Player</th>
+                                </tr>
+                            </thead>
+                        </Table>
+                        <Accordion
+                            className="leaderboard-accordion"
+                            activeKey={activeKey ?? undefined}
+                            onSelect={(key) => setActiveKey(key as string | null)}
+                        >
+                            {rankedPlayerData.length === 0 ? (
+                                <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>
+                                    No players found.
+                                </div>
+                            ) : (
+                                rankedPlayerData.map((player, index) => (
+                                    <Accordion.Item eventKey={String(index)} key={player.playerId}>
+                                        <Accordion.Header>
+                                            <div className="d-flex w-100 pe-3 position-relative">
+                                                <div className="rank-divider" style={{ width: "45px" }}>#{player.playerRank}</div>
+                                                <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem" }}>
+                                                    {player.firstName} {player.lastName}
+                                                </div>
+                                            </div>
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <div className="leaderboard-inner-table-wrapper">
+                                                <table className="leaderboard-inner-table w-100">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Total Games Played</th><td>{player.totalGamesPlayed}</td>
+                                                            <th>Total Wins</th><td>{player.totalWins}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Cum Margin</th><td>{player.cumMargin}</td>
+                                                            <th>Avg Margin</th><td>{player.avgMargin}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div className="leaderboard-rank-badge">
+                                                <span className={`rank-badge ${player.playerRank === 1 ? "rank-badge-gold" : player.playerRank === 2 ? "rank-badge-silver" : player.playerRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
+                                                    Rank #{player.playerRank}
+                                                </span>
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                ))
+                            )}
+                        </Accordion>
+                    </div>
+                )}
+
+                {/* ── TEAM leaderboard ── */}
+                {tournamentType === "team" && (
+                    <div className="console-table-wrapper">
+                        {!selectedTournamentId ? (
+                            <div style={{ color: "#bfd0e150", textAlign: "center", padding: "30px", fontSize: "0.9rem", letterSpacing: "1px" }}>
+                                Select a tournament to view team standings
+                            </div>
+                        ) : rankedTeamData.length === 0 ? (
                             <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>
-                                No players found for this tournament.
+                                No team data found for this tournament.
                             </div>
                         ) : (
-                            rankedPlayerData.map((player, index) => (
-                                <Accordion.Item eventKey={String(index)} key={player.playerId}>
-                                    <Accordion.Header>
-                                        <div className="d-flex w-100 pe-3 position-relative">
-                                            <div className="rank-divider" style={{ width: "45px" }}>
-                                                #{player.playerRank}
-                                            </div>
-                                            <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem" }}>
-                                                {player.firstName} {player.lastName}
-                                            </div>
-                                        </div>
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        <div className="leaderboard-inner-table-wrapper">
-                                            <table className="leaderboard-inner-table w-100">
-                                                <tbody>
-                                                    <tr>
-                                                        <th>Total Games Played</th>
-                                                        <td>{player.totalGamesPlayed}</td>
-                                                        <th>Total Wins</th>
-                                                        <td>{player.totalWins}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Cum Margin</th>
-                                                        <td>{player.cumMargin}</td>
-                                                        <th>Avg Margin</th>
-                                                        <td>{player.avgMargin}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div className="leaderboard-rank-badge">
-                                            <span className={`rank-badge ${
-                                                player.playerRank === 1 ? "rank-badge-gold" :
-                                                player.playerRank === 2 ? "rank-badge-silver" :
-                                                player.playerRank === 3 ? "rank-badge-bronze" :
-                                                "rank-badge-default"
-                                            }`}>
-                                                Rank #{player.playerRank}
-                                            </span>
-                                        </div>
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            ))
+                            <>
+                                <Table className="leaderboard-header-table" bordered>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "60px", fontSize: "20px" }}>#Rank</th>
+                                            <th style={{ paddingRight: "120px", textAlign: "center", fontSize: "20px" }}>Team</th>
+                                        </tr>
+                                    </thead>
+                                </Table>
+                                <Accordion
+                                    className="leaderboard-accordion"
+                                    activeKey={activeKey ?? undefined}
+                                    onSelect={(key) => setActiveKey(key as string | null)}
+                                >
+                                    {rankedTeamData.map((team, index) => (
+                                        <Accordion.Item eventKey={String(index)} key={team.teamId}>
+                                            <Accordion.Header>
+                                                <div className="d-flex w-100 pe-3 position-relative">
+                                                    <div className="rank-divider" style={{ width: "45px" }}>#{team.teamRank}</div>
+                                                    <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem" }}>
+                                                        {team.teamName}
+                                                    </div>
+                                                </div>
+                                            </Accordion.Header>
+                                            <Accordion.Body>
+                                                <div className="leaderboard-inner-table-wrapper">
+                                                    <table className="leaderboard-inner-table w-100">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Total Games</th><td>{team.totalGamesPlayed}</td>
+                                                                <th>Total Wins</th><td>{team.totalWins}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Cum Margin</th><td>{team.cumMargin}</td>
+                                                                <th>Avg Margin</th><td>{team.avgMargin}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {team.members && team.members.length > 0 && (
+                                                    <div style={{ marginTop: "10px" }}>
+                                                        <p style={{ color: "#e0d318a0", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "6px" }}>
+                                                            Members
+                                                        </p>
+                                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                                            {team.members.map(m => (
+                                                                <span key={m.playerId} style={{ background: "#0d0c18", border: "1px solid rgba(224,211,24,0.15)", borderRadius: "20px", padding: "3px 10px", fontSize: "0.75rem", color: "#bfd0e1d1" }}>
+                                                                    {m.firstName} {m.lastName}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div className="leaderboard-rank-badge">
+                                                    <span className={`rank-badge ${team.teamRank === 1 ? "rank-badge-gold" : team.teamRank === 2 ? "rank-badge-silver" : team.teamRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
+                                                        Rank #{team.teamRank}
+                                                    </span>
+                                                </div>
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    ))}
+                                </Accordion>
+                            </>
                         )}
-                    </Accordion>
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

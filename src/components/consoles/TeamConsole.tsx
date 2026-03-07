@@ -3,7 +3,10 @@ import { Accordion, Button } from "react-bootstrap";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { customStyles } from "../service/styles/CustomStyles";
-import { GetAllTeams, CreateTeam, UpdateTeam, DeleteTeam } from "../service/team/TeamServices";
+import { GetAllTeams } from "../service/team/GetAllTeams";
+import {  CreateTeam} from "../service/team/CreateTeam";
+import {  UpdateTeam } from "../service/team/UpdateTeam";
+import {  DeleteTeam } from "../service/team/DeleteTeam";
 import { getPlayer } from "../service/player/GetPlayer";
 import { ConsoleHeader } from "./ConsoleHeader";
 
