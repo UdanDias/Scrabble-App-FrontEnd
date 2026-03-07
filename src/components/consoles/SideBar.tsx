@@ -30,6 +30,17 @@ const Sidebar = () => {
             <Nav className="flex-column sidebar-nav">
                 {isAuthenticated && (
                     <>
+
+                        <Nav.Link as={NavLink} to="/homeafter" className="sidebar-item">
+                            <span className="sidebar-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    <path d="M3 12L12 3l9 9"/>
+                                    <path d="M9 21V12h6v9"/>
+                                    <path d="M5 10v11h14V10"/>
+                                </svg>
+                            </span>
+                            <span className="sidebar-label">HOME</span>
+                        </Nav.Link>
                         <Nav.Link as={NavLink} to="/profile" className="sidebar-item">
                             <span className="sidebar-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -60,19 +71,35 @@ const Sidebar = () => {
                             <span className="sidebar-label">TOURNAMENT</span>
                         </Nav.Link>
                         {/* ── TEAMS ── */}
-                        <Nav.Link as={NavLink} to="/teams" className="sidebar-item">
+                        {/* <Nav.Link as={NavLink} to="/teams" className="sidebar-item">
                             <span className="sidebar-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <circle cx="9" cy="7" r="3"/>
-                                    <circle cx="17" cy="7" r="3"/>
-                                    <path d="M1 20c0-3.3 2.7-6 6-6h4"/>
-                                    <path d="M13 20c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/>
-                                    <line x1="17" y1="13" x2="17" y2="19"/>
-                                    <line x1="14" y1="16" x2="20" y2="16"/>
+                                    <circle cx="12" cy="6" r="3"/>
+                                    <circle cx="5" cy="8" r="2.5"/>
+                                    <circle cx="19" cy="8" r="2.5"/>
+                                    <path d="M1 20c0-3 2-5 5-5h1"/>
+                                    <path d="M17 15h1c3 0 5 2 5 5"/>
+                                    <path d="M7 15c0-3.3 2.2-6 5-6s5 2.7 5 6"/>
                                 </svg>
                             </span>
                             <span className="sidebar-label">TEAMS</span>
-                        </Nav.Link>
+                        </Nav.Link> */}
+                        <Nav.Link as={NavLink} to="/teams" className="sidebar-item">
+    <span className="sidebar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            {/* Left person */}
+            <circle cx="5" cy="8" r="2"/>
+            <path d="M1 19c0-2.5 1.8-4 4-4s4 1.5 4 4"/>
+            {/* Center person (slightly higher) */}
+            <circle cx="12" cy="6" r="2.5"/>
+            <path d="M8 19c0-2.8 1.8-5 4-5s4 2.2 4 5"/>
+            {/* Right person */}
+            <circle cx="19" cy="8" r="2"/>
+            <path d="M15 19c0-2.5 1.8-4 4-4s4 1.5 4 4"/>
+        </svg>
+    </span>
+    <span className="sidebar-label">TEAMS</span>
+</Nav.Link>
 
                         {isAdmin && (
                             <Nav.Link as={NavLink} to="/game" className="sidebar-item">
