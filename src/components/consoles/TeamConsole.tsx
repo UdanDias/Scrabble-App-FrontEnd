@@ -341,7 +341,7 @@ export const TeamsConsole: React.FC = () => {
             <ConsoleHeader title="Teams" subtitle="Manage teams and their members" />
 
             <div className="create-button d-flex justify-content-end p-2">
-                <Button className="btn-create" onClick={() => setShowAdd(true)}>+ Add Team</Button>
+                <Button className="btn-create"style={{marginBottom:"-15px"}} onClick={() => setShowAdd(true)}>+ Add Team</Button>
             </div>
 
             <div className="console-table-container">
@@ -353,7 +353,7 @@ export const TeamsConsole: React.FC = () => {
                     </div>
                 ) : (
                 <>
-                    <Table className="leaderboard-header-table" bordered>
+                    <Table className="leaderboard-header-table "   bordered>
                         <thead>
                             <tr>
                                 <th style={{ width: "60px", fontSize: "20px" }}>#No</th>
@@ -370,25 +370,24 @@ export const TeamsConsole: React.FC = () => {
                         {teams.map((team, index) => (
                             <Accordion.Item eventKey={String(index)} key={team.teamId}>
                                 <Accordion.Header>
-                                    <div className="d-flex w-100 pe-3 align-items-center justify-content-between">
-                                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                            <span style={{ color: "#e0d318a0", fontSize: "1rem", minWidth: "24px" }}>
-                                                {index + 1}.
-                                            </span>
-                                            <span style={{ fontWeight: "bold",fontSize:"1rem" }}>{team.teamName}</span>
-                                            <span style={{ color: "#bfd0e150", fontSize: "0.75rem" }}>
+                                    <div className="d-flex w-100 pe-3 align-items-center position-relative">
+                                        {/* Left: number */}
+                                        <span style={{ color: "#e0d318a0", fontSize: "1rem", minWidth: "24px" }}>
+                                            {index + 1}.
+                                        </span>
+
+                                        {/* Center: team name */}
+                                        <div className="position-absolute start-50 translate-middle-x" style={{ fontWeight: "bold", fontSize: "1rem" }}>
+                                            {team.teamName}
+                                            <span style={{ color: "#bfd0e150", fontSize: "0.75rem", marginLeft: "8px" }}>
                                                 ({team.members?.length ?? 0}/{team.teamSize} players)
                                             </span>
                                         </div>
-                                        <div style={{ display: "flex", gap: "8px" }} onClick={e => e.stopPropagation()}>
-                                            <Button className="btn-edit" style={{  padding: "7px 14px" }}
-                                                onClick={() => setEditTeam(team)}>
-                                                Edit
-                                            </Button>
-                                            <Button className="btn-delete" style={{  padding: "7px 14px" }}
-                                                onClick={() => handleDelete(team)}>
-                                                Delete
-                                            </Button>
+
+                                        {/* Right: buttons */}
+                                        <div style={{ display: "flex", gap: "8px", marginLeft: "auto" }} onClick={e => e.stopPropagation()}>
+                                            <Button className="btn-edit" style={{ padding: "7px 14px" }} onClick={() => setEditTeam(team)}>Edit</Button>
+                                            <Button className="btn-delete" style={{ padding: "7px 14px" }} onClick={() => handleDelete(team)}>Delete</Button>
                                         </div>
                                     </div>
                                 </Accordion.Header>

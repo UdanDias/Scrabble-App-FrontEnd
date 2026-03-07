@@ -161,6 +161,15 @@ export function LeaderBoard() {
 
     const typeSelectStyles = {
         ...selectStyles,
+        control: (base: any, state: any) => ({
+            ...base,
+            backgroundColor: "#0d0c18",
+            border: `1px solid ${state.isFocused ? "rgba(224,211,24,0.4)" : "rgba(224,211,24,0.2)"}`,
+            borderRadius: "8px",
+            boxShadow: state.isFocused ? "0 0 8px rgba(224,211,24,0.15)" : "none",
+            outline: "none",
+            "&:hover": { borderColor: "rgba(224,211,24,0.35)", boxShadow: "none" }
+        }),
         singleValue: (base: any) => ({ ...base, color: "#dae6f2d1", textAlign: "center" as const, fontSize: "0.9rem", fontWeight: "normal" }),
     };
 
@@ -172,8 +181,8 @@ export function LeaderBoard() {
             <div className="console-table-container">
 
                 {/* Two dropdowns: tournament type + tournament selector */}
-                <div style={{ display: "flex", gap: "16px", maxWidth: "700px", margin: "0 auto 20px auto", alignItems: "center" }}>
-                    {/* Tournament type */}
+                <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
+                    {/* Left: tournament type */}
                     <div style={{ flex: "0 0 180px" }}>
                         <Select
                             options={tournamentTypeOptions}
@@ -188,8 +197,8 @@ export function LeaderBoard() {
                         />
                     </div>
 
-                    {/* Tournament selector */}
-                    <div style={{ flex: 1 }}>
+                    {/* Center: tournament selector */}
+                    <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", width: "400px" }}>
                         <Select
                             options={tournamentOptions}
                             styles={selectStyles}
@@ -318,7 +327,7 @@ export function LeaderBoard() {
                                                 </div>
                                                 {team.members && team.members.length > 0 && (
                                                     <div style={{ marginTop: "10px" }}>
-                                                        <p style={{ color: "#e0d318a0", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "6px" }}>
+                                                        <p style={{ color: "#5ee5eaa0", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "6px" ,marginLeft:"5px"}}>
                                                             Members
                                                         </p>
                                                         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
