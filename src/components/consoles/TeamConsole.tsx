@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button } from "react-bootstrap";
+import { Accordion, Button, Table } from "react-bootstrap";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { customStyles } from "../service/styles/CustomStyles";
@@ -352,6 +352,16 @@ export const TeamsConsole: React.FC = () => {
                         <p style={{ fontSize: "0.9rem", letterSpacing: "1px" }}>No teams created yet.</p>
                     </div>
                 ) : (
+                <>
+                    <Table className="leaderboard-header-table" bordered>
+                        <thead>
+                            <tr>
+                                <th style={{ width: "60px", fontSize: "20px" }}>#No</th>
+                                <th style={{ textAlign: "center", fontSize: "20px" }}>Team Name</th>
+                                <th style={{ width: "160px", textAlign: "center", fontSize: "20px" }}>Action</th>
+                            </tr>
+                        </thead>
+                    </Table>
                     <Accordion
                         className="leaderboard-accordion"
                         activeKey={activeKey ?? undefined}
@@ -365,17 +375,17 @@ export const TeamsConsole: React.FC = () => {
                                             <span style={{ color: "#e0d318a0", fontSize: "0.8rem", minWidth: "24px" }}>
                                                 {index + 1}.
                                             </span>
-                                            <span style={{ fontWeight: "bold" }}>{team.teamName}</span>
+                                            <span style={{ fontWeight: "bold",fontSize:"1rem" }}>{team.teamName}</span>
                                             <span style={{ color: "#bfd0e150", fontSize: "0.75rem" }}>
                                                 ({team.members?.length ?? 0}/{team.teamSize} players)
                                             </span>
                                         </div>
                                         <div style={{ display: "flex", gap: "8px" }} onClick={e => e.stopPropagation()}>
-                                            <Button className="btn-edit" style={{ fontSize: "0.75rem", padding: "4px 12px" }}
+                                            <Button className="btn-edit" style={{  padding: "7px 14px" }}
                                                 onClick={() => setEditTeam(team)}>
                                                 Edit
                                             </Button>
-                                            <Button className="btn-delete" style={{ fontSize: "0.75rem", padding: "4px 12px" }}
+                                            <Button className="btn-delete" style={{  padding: "7px 14px" }}
                                                 onClick={() => handleDelete(team)}>
                                                 Delete
                                             </Button>
@@ -385,13 +395,13 @@ export const TeamsConsole: React.FC = () => {
                                 <Accordion.Body>
                                     <div className="leaderboard-inner-table-wrapper">
                                         {team.members && team.members.length > 0 ? (
-                                            <table className="leaderboard-inner-table w-100">
-                                                <thead>
+                                            <table className="leaderboard-inner-table w-100" >
+                                                <thead >
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Player ID</th>
-                                                        <th>First Name</th>
-                                                        <th>Last Name</th>
+                                                        <th>Name</th>
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -399,8 +409,8 @@ export const TeamsConsole: React.FC = () => {
                                                         <tr key={member.playerId}>
                                                             <td>{i + 1}</td>
                                                             <td>{member.playerId}</td>
-                                                            <td>{member.firstName}</td>
-                                                            <td>{member.lastName}</td>
+                                                            <td>{member.firstName} {member.lastName}</td>
+                                                            
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -415,6 +425,8 @@ export const TeamsConsole: React.FC = () => {
                             </Accordion.Item>
                         ))}
                     </Accordion>
+                </>
+                    
                 )}
             </div>
 
