@@ -372,7 +372,7 @@ export const TeamsConsole: React.FC = () => {
                                 <Accordion.Header>
                                     <div className="d-flex w-100 pe-3 align-items-center justify-content-between">
                                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                            <span style={{ color: "#e0d318a0", fontSize: "0.8rem", minWidth: "24px" }}>
+                                            <span style={{ color: "#e0d318a0", fontSize: "1rem", minWidth: "24px" }}>
                                                 {index + 1}.
                                             </span>
                                             <span style={{ fontWeight: "bold",fontSize:"1rem" }}>{team.teamName}</span>
