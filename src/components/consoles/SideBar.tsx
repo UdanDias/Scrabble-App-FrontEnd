@@ -59,6 +59,20 @@ const Sidebar = () => {
                             </span>
                             <span className="sidebar-label">TOURNAMENT</span>
                         </Nav.Link>
+                        {/* ── TEAMS ── */}
+                        <Nav.Link as={NavLink} to="/teams" className="sidebar-item">
+                            <span className="sidebar-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    <circle cx="9" cy="7" r="3"/>
+                                    <circle cx="17" cy="7" r="3"/>
+                                    <path d="M1 20c0-3.3 2.7-6 6-6h4"/>
+                                    <path d="M13 20c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/>
+                                    <line x1="17" y1="13" x2="17" y2="19"/>
+                                    <line x1="14" y1="16" x2="20" y2="16"/>
+                                </svg>
+                            </span>
+                            <span className="sidebar-label">TEAMS</span>
+                        </Nav.Link>
 
                         {isAdmin && (
                             <Nav.Link as={NavLink} to="/game" className="sidebar-item">
@@ -107,20 +121,7 @@ const Sidebar = () => {
                             <span className="sidebar-label">PAIRINGS</span>
                         </Nav.Link>
 
-                        {/* ── TEAMS ── */}
-                        <Nav.Link as={NavLink} to="/teams" className="sidebar-item">
-                            <span className="sidebar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <circle cx="9" cy="7" r="3"/>
-                                    <circle cx="17" cy="7" r="3"/>
-                                    <path d="M1 20c0-3.3 2.7-6 6-6h4"/>
-                                    <path d="M13 20c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/>
-                                    <line x1="17" y1="13" x2="17" y2="19"/>
-                                    <line x1="14" y1="16" x2="20" y2="16"/>
-                                </svg>
-                            </span>
-                            <span className="sidebar-label">TEAMS</span>
-                        </Nav.Link>
+                        
 
                         <div className="sidebar-footer">
                             <button className="sidebar-logout-btn" onClick={handleLogout}>
