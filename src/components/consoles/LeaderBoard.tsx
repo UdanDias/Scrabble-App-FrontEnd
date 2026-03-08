@@ -7,6 +7,8 @@ import { GetTeamLeaderboard } from "../service/team/GetTeamLeaderBoard";
 import Swal from "sweetalert2";
 import Select from "react-select";
 import { ConsoleHeader } from "./ConsoleHeader";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 interface RankedPlayerData {
     playerId: string;
@@ -52,6 +54,127 @@ export function LeaderBoard() {
         { value: "", label: "All Tournaments" },
         ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
     ];
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+        const pageWidth = 210;
+        const marginX = 15;
+        const tableWidth = pageWidth - marginX * 2;
+        const rankColWidth = 30;
+        const nameColWidth = tableWidth - rankColWidth;
+        const rowHeight = 10;
+
+         const tournamentLabel = tournaments.find(t => t.tournamentId === selectedTournamentId)?.tournamentName ?? "All Tournaments";
+
+
+        // ── Full dark background ──
+        doc.setFillColor(6, 4, 19);
+        doc.rect(0, 0, 210, 297, "F");
+        // ── Center point of the name column ──
+        const nameCenterX = marginX + rankColWidth + nameColWidth / 2;
+
+        // ── Title: SCRABBLIX ──
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.setTextColor(224, 211, 24);
+        doc.text(tournamentLabel, nameCenterX, 18, { align: "center" });  // ✅
+
+        // ── Subtitle: LEADERBOARD ──
+        doc.setFontSize(10);
+        doc.setTextColor(191, 208, 225);
+        doc.setFont("helvetica", "normal");
+        doc.text("LEADERBOARD", nameCenterX, 25, { align: "center" });  // ✅
+
+        // // ── Tournament name ──
+        // doc.setFontSize(8);
+        // doc.setTextColor(120, 120, 120);
+        // doc.text(tournamentLabel.toUpperCase(), nameCenterX, 31, { align: "center" });  // ✅
+
+        doc.setDrawColor(224, 211, 24);
+        doc.setLineWidth(0.4);
+        doc.line(marginX, 35, pageWidth - marginX, 35);
+
+        // ── Header row ──
+        const headerY = 38;
+        doc.setFillColor(0, 0, 0);
+        doc.rect(marginX, headerY, tableWidth, rowHeight, "F");
+
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(224, 211, 24);
+        doc.text("#RANK", marginX + rankColWidth / 2, headerY + 6.5, { align: "center" });
+        doc.text(tournamentType === "individual" ? "PLAYER" : "TEAM", marginX + rankColWidth + nameColWidth / 2, headerY + 6.5, { align: "center" });
+
+        // ── Rank divider line in header ──
+        doc.setDrawColor(40, 40, 60);
+        doc.setLineWidth(0.2);
+        doc.line(marginX + rankColWidth, headerY, marginX + rankColWidth, headerY + rowHeight);
+
+        // ── Data rows ──
+        const isIndividual = tournamentType === "individual";
+        const rows = isIndividual
+            ? rankedPlayerData.map(p => ({ rank: p.playerRank, name: `${p.firstName} ${p.lastName}` }))
+            : rankedTeamData.map(t => ({ rank: t.teamRank, name: t.teamName }));
+
+        let currentY = headerY + rowHeight;
+        let currentPage = 1;
+        const maxY = 280;
+
+        rows.forEach((row, index) => {
+            // ── New page if needed ──
+            if (currentY + rowHeight > maxY) {
+                doc.addPage();
+                currentPage++;
+                // dark background on new page
+                doc.setFillColor(6, 4, 19);
+                doc.rect(0, 0, 210, 297, "F");
+                currentY = 15;
+            }
+
+            // ── Alternating row background ──
+            const isEven = index % 2 === 0;
+            doc.setFillColor(...(isEven ? [6, 4, 19] as [number,number,number] : [13, 12, 24] as [number,number,number]));
+            doc.rect(marginX, currentY, tableWidth, rowHeight, "F");
+
+            // ── Rank color ──
+            if (row.rank === 1) doc.setTextColor(255, 215, 0);        // gold
+            else if (row.rank === 2) doc.setTextColor(164, 178, 198); // silver
+            else if (row.rank === 3) doc.setTextColor(205, 127, 50);  // bronze
+            else doc.setTextColor(191, 208, 225);                     // default #bfd0e1
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(8);
+            doc.text(`#${row.rank}`, marginX + rankColWidth / 2, currentY + 6.5, { align: "center" });
+
+            // ── Rank divider line ──
+            doc.setDrawColor(40, 40, 60);
+            doc.setLineWidth(0.2);
+            doc.line(marginX + rankColWidth, currentY, marginX + rankColWidth, currentY + rowHeight);
+
+            // ── Player/Team name ──
+            doc.setTextColor(191, 208, 225);
+            doc.setFont("helvetica", "normal");
+            doc.text(row.name, marginX + rankColWidth + nameColWidth / 2, currentY + 6.5, { align: "center" });
+
+            // ── Bottom row border ──
+            doc.setDrawColor(30, 28, 45);
+            doc.setLineWidth(0.1);
+            doc.line(marginX, currentY + rowHeight, marginX + tableWidth, currentY + rowHeight);
+
+            currentY += rowHeight;
+        });
+
+        // ── Outer table border ──
+        // doc.setDrawColor(224, 211, 24);
+        // doc.setLineWidth(0.3);
+        // doc.rect(marginX, 38, tableWidth, currentY - 38);
+
+        // ── Footer ──
+        doc.setFontSize(7);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 292, { align: "center" });
+
+        doc.save(`leaderboard-${tournamentLabel}.pdf`);
+    };
 
     const sortPlayers = (players: RankedPlayerData[]) => {
         return [...players].sort((a, b) => {
@@ -182,6 +305,56 @@ export function LeaderBoard() {
 
                 {/* Two dropdowns: tournament type + tournament selector */}
                 <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
+                    {/* Right: download button */}
+                    <div style={{ position: "absolute", right: 0 }}>
+                        <button
+                            onClick={handleDownloadPDF}
+                            style={{
+                                background: "transparent",
+                                border: "1px solid rgba(224, 211, 24, 0.6)",
+                                color: "#e0d318d4",
+                                borderRadius: "6px",
+                                padding: "6px 14px",
+                                fontSize: "0.85rem",
+                                letterSpacing: "1px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                            }}
+                            onMouseEnter={e => {
+                                const btn = e.currentTarget;
+                                btn.style.backgroundColor = "rgba(224, 211, 24, 0.15)";
+                                btn.style.color = "#ffffff";
+                                btn.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)";
+                            }}
+                            onMouseLeave={e => {
+                                const btn = e.currentTarget;
+                                btn.style.backgroundColor = "transparent";
+                                btn.style.color = "#e0d318d4";
+                                btn.style.boxShadow = "none";
+                            }}
+                        >
+                            {/* ✅ Gold outlined download icon matching sidebar style */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#e0d318d4"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Download PDF
+                        </button>
+                    </div>
                     {/* Left: tournament type */}
                     <div style={{ flex: "0 0 180px" }}>
                         <Select

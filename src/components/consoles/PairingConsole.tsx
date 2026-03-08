@@ -3,6 +3,7 @@ import Select from "react-select";
 import GetTournaments from "../service/tournament/GetTournaments";
 import GetSwissPairings from "../service/performance/GetSwissPairings";
 import { GetTeamSwissPairings } from "../service/team/GetTeamSwissPairings";
+import { jsPDF } from "jspdf";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface PairingDTO {
@@ -84,6 +85,238 @@ export const PairingsConsole: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [tournamentsLoading, setTournamentsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+        const pageWidth = 210;
+        const marginX = 10;
+        const tableWidth = pageWidth - marginX * 2;
+        const rowHeight = 10;
+
+        const tournamentLabel = selectedTournament?.label ?? "Tournament";
+        const isIndividual = tournamentType === "individual";
+        const byeName = isIndividual
+            ? (byePairing?.player1Name ?? "None")
+            : (teamByePairing?.team1Name ?? "None");
+
+        // ── Column widths ──
+        const boardColW = 18;
+        const vsColW = 14;
+        const winsColW = 28;
+        const nameColW = (tableWidth - boardColW - vsColW - winsColW) / 2;
+
+        const drawDarkBackground = () => {
+            doc.setFillColor(6, 4, 19);
+            doc.rect(0, 0, 210, 297, "F");
+        };
+
+        drawDarkBackground();
+
+        // ── Title: Tournament Name ──
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.setTextColor(224, 211, 24);
+        doc.text(tournamentLabel.toUpperCase(), pageWidth / 2, 18, { align: "center" });
+
+        // ── Subtitle: PAIRINGS ──
+        doc.setFontSize(10);
+        doc.setTextColor(191, 208, 225);
+        doc.setFont("helvetica", "normal");
+        doc.text("PAIRINGS", pageWidth / 2, 25, { align: "center" });
+
+        // // ── Type label ──
+        // doc.setFontSize(8);
+        // doc.setTextColor(120, 120, 120);
+        // doc.text(isIndividual ? "INDIVIDUAL" : "TEAM", pageWidth / 2, 31, { align: "center" });
+
+        // ── Stat row: BOARDS + BYE ──
+        const statY = 36;
+        const statBoxW = 40;
+        const statBoxH = 14;
+
+        // // Boards box
+        // doc.setFillColor(13, 12, 24);
+        // doc.setDrawColor(224, 211, 24, );
+        // doc.setLineWidth(0.2);
+        // doc.roundedRect(marginX, statY, statBoxW, statBoxH, 2, 2, "FD");
+        // doc.setFontSize(6);
+        // doc.setTextColor(224, 211, 24);
+        // doc.setFont("helvetica", "normal");
+        // doc.text("BOARDS", marginX + statBoxW / 2, statY + 5, { align: "center" });
+        // doc.setFontSize(9);
+        // doc.setTextColor(218, 230, 242);
+        // doc.setFont("helvetica", "bold");
+        // doc.text(
+        //     String(isIndividual ? boards : teamBoards),
+        //     marginX + statBoxW / 2, statY + 11, { align: "center" }
+        // );
+
+        // // Bye box
+        // const byeName = isIndividual
+        //     ? (byePairing?.player1Name ?? "None")
+        //     : (teamByePairing?.team1Name ?? "None");
+
+        // doc.setFillColor(13, 12, 24);
+        // doc.roundedRect(marginX + statBoxW + 6, statY, statBoxW + 20, statBoxH, 2, 2, "FD");
+        // doc.setFontSize(6);
+        // doc.setTextColor(224, 211, 24);
+        // doc.setFont("helvetica", "normal");
+        // doc.text("BYE", marginX + statBoxW + 6 + (statBoxW + 20) / 2, statY + 5, { align: "center" });
+        // doc.setFontSize(8);
+        // doc.setTextColor(218, 230, 242);
+        // doc.setFont("helvetica", "bold");
+        // doc.text(byeName, marginX + statBoxW + 6 + (statBoxW + 20) / 2, statY + 11, { align: "center" });
+
+        // // ── Bye box — centered ──
+        // const byeBoxW = statBoxW + 20;
+        // const byeBoxX = (pageWidth - byeBoxW) / 2;  // ✅ centered on page
+
+        // doc.setFillColor(13, 12, 24);
+        // doc.roundedRect(byeBoxX, statY, byeBoxW, statBoxH, 2, 2, "FD");
+        // doc.setFontSize(6);
+        // doc.setTextColor(224, 211, 24);
+        // doc.setFont("helvetica", "normal");
+        // doc.text("BYE", byeBoxX + byeBoxW / 2, statY + 5, { align: "center" });
+        // doc.setFontSize(8);
+        // doc.setTextColor(218, 230, 242);
+        // doc.setFont("helvetica", "bold");
+        // doc.text(byeName, byeBoxX + byeBoxW / 2, statY + 11, { align: "center" });
+
+       // ── Gold divider ──
+        doc.setDrawColor(224, 211, 24);
+        doc.setLineWidth(0.4);
+        doc.line(marginX, 32, pageWidth - marginX, 32);  // ✅ fixed Y instead of statY + statBoxH + 4
+
+        // ── Header row ──
+        const headerY = 35;  // ✅ fixed Y instead of statY + statBoxH + 7
+        doc.setFillColor(0, 0, 0);
+        doc.rect(marginX, headerY, tableWidth, rowHeight, "F");
+
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(224, 211, 24);
+
+        const col1X = marginX + boardColW / 2;
+        const col2X = marginX + boardColW + nameColW / 2;
+        const col3X = marginX + boardColW + nameColW + vsColW / 2;
+        const col4X = marginX + boardColW + nameColW + vsColW + nameColW / 2;
+        const col5X = marginX + boardColW + nameColW * 2 + vsColW + winsColW / 2;
+
+        doc.text("BOARD", col1X, headerY + 6.5, { align: "center" });
+        doc.text(isIndividual ? "PLAYER 1" : "TEAM 1", col2X, headerY + 6.5, { align: "center" });
+        doc.text("VS", col3X, headerY + 6.5, { align: "center" });
+        doc.text(isIndividual ? "PLAYER 2" : "TEAM 2", col4X, headerY + 6.5, { align: "center" });
+        doc.text("WINS", col5X, headerY + 6.5, { align: "center" });
+
+        // Column dividers in header
+        doc.setDrawColor(40, 40, 60);
+        doc.setLineWidth(0.2);
+        [boardColW, boardColW + nameColW, boardColW + nameColW + vsColW, boardColW + nameColW * 2 + vsColW].forEach(offset => {
+            doc.line(marginX + offset, headerY, marginX + offset, headerY + rowHeight);
+        });
+
+        // ── Data rows ──
+        const pairingRows = isIndividual
+            ? pairings.filter(p => !p.bye).map(p => ({
+                board: p.boardNumber,
+                name1: p.player1Name,
+                name2: p.player2Name ?? "—",
+                wins: `${winsDisplay(p.player1Wins)}W · ${winsDisplay(p.player2Wins)}W`,
+                isBye: false,
+            }))
+            : teamPairings.filter(p => !p.bye).map(p => ({
+                board: p.boardNumber,
+                name1: p.team1Name,
+                name2: p.team2Name ?? "—",
+                wins: `${winsDisplay(p.team1Wins)}W · ${winsDisplay(p.team2Wins)}W`,
+                isBye: false,
+            }));
+
+        // Add bye row at end
+        if (isIndividual && byePairing) {
+            pairingRows.push({
+                board: byePairing.boardNumber,
+                name1: byePairing.player1Name,
+                name2: "BYE",
+                wins: `${winsDisplay(byePairing.player1Wins)}W`,
+                isBye: true,
+            });
+        } else if (!isIndividual && teamByePairing) {
+            pairingRows.push({
+                board: teamByePairing.boardNumber,
+                name1: teamByePairing.team1Name,
+                name2: "BYE",
+                wins: `${winsDisplay(teamByePairing.team1Wins)}W`,
+                isBye: true,
+            });
+        }
+
+        let currentY = headerY + rowHeight;
+        const maxY = 282;
+
+        pairingRows.forEach((row, index) => {
+            if (currentY + rowHeight > maxY) {
+                doc.addPage();
+                drawDarkBackground();
+                currentY = 15;
+            }
+
+            // Alternating background
+            const isEven = index % 2 === 0;
+            doc.setFillColor(...(isEven ? [6, 4, 19] as [number, number, number] : [13, 12, 24] as [number, number, number]));
+            doc.rect(marginX, currentY, tableWidth, rowHeight, "F");
+
+            doc.setFontSize(7.5);
+            doc.setFont("helvetica", "normal");
+
+            // Board #
+            doc.setTextColor(224, 211, 24);
+            doc.setFont("helvetica", "bold");
+            doc.text(`#${row.board}`, col1X, currentY + 6.5, { align: "center" });
+
+            // Player 1
+            doc.setTextColor(191, 208, 225);
+            doc.setFont("helvetica", "normal");
+            doc.text(row.name1 ?? "", col2X, currentY + 6.5, { align: "center", maxWidth: nameColW - 4 });
+
+            // VS
+            const vsColor: [number, number, number] = row.isBye ? [82, 147, 238] : [100, 100, 120];
+            doc.setTextColor(...vsColor);
+            doc.setFont("helvetica", "bold");
+            doc.text(row.isBye ? "BYE" : "VS", col3X, currentY + 6.5, { align: "center" });
+
+            // ✅ assign color array first, then spread
+            const player2Color: [number, number, number] = row.isBye ? [100, 100, 120] : [191, 208, 225];
+            doc.setTextColor(...player2Color);
+            doc.setFont("helvetica", "normal");
+            doc.text(row.isBye ? "—" : (row.name2 ?? ""), col4X, currentY + 6.5, { align: "center", maxWidth: nameColW - 4 });
+
+            // Wins
+            doc.setTextColor(150, 160, 180);
+            doc.text(row.wins, col5X, currentY + 6.5, { align: "center" });
+
+            // Column dividers
+            doc.setDrawColor(30, 28, 45);
+            doc.setLineWidth(0.2);
+            [boardColW, boardColW + nameColW, boardColW + nameColW + vsColW, boardColW + nameColW * 2 + vsColW].forEach(offset => {
+                doc.line(marginX + offset, currentY, marginX + offset, currentY + rowHeight);
+            });
+
+            // Bottom border
+            doc.setDrawColor(30, 28, 45);
+            doc.setLineWidth(0.1);
+            doc.line(marginX, currentY + rowHeight, marginX + tableWidth, currentY + rowHeight);
+
+            currentY += rowHeight;
+        });
+
+        // ── Footer ──
+        doc.setFontSize(7);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 292, { align: "center" });
+
+        doc.save(`pairings-${tournamentLabel}.pdf`);
+    };
 
     useEffect(() => {
         const fetchTournaments = async () => {
@@ -190,6 +423,45 @@ export const PairingsConsole: React.FC = () => {
                     menuPortalTarget={document.body}
                     menuPosition="fixed"
                 />
+                {hasData && (
+                    <button
+                        onClick={handleDownloadPDF}
+                        style={{
+                            background: "#11110fd4",
+                            border: "1px solid rgba(224, 211, 24, 0.6)",
+                            color: "#e0d318d4",
+                            borderRadius: "6px",
+                            padding: "6px 14px",
+                            fontSize: "0.85rem",
+                            letterSpacing: "1px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                        }}
+                        onMouseEnter={e => {
+                            const btn = e.currentTarget;
+                            btn.style.backgroundColor = "rgba(224, 211, 24, 0.15)";
+                            btn.style.color = "#ffffff";
+                            btn.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)";
+                        }}
+                        onMouseLeave={e => {
+                            const btn = e.currentTarget;
+                            btn.style.backgroundColor = "#11110fd4";
+                            btn.style.color = "#e0d318d4";
+                            btn.style.boxShadow = "none";
+                        }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Download PDF
+                    </button>
+                )}
+                
             </div>
 
             {/* Error */}
