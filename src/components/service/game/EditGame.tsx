@@ -37,13 +37,15 @@ interface GameEditProps {
 
 function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }: GameEditProps) {
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
-    const [gameData, SetGameData] = useState<Omit<Game, "isgameTied" | "isByeGame" | "margin" | "winnerId">>({
+    const [gameData, SetGameData] = useState<Omit<Game, "isgameTied"  | "winnerId">>({
         gameId: "",
         player1Id: "",
         player2Id: "",
         score1: 0,
         score2: 0,
-        gameDate: ""
+        gameDate: "",
+        isByeGame: "false",
+        margin: 0,
     });
     const [loadingPlayers, setLoadingPlayers] = useState(true);
 
@@ -84,7 +86,7 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
             `${p.firstName} ${p.lastName}` === selectedRow.player2Id
         );
 
-        const { isgameTied, isByeGame, margin, winnerId, ...rest } = selectedRow;
+        const { isgameTied,  winnerId, ...rest } = selectedRow;
         
         // Store raw roundId separately — selectedRow.roundId is already resolved to display name
         // We need to get the real roundId from somewhere else
@@ -94,6 +96,7 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
             ...rest,
             player1Id: player1?.playerId ?? selectedRow.player1Id,
             player2Id: player2?.playerId ?? selectedRow.player2Id,
+           
         });
     }
 }, [selectedRow, players]);
@@ -108,6 +111,9 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
         delete dataToSend.roundId;  // ← remove resolved display name
         delete dataToSend.bye;
         delete dataToSend.gameTied;
+        if (selectedRow?.isByeGame !== "true") {
+    delete dataToSend.margin;
+}
 
         const updatedGameDetails = await UpdateGame(dataToSend);
              const Toast = Swal.mixin({
@@ -225,6 +231,17 @@ function EditGame({ show, selectedRow, handleClose, handleUpdate, refreshTable }
                         onChange={handleOnChange}
                     />
                 </FloatingLabel>
+                {(selectedRow?.isByeGame === "true" || selectedRow?.isByeGame === true as any) && (
+                <FloatingLabel label="Margin" className="mb-3">
+                    <Form.Control
+                        type="number"
+                        name="margin"
+                        placeholder="Margin"
+                        value={(gameData as any).margin ?? ""}
+                        onChange={handleOnChange}
+                    />
+                </FloatingLabel>
+            )}
 
                 <FloatingLabel label="Game Date" className="mb-3">
                     <Form.Control

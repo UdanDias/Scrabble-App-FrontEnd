@@ -10,10 +10,12 @@ interface BulkAddPlayerProps {
     refreshTable: () => void;
 }
 
+// ✅ username added to example
 const EXAMPLE = JSON.stringify([
     {
         firstName: "John",
         lastName: "Doe",
+        username: "johndoe",
         gender: "Male",
         dob: "2000-05-14",
         email: "john@example.com",
@@ -25,6 +27,7 @@ const EXAMPLE = JSON.stringify([
     {
         firstName: "Jane",
         lastName: "Smith",
+        username: "janesmith",
         gender: "Female",
         dob: "1999-11-22",
         email: "jane@example.com",
@@ -46,7 +49,6 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
     };
 
     const handleSubmit = async () => {
-        // validate JSON
         let parsed: any[];
         try {
             parsed = JSON.parse(jsonInput);
@@ -69,33 +71,19 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
             await axios.post(
                 "http://localhost:8081/scrabbleapp2026/api/v1/player/addplayers/bulk",
                 parsed,
-                { headers: { "Content-Type": "application/json",
-                    Authorization:FetchToken()
-                 } }
+                { headers: { "Content-Type": "application/json", Authorization: FetchToken() } }
             );
 
-            const Toast = Swal.mixin({
-                toast: true, position: "top-end",
-                showConfirmButton: false, timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-            Toast.fire({ icon: "success", title: `${parsed.length} player(s) added successfully` });
+            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true,
+                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+            }).fire({ icon: "success", title: `${parsed.length} player(s) added successfully` });
 
             refreshTable();
             handleClose_();
         } catch (err) {
-            const Toast = Swal.mixin({
-                toast: true, position: "top-end",
-                showConfirmButton: false, timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-            Toast.fire({ icon: "error", title: "Bulk player import failed" });
+            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true,
+                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+            }).fire({ icon: "error", title: "Bulk player import failed" });
         }
     };
 
@@ -114,7 +102,6 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
                     Paste a JSON array of player objects below. Each object will be saved as a separate player.
                 </p>
 
-                {/* load example button */}
                 <div className="mb-2">
                     <button
                         onClick={handleLoadExample}
@@ -134,16 +121,12 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
                     </button>
                 </div>
 
-                {/* JSON textarea */}
                 <Form.Control
                     as="textarea"
                     rows={14}
                     value={jsonInput}
-                    onChange={(e) => {
-                        setJsonInput(e.target.value);
-                        setError("");
-                    }}
-                    placeholder='[ { "firstName": "John", "lastName": "Doe", ... }, ... ]'
+                    onChange={(e) => { setJsonInput(e.target.value); setError(""); }}
+                    placeholder='[ { "firstName": "John", "lastName": "Doe", "username": "johndoe", ... }, ... ]'
                     style={{
                         backgroundColor: "#0d0c18",
                         border: `1px solid ${error ? "#ff6b6b" : "rgba(255,255,255,0.06)"}`,
@@ -155,26 +138,22 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
                     }}
                 />
 
-                {/* error message */}
                 {error && (
                     <p style={{ color: "#ff6b6b", fontSize: "0.78rem", marginTop: "8px", letterSpacing: "0.5px" }}>
                         ⚠ {error}
                     </p>
                 )}
 
-                {/* required fields hint */}
+                {/* ✅ username added to required fields hint */}
                 <div style={{
-                    marginTop: "12px",
-                    padding: "10px 14px",
+                    marginTop: "12px", padding: "10px 14px",
                     background: "rgba(224,211,24,0.05)",
                     border: "1px solid rgba(224,211,24,0.1)",
-                    borderRadius: "8px",
-                    fontSize: "0.75rem",
-                    color: "rgba(191,208,225,0.6)",
-                    lineHeight: "1.8"
+                    borderRadius: "8px", fontSize: "0.75rem",
+                    color: "rgba(191,208,225,0.6)", lineHeight: "1.8"
                 }}>
                     <strong style={{ color: "#e0d318a1" }}>Required fields per object:</strong><br />
-                    firstName, lastName, gender, dob (yyyy-MM-dd), email, phone, address, faculty, academicLevel
+                    firstName, lastName, username, gender, dob (yyyy-MM-dd), email, phone, address, faculty, academicLevel
                 </div>
             </Modal.Body>
             <Modal.Footer>

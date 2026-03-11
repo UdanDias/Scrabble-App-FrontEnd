@@ -22,6 +22,7 @@ interface Game{
 interface ByeGame {
     playerId: string; 
     gameDate: string;
+    margin: number;
     
     
 }
@@ -41,6 +42,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
     const [byeGameData,SetByeGameData]= useState<ByeGame>({
         playerId:"",
         gameDate:"",
+        margin: 0,
         
     })
     const [players,SetPlayers]=useState<PlayerIdToName[]>([]);
@@ -58,6 +60,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
             SetByeGameData({
                 playerId:"",
                 gameDate:"",
+                margin: 0,
                 
 
             })
@@ -98,6 +101,7 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                 SetByeGameData({
                     playerId: "",
                     gameDate: "",
+                    margin: 0,
                 });
             } else {
                 handleClose();
@@ -167,6 +171,15 @@ export function AddByeGame({show,handleClose,handleAdd,roundId}:AddByeGameprops)
                             }
                         />
                     </div>
+                    <FloatingLabel controlId="floatingMargin" label="Margin" className="mb-3">
+                        <Form.Control
+                            type="number"
+                            name="margin"
+                            placeholder="Margin"
+                            value={byeGameData.margin ?? ""}
+                            onChange={handleOnChange}
+                        />
+                    </FloatingLabel>
 
                     <FloatingLabel controlId="floatingInput" label="Game Date" className="mb-3">
                         <Form.Control 
