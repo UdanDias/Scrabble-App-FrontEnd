@@ -113,13 +113,13 @@ export function TournamentPlayersModal({ show, onHide, tournamentId, tournamentN
     // ── Status badge ──────────────────────────────────────────────────────────
     const statusBadge = (status: "ACTIVE" | "INACTIVE") =>
         status === "ACTIVE" ? (
-            <Badge style={{
+            <Badge bg="" style={{
                 background: "rgba(94,229,170,0.12)", color: "#5ee5aa",
                 border: "1px solid rgba(94,229,170,0.25)", fontWeight: 400,
                 fontSize: "0.68rem", letterSpacing: "0.8px", padding: "4px 8px",
             }}>ACTIVE</Badge>
         ) : (
-            <Badge style={{
+            <Badge bg="" style={{
                 background: "rgba(229,94,94,0.12)", color: "#e55e5e",
                 border: "1px solid rgba(229,94,94,0.25)", fontWeight: 400,
                 fontSize: "0.68rem", letterSpacing: "0.8px", padding: "4px 8px",

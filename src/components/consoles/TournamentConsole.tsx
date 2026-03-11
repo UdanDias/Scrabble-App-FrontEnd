@@ -312,7 +312,7 @@ export function TournamentConsole() {
                                                                 color: "#e0d318d4",
                                                                 borderRadius: "6px",
                                                                 padding: "5px 12px",
-                                                                fontSize: "0.8rem",
+                                                                fontSize: "1.0rem",
                                                                 letterSpacing: "1px",
                                                                 cursor: "pointer",
                                                             }}
