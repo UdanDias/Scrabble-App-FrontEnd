@@ -30,11 +30,12 @@ interface Props {
     onHide: () => void;
     tournamentId: string;
     tournamentName: string;
+    tournamentType:string;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function TournamentPlayersModal({ show, onHide, tournamentId, tournamentName }: Props) {
+export function TournamentPlayersModal({ show, onHide, tournamentId, tournamentName,tournamentType }: Props) {
     const [registeredPlayers, setRegisteredPlayers] = useState<TournamentPlayer[]>([]);
     const [allPlayers, setAllPlayers] = useState<Player[]>([]);
     const [selectedOption, setSelectedOption] = useState<{ value: string; label: string } | null>(null);
@@ -260,9 +261,9 @@ export function TournamentPlayersModal({ show, onHide, tournamentId, tournamentN
                                                     disabled={removingId === player.tournamentPlayerId}
                                                     style={{
                                                         background: "transparent",
-                                                        border: "1px solid rgba(229,94,94,0.25)",
+                                                        border: "1px solid rgba(229, 94, 94, 0.7)",
                                                         color: removingId === player.tournamentPlayerId
-                                                            ? "#e55e5e40" : "#e55e5e80",
+                                                            ? "#e55e5eae" : "#e55e5eb7",
                                                         borderRadius: "6px", padding: "3px 12px",
                                                         fontSize: "0.68rem", letterSpacing: "0.5px",
                                                         cursor: removingId === player.tournamentPlayerId
@@ -270,21 +271,21 @@ export function TournamentPlayersModal({ show, onHide, tournamentId, tournamentN
                                                         transition: "all 0.2s",
                                                     }}
                                                     onMouseEnter={e => {
-                                                        if (removingId !== player.tournamentPlayerId) {
+                                                        
                                                             const btn = e.currentTarget as HTMLButtonElement;
                                                             btn.style.background = "rgba(229,94,94,0.1)";
                                                             btn.style.color = "#e55e5e";
-                                                            btn.style.borderColor = "rgba(229,94,94,0.5)";
-                                                        }
+                                                            btn.style.borderColor = "rgba(229, 94, 94, 0.79)";
+                                                        
                                                     }}
                                                     onMouseLeave={e => {
                                                         const btn = e.currentTarget as HTMLButtonElement;
                                                         btn.style.background = "transparent";
-                                                        btn.style.color = "#e55e5e80";
-                                                        btn.style.borderColor = "rgba(229,94,94,0.25)";
+                                                        btn.style.color = "#e55e5eae";
+                                                        btn.style.borderColor = "rgba(229, 94, 94, 0.7)";
                                                     }}
                                                 >
-                                                    {removingId === player.tournamentPlayerId ? "Removing..." : "Remove"}
+                                                    {removingId === player.tournamentPlayerId ? "REMOVING..." : "REMOVE"}
                                                 </button>
                                             </td>
                                         </tr>

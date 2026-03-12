@@ -131,7 +131,7 @@ const RoundGamesModal = ({
                     </Modal.Title>
                     {/* Completed badge next to title */}
                     {completed && (
-                        <Badge style={{
+                        <Badge bg="" style={{
                             background: "rgba(94,229,170,0.12)",
                             color: "#5ee5aa",
                             border: "1px solid rgba(94,229,170,0.25)",

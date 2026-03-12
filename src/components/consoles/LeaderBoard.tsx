@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import Select from "react-select";
 import { ConsoleHeader } from "./ConsoleHeader";
 import jsPDF from "jspdf";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 interface RankedPlayerData {
     playerId: string;
@@ -60,8 +61,8 @@ export function LeaderBoard() {
 
     const isMinitournament = selectedTournamentName === MINI_TOURNAMENT_NAME;
 
-    const tournamentOptions = [
-        { value: "", label: "Select a Tournament" },
+    const tournamentOptions:{ value: string; label: string; isDisabled?: boolean }[] = [
+        { value: "", label: "Select a Tournament",isDisabled:true },
         ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
     ];
 
@@ -277,6 +278,7 @@ export function LeaderBoard() {
         menuList: (base: any) => ({ ...base, backgroundColor: "#0d0c18", borderRadius: "8px", padding: 0 }),
         menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
         placeholder: (base: any) => ({ ...base, color: "#e0d318d4", textAlign: "center" as const }),
+        
     };
 
     const typeSelectStyles = {
@@ -316,7 +318,9 @@ export function LeaderBoard() {
                                 setSelectedTournamentId(val); setSelectedTournamentName(name); setActiveKey(null);
                                 handlePopulateLeaderBoard(val || undefined, tournamentType);
                             }}
-                            menuPortalTarget={document.body} menuPosition="fixed" />
+                            menuPortalTarget={document.body} menuPosition="fixed" 
+                            isOptionDisabled={(option) => option.isDisabled === true}
+                            />
                     </div>
                 </div>
 

@@ -14,14 +14,15 @@ import { SelectModal } from "./Selectmodal"
 import { ConsoleHeader } from "./ConsoleHeader"
 import { useAuth } from "../auth/AuthProvider"
 import { TournamentPlayersModal } from "../service/tournament/TournamentPlayersModal"
+import { sortByNumberAsc } from "../utils/Sorters"
 
 interface Tournament {
     tournamentId: string
     tournamentName: string
     status: string
+    tournamentType?: "individual" | "team"   // ← new optional field
 }
 
-// ── completed field added ─────────────────────────────────────────────────────
 interface Round {
     roundId: string
     tournamentId: string
@@ -47,22 +48,24 @@ export function TournamentConsole() {
     const { role } = useAuth()
     const isAdmin = role === "ROLE_ADMIN"
 
-    const [tournamentData, setTournamentData]         = useState<Tournament[]>([])
-    const [selectedRow, setSelectedRow]               = useState<Tournament | null>(null)
-    const [showEditModal, setShowEditModal]           = useState(false)
-    const [showAddModal, setShowAddModal]             = useState(false)
+    const [tournamentData, setTournamentData]           = useState<Tournament[]>([])
+    const [selectedRow, setSelectedRow]                 = useState<Tournament | null>(null)
+    const [showEditModal, setShowEditModal]             = useState(false)
+    const [showAddModal, setShowAddModal]               = useState(false)
     const [showRoundGamesModal, setShowRoundGamesModal] = useState(false)
-    const [showAddRoundModal, setShowAddRoundModal]   = useState(false)
-    const [selectedRoundId, setSelectedRoundId]       = useState<string | null>(null)
+    const [showAddRoundModal, setShowAddRoundModal]     = useState(false)
+    const [selectedRoundId, setSelectedRoundId]         = useState<string | null>(null)
     const [selectedRoundNumber, setSelectedRoundNumber] = useState<number | null>(null)
     const [selectedTournamentName, setSelectedTournamentName] = useState("")
     const [selectedTournamentId, setSelectedTournamentId]     = useState("")
-    const [nextRoundNumber, setNextRoundNumber]       = useState<number>(1)
-    const [modalTournamentId, setModalTournamentId]   = useState<string | null>(null)
+    const [nextRoundNumber, setNextRoundNumber]         = useState<number>(1)
+    const [modalTournamentId, setModalTournamentId]     = useState<string | null>(null)
     const [modalTournamentName, setModalTournamentName] = useState<string>("")
-
-    // ── NEW: track whether the currently-open round is completed ─────────────
     const [selectedRoundCompleted, setSelectedRoundCompleted] = useState(false)
+
+    // ── tournament type: tracked for the Add modal and the Add Players modal ──
+    const [pendingTournamentType, setPendingTournamentType] = useState<"individual" | "team">("individual")
+    const [modalTournamentType, setModalTournamentType]     = useState<"individual" | "team">("individual")
 
     const [selectModal, setSelectModal] = useState<{
         show: boolean
@@ -86,6 +89,33 @@ export function TournamentConsole() {
     }, [])
 
     const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }))
+
+    // ── Ask for tournament type BEFORE opening the Add modal ─────────────────
+    const handleAddTournamentClick = async () => {
+        const { value: type } = await Swal.fire({
+            title: "Tournament Type",
+            text: "What kind of tournament is this?",
+            input: "radio",
+            inputOptions: {
+                individual: "Individual",
+                team: "Team",
+            },
+            inputValue: "individual",
+            showCancelButton: true,
+            confirmButtonText: "Continue",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#6c757d",
+            inputValidator: (value) =>
+                new Promise(resolve =>
+                    value ? resolve(undefined) : resolve("Please select a tournament type")
+                ),
+        })
+
+        if (type) {
+            setPendingTournamentType(type as "individual" | "team")
+            setShowAddModal(true)
+        }
+    }
 
     const handleDelete = async (tournament: Tournament) => {
         const result = await Swal.fire({
@@ -135,8 +165,9 @@ export function TournamentConsole() {
                 return
             }
 
+            const sortedRounds = sortByNumberAsc(rounds, "roundNumber")
             const roundOptions: Record<string, string> = {}
-            rounds.forEach(r => { roundOptions[r.roundId] = `Round ${r.roundNumber}` })
+            sortedRounds.forEach(r => { roundOptions[r.roundId] = `Round ${r.roundNumber}` })
 
             const { value: roundId } = await Swal.fire({
                 title: "Select Round to Delete",
@@ -152,7 +183,7 @@ export function TournamentConsole() {
             })
 
             if (roundId) {
-                const selectedRound = rounds.find(r => r.roundId === roundId)
+                const selectedRound = sortedRounds.find(r => r.roundId === roundId)
                 const confirm = await Swal.fire({
                     title: "Are you sure?",
                     text: `This will delete Round ${selectedRound?.roundNumber} and all its games.`,
@@ -186,7 +217,8 @@ export function TournamentConsole() {
     }
 
     const handleAdd = (newTournament: Tournament) => {
-        setTournamentData(prev => [...prev, newTournament])
+        // Attach the type chosen before opening the modal
+        setTournamentData(prev => [...prev, { ...newTournament, tournamentType: pendingTournamentType }])
     }
 
     const handleAddRound = async (tournament: Tournament) => {
@@ -199,6 +231,13 @@ export function TournamentConsole() {
             setNextRoundNumber(1)
         }
         setShowAddRoundModal(true)
+    }
+
+    // ── Open Add Players modal — carry the tournament's type ──────────────────
+    const handleAddPlayersClick = (row: Tournament) => {
+        setModalTournamentId(row.tournamentId)
+        setModalTournamentName(row.tournamentName)
+        setModalTournamentType(row.tournamentType ?? "individual")
     }
 
     const handleViewRoundsClick = async () => {
@@ -234,8 +273,9 @@ export function TournamentConsole() {
             return
         }
 
-        // ── Show completed indicator in the label ─────────────────────────────
-        const options = rounds.map(r => ({
+        const sortedRounds = sortByNumberAsc(rounds, "roundNumber")
+
+        const options = sortedRounds.map(r => ({
             value: r.roundId,
             label: `Round ${r.roundNumber}${r.completed ? "  ✓" : ""}`,
         }))
@@ -249,10 +289,9 @@ export function TournamentConsole() {
             confirmText: "View Games",
             onConfirm: (roundId) => {
                 closeSelectModal()
-                const selectedRound = rounds.find(r => r.roundId === roundId)
+                const selectedRound = sortedRounds.find(r => r.roundId === roundId)
                 setSelectedRoundId(roundId)
                 setSelectedRoundNumber(selectedRound?.roundNumber ?? null)
-                // ── NEW: pass completed status into the modal ─────────────────
                 setSelectedRoundCompleted(selectedRound?.completed ?? false)
                 setSelectedTournamentName(tournament.tournamentName)
                 setShowRoundGamesModal(true)
@@ -275,7 +314,8 @@ export function TournamentConsole() {
                         <Button className="btn-view" variant="info" onClick={handleViewRoundsClick}>
                             View Tournaments
                         </Button>
-                        <Button className="btn-create" variant="success" onClick={() => setShowAddModal(true)}>
+                        {/* ── Uses new handler that asks type first ── */}
+                        <Button className="btn-create" variant="success" onClick={handleAddTournamentClick}>
                             + Add Tournament
                         </Button>
                     </div>
@@ -302,10 +342,7 @@ export function TournamentConsole() {
                                                 {isAdmin ? (
                                                     <>
                                                         <button
-                                                            onClick={() => {
-                                                                setModalTournamentId(row.tournamentId)
-                                                                setModalTournamentName(row.tournamentName)
-                                                            }}
+                                                            onClick={() => handleAddPlayersClick(row)}
                                                             style={{
                                                                 background: "transparent",
                                                                 border: "1px solid rgba(224,211,24,0.4)",
@@ -348,6 +385,7 @@ export function TournamentConsole() {
                     handleClose={() => setShowAddModal(false)}
                     handleAdd={handleAdd}
                     refreshTable={() => loadData(setTournamentData)}
+                    tournamentType={pendingTournamentType}
                 />
                 <EditTournament
                     show={showEditModal}
@@ -357,7 +395,6 @@ export function TournamentConsole() {
                     refreshTable={() => loadData(setTournamentData)}
                 />
 
-                {/* ── isCompleted + onRoundCompleted wired up ───────────────── */}
                 <RoundGamesModal
                     show={showRoundGamesModal}
                     handleClose={() => setShowRoundGamesModal(false)}
@@ -385,11 +422,14 @@ export function TournamentConsole() {
                     onConfirm={selectModal.onConfirm}
                     onCancel={closeSelectModal}
                 />
+
+                {/* tournamentType passed so the modal loads players or teams accordingly */}
                 <TournamentPlayersModal
                     show={!!modalTournamentId}
                     onHide={() => setModalTournamentId(null)}
                     tournamentId={modalTournamentId ?? ""}
                     tournamentName={modalTournamentName}
+                    tournamentType={modalTournamentType}
                 />
             </div>
         </>
