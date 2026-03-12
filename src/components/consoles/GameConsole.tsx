@@ -11,6 +11,7 @@ import GetRoundsByTournament from "../service/tournament/GetRoundsByTournament";
 import { getPlayer } from "../service/player/GetPlayer";
 import { SelectModal } from "./Selectmodal";
 import { ConsoleHeader } from "./ConsoleHeader";
+import { sortByNumberAsc } from "../utils/Sorters";
 
 
 interface Game {
@@ -220,10 +221,14 @@ export function GameConsole() {
                 }
 
                 // Step 2 — select round
-                const roundOptions = rounds.map(r => ({
-                    value: r.roundId,
-                    label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
-                }));
+                const roundOptions = sortByNumberAsc(
+                    rounds.map(r => ({
+                        value: r.roundId,
+                        label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
+                        roundNumber: r.roundNumber,
+                    })),
+                    "roundNumber"
+                );
 
                 setSelectModal({
                     show: true,
