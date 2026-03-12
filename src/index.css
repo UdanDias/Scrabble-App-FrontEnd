@@ -224,7 +224,7 @@ code {
 .console-table-wrapper {
   max-height: 65vh;
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: clip;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
@@ -383,6 +383,20 @@ code {
 .btn-delete:hover {
   background-color: rgba(201, 49, 49, 0.2) !important;
   color: #ffffff !important;
+}
+.btn-register {
+  background-color: transparent !important;
+  border: 1px solid rgba(224,211,24,0.4) !important;
+  color: #e0d318d4 !important;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+.btn-register:hover {
+  background-color: rgba(224,211,24,0.12) !important;
+  border-color: rgba(224,211,24,0.8) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 8px rgba(224,211,24,0.2);
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Navbar //////////////////////////////////////////////////////////////////// */
@@ -598,6 +612,9 @@ code {
   text-transform: uppercase;
   font-size: 1.0rem!important;
   font-weight: bold;
+  position: sticky!important;
+  top: 0!important;
+  z-index: 10!important;
 }
 
 .leaderboard-accordion .accordion-item {
@@ -725,6 +742,11 @@ code {
   border: 1px solid #6366f1;
   color: #6366f1;
   box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+}
+.leaderboard-page .console-table-wrapper {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: clip;
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////////// Profile //////////////////////////////////////////////////////////////////// */

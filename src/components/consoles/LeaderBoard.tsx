@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import Select from "react-select";
 import { ConsoleHeader } from "./ConsoleHeader";
 import jsPDF from "jspdf";
-import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 interface RankedPlayerData {
     playerId: string;
@@ -20,7 +19,7 @@ interface RankedPlayerData {
     avgMargin: number;
     cumMargin: number;
     eloRating: number | null;
-    provisional: boolean; // ✅ added
+    provisional: boolean;
     previousEloRating: number | null;
 }
 
@@ -41,9 +40,7 @@ interface Tournament {
 }
 
 const MINI_TOURNAMENT_NAME = "Mini Tournament Uok";
-// const PROVISIONAL_THRESHOLD = 20;
 const PROVISIONAL_THRESHOLD = 3;
-
 
 const tournamentTypeOptions = [
     { value: "individual", label: "Individual" },
@@ -61,8 +58,8 @@ export function LeaderBoard() {
 
     const isMinitournament = selectedTournamentName === MINI_TOURNAMENT_NAME;
 
-    const tournamentOptions:{ value: string; label: string; isDisabled?: boolean }[] = [
-        { value: "", label: "Select a Tournament",isDisabled:true },
+    const tournamentOptions: { value: string; label: string; isDisabled?: boolean }[] = [
+        { value: "", label: "Select a Tournament", isDisabled: true },
         ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
     ];
 
@@ -114,14 +111,14 @@ export function LeaderBoard() {
         doc.setFontSize(7);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(224, 211, 24);
-        doc.text("#RANK",                           col1X, headerY + 6.5, { align: "center" });
-        doc.text(isIndividual ? "PLAYER" : "TEAM",  col2X, headerY + 6.5, { align: "center" });
-        doc.text("GAMES",                           col3X, headerY + 6.5, { align: "center" });
-        doc.text("WINS",                            col4X, headerY + 6.5, { align: "center" });
-        doc.text("CUM MGN",                         col5X, headerY + 6.5, { align: "center" });
+        doc.text("#RANK", col1X, headerY + 6.5, { align: "center" });
+        doc.text(isIndividual ? "PLAYER" : "TEAM", col2X, headerY + 6.5, { align: "center" });
+        doc.text("GAMES", col3X, headerY + 6.5, { align: "center" });
+        doc.text("WINS", col4X, headerY + 6.5, { align: "center" });
+        doc.text("CUM MGN", col5X, headerY + 6.5, { align: "center" });
         if (showElo) {
-            doc.text("OLD",    col6X, headerY + 6.5, { align: "center" });
-            doc.text("NEW",    col7X, headerY + 6.5, { align: "center" });
+            doc.text("OLD", col6X, headerY + 6.5, { align: "center" });
+            doc.text("NEW", col7X, headerY + 6.5, { align: "center" });
             doc.text("CHANGE", col8X, headerY + 6.5, { align: "center" });
         }
 
@@ -191,20 +188,15 @@ export function LeaderBoard() {
 
             doc.setTextColor(150, 160, 180); doc.setFontSize(8);
             doc.text(String(row.games), col3X, currentY + 6.5, { align: "center" });
-            doc.text(String(row.wins),  col4X, currentY + 6.5, { align: "center" });
-            doc.text(String(row.cum),   col5X, currentY + 6.5, { align: "center" });
+            doc.text(String(row.wins), col4X, currentY + 6.5, { align: "center" });
+            doc.text(String(row.cum), col5X, currentY + 6.5, { align: "center" });
 
             if (showElo) {
-                // Old rating — muted white
                 doc.setTextColor(180, 180, 180);
                 doc.text(row.oldElo, col6X, currentY + 6.5, { align: "center" });
-
-                // New rating — blue if provisional, gold if established
                 if (row.provisional) doc.setTextColor(82, 147, 238);
                 else doc.setTextColor(224, 211, 24);
                 if (row.newElo) doc.text(row.newElo, col7X, currentY + 6.5, { align: "center" });
-
-                // Change — green / red / grey
                 if (row.changePositive) doc.setTextColor(76, 175, 129);
                 else if (row.changeNegative) doc.setTextColor(224, 85, 85);
                 else doc.setTextColor(136, 136, 136);
@@ -278,7 +270,6 @@ export function LeaderBoard() {
         menuList: (base: any) => ({ ...base, backgroundColor: "#0d0c18", borderRadius: "8px", padding: 0 }),
         menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
         placeholder: (base: any) => ({ ...base, color: "#e0d318d4", textAlign: "center" as const }),
-        
     };
 
     const typeSelectStyles = {
@@ -298,19 +289,33 @@ export function LeaderBoard() {
                 <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
                     {hasData && (
                         <div style={{ position: "absolute", right: 0 }}>
-                            <button onClick={handleDownloadPDF} style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                            <button
+                                onClick={handleDownloadPDF}
+                                style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
                                 onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(224,211,24,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
-                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
                                 Download PDF
                             </button>
                         </div>
                     )}
                     <div style={{ flex: "0 0 180px" }}>
-                        <Select options={tournamentTypeOptions} styles={typeSelectStyles} value={tournamentTypeOptions.find(o => o.value === tournamentType)} onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")} menuPortalTarget={document.body} menuPosition="fixed" />
+                        <Select
+                            options={tournamentTypeOptions}
+                            styles={typeSelectStyles}
+                            value={tournamentTypeOptions.find(o => o.value === tournamentType)}
+                            onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")}
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                        />
                     </div>
                     <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", width: "400px" }}>
-                        <Select options={tournamentOptions} styles={selectStyles}
+                        <Select
+                            options={tournamentOptions}
+                            styles={selectStyles}
                             value={tournamentOptions.find(o => o.value === selectedTournamentId) ?? tournamentOptions[0]}
                             onChange={selected => {
                                 const val = selected?.value ?? "";
@@ -318,9 +323,10 @@ export function LeaderBoard() {
                                 setSelectedTournamentId(val); setSelectedTournamentName(name); setActiveKey(null);
                                 handlePopulateLeaderBoard(val || undefined, tournamentType);
                             }}
-                            menuPortalTarget={document.body} menuPosition="fixed" 
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
                             isOptionDisabled={(option) => option.isDisabled === true}
-                            />
+                        />
                     </div>
                 </div>
 
@@ -334,19 +340,21 @@ export function LeaderBoard() {
                     </div>
                 )}
 
-                {/* Individual leaderboard */}
+                {/* ── Individual leaderboard ── */}
                 {selectedTournamentId && tournamentType === "individual" && (
                     <div className="console-table-wrapper">
                         <Table className="leaderboard-header-table" bordered>
                             <thead>
                                 <tr>
-                                    {/* Rank — fixed width matching rank-divider */}
                                     <th style={{ width: "55px", fontSize: "18px" }}>#Rank</th>
 
-                                    {/* Player — takes remaining space */}
-                                    <th style={{ textAlign: "center", paddingLeft: "200px", fontSize: "18px" }}>Player</th>
+                                    {/* Mini: paddingLeft offsets the name rightward since Elo cols balance the right */}
+                                    {isMinitournament ? (
+                                        <th style={{ textAlign: "center", paddingLeft: "200px", fontSize: "18px" }}>Player</th>
+                                    ) : (
+                                        <th style={{ textAlign: "center", fontSize: "18px" ,paddingRight: "120px"}}>Player</th>
+                                    )}
 
-                                    {/* Rating columns — fixed widths must match row divs below */}
                                     {isMinitournament && (
                                         <>
                                             <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Old</th>
@@ -357,82 +365,59 @@ export function LeaderBoard() {
                                 </tr>
                             </thead>
                         </Table>
+
                         <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
                             {rankedPlayerData.length === 0 ? (
                                 <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>No players found.</div>
                             ) : rankedPlayerData.map((player, index) => {
-
                                 const diff = (player.eloRating != null && player.previousEloRating != null)
-                                    ? player.eloRating - player.previousEloRating
-                                    : null;
+                                    ? player.eloRating - player.previousEloRating : null;
                                 const diffColor = diff == null ? "#888" : diff > 0 ? "#4caf81" : diff < 0 ? "#e05555" : "#888";
                                 const diffArrow = diff == null ? "—" : diff > 0 ? "▲" : diff < 0 ? "▼" : "—";
 
                                 return (
                                     <Accordion.Item eventKey={String(index)} key={player.playerId}>
                                         <Accordion.Header>
-                                            {/*
-                                                Use flex row with exact widths matching the <th> above.
-                                                No position:absolute so columns stay aligned.
-                                            */}
                                             <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
 
-                                                {/* Rank — 55px, matches <th width="55px"> */}
+                                                {/* Rank — 55px */}
                                                 <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
                                                     #{player.playerRank}
                                                 </div>
 
-                                                {/* Player name — flex:1 takes remaining space */}
-                                                <div style={{ flex: 1, textAlign: "center",paddingLeft: "200px", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                    {player.username ?? `${player.firstName} ${player.lastName}`}
-                                                    {isMinitournament && player.provisional && (
-                                                        <span style={{
-                                                            marginLeft: "8px",
-                                                            fontSize: "0.6rem",
-                                                            letterSpacing: "1px",
-                                                            color: "#5293ee",
-                                                            border: "1px solid rgba(82,147,238,0.3)",
-                                                            borderRadius: "4px",
-                                                            padding: "2px 6px",
-                                                            verticalAlign: "middle"
-                                                        }}>PROVISIONAL</span>
-                                                    )}
-                                                </div>
+                                                {isMinitournament ? (
+                                                    // Mini: original paddingLeft style — Elo cols on right naturally balance
+                                                    <div style={{ flex: 1, textAlign: "center", paddingLeft: "200px", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                        {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                        {player.provisional && (
+                                                            <span style={{ marginLeft: "8px", fontSize: "0.6rem", letterSpacing: "1px", color: "#5293ee", border: "1px solid rgba(82,147,238,0.3)", borderRadius: "4px", padding: "2px 6px", verticalAlign: "middle" }}>
+                                                                PROVISIONAL
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    // Non-mini: no padding, balanced by 55px right spacer
+                                                    <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                        {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                    </div>
+                                                )}
 
-                                                {/* Rating columns — only for Mini Tournament, widths match <th> */}
+                                                {/* Elo columns — Mini only */}
                                                 {isMinitournament && player.eloRating != null && (
                                                     <>
-                                                        {/* Old — 90px */}
-                                                        <div style={{
-                                                            width: "90px", flexShrink: 0,
-                                                            textAlign: "center", fontSize: "0.75rem",
-                                                            color: "#ffffff8c",
-                                                        }}>
+                                                        <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: "#ffffff8c" }}>
                                                             {player.previousEloRating != null ? player.previousEloRating.toFixed(0) : "—"}
                                                         </div>
-
-                                                        {/* New — 90px */}
-                                                        <div style={{
-                                                            width: "90px", flexShrink: 0,
-                                                            textAlign: "center", fontSize: "0.75rem",
-                                                            color: player.provisional ? "#5293ee" : "#e0d318d4",
-                                                            fontWeight: "bold",
-                                                        }}>
+                                                        <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: player.provisional ? "#5293ee" : "#e0d318d4", fontWeight: "bold" }}>
                                                             {player.eloRating.toFixed(0)}
                                                         </div>
-
-                                                        {/* Change — 80px */}
-                                                        <div style={{
-                                                            width: "80px", flexShrink: 0,
-                                                            textAlign: "center", fontSize: "0.75rem",
-                                                            color: diffColor, fontWeight: "bold",
-                                                        }}>
+                                                        <div style={{ width: "80px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: diffColor, fontWeight: "bold" }}>
                                                             {diff != null ? `${diffArrow} ${Math.abs(diff).toFixed(0)}` : "—"}
                                                         </div>
                                                     </>
                                                 )}
 
-                                                {/* Spacer when not Mini Tournament to keep name centered */}
+                                                {/* Non-mini: 55px right spacer mirrors rank div — truly centers the name */}
                                                 {!isMinitournament && (
                                                     <div style={{ width: "55px", flexShrink: 0 }} />
                                                 )}
@@ -476,33 +461,50 @@ export function LeaderBoard() {
                     </div>
                 )}
 
-                {/* Team leaderboard */}
+                {/* ── Team leaderboard ── */}
                 {selectedTournamentId && tournamentType === "team" && (
                     <div className="console-table-wrapper">
                         {rankedTeamData.length === 0 ? (
                             <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>No team data found for this tournament.</div>
                         ) : (<>
                             <Table className="leaderboard-header-table" bordered>
-                                <thead><tr>
-                                    <th style={{ width: "60px", fontSize: "20px" }}>#Rank</th>
-                                    <th style={{ paddingRight: "120px", textAlign: "center", fontSize: "20px" }}>Team</th>
-                                </tr></thead>
+                                <thead>
+                                    <tr>
+                                        {/* Rank — 55px */}
+                                        <th style={{ width: "55px", fontSize: "20px" }}>#Rank</th>
+                                        {/* Team — centered */}
+                                        <th style={{ textAlign: "center", fontSize: "20px",paddingRight: "80px" }}>Team</th>
+                                        {/* Right spacer mirrors rank width — balances centering */}
+                                        <th style={{ width: "55px", padding: 0, border: "none", background: "transparent" }} />
+                                    </tr>
+                                </thead>
                             </Table>
+
                             <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
                                 {rankedTeamData.map((team, index) => (
                                     <Accordion.Item eventKey={String(index)} key={team.teamId}>
                                         <Accordion.Header>
-                                            <div className="d-flex w-100 pe-3 position-relative">
-                                                <div className="rank-divider" style={{ width: "45px" }}>#{team.teamRank}</div>
-                                                <div className="position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem" }}>{team.teamName}</div>
+                                            <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
+                                                {/* Rank — 55px */}
+                                                <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
+                                                    #{team.teamRank}
+                                                </div>
+                                                {/* Team name — centered between rank div and right spacer */}
+                                                <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                    {team.teamName}
+                                                </div>
+                                                {/* Right spacer — 55px mirrors rank div */}
+                                                <div style={{ width: "55px", flexShrink: 0 }} />
                                             </div>
                                         </Accordion.Header>
                                         <Accordion.Body>
                                             <div className="leaderboard-inner-table-wrapper">
-                                                <table className="leaderboard-inner-table w-100"><tbody>
-                                                    <tr><th>Total Games</th><td>{team.totalGamesPlayed}</td><th>Total Wins</th><td>{team.totalWins}</td></tr>
-                                                    <tr><th>Cum Margin</th><td>{team.cumMargin}</td><th>Avg Margin</th><td>{team.avgMargin}</td></tr>
-                                                </tbody></table>
+                                                <table className="leaderboard-inner-table w-100">
+                                                    <tbody>
+                                                        <tr><th>Total Games</th><td>{team.totalGamesPlayed}</td><th>Total Wins</th><td>{team.totalWins}</td></tr>
+                                                        <tr><th>Cum Margin</th><td>{team.cumMargin}</td><th>Avg Margin</th><td>{team.avgMargin}</td></tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                             {team.members?.length > 0 && (
                                                 <div style={{ marginTop: "10px" }}>

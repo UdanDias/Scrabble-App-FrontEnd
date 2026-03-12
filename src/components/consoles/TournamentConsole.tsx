@@ -92,27 +92,25 @@ export function TournamentConsole() {
 
     // ── Ask for tournament type BEFORE opening the Add modal ─────────────────
     const handleAddTournamentClick = async () => {
-        const { value: type } = await Swal.fire({
+        const result = await Swal.fire({
             title: "Tournament Type",
             text: "What kind of tournament is this?",
-            input: "radio",
-            inputOptions: {
-                individual: "Individual",
-                team: "Team",
-            },
-            inputValue: "individual",
+            showConfirmButton: true,
+            showDenyButton: true,
             showCancelButton: true,
-            confirmButtonText: "Continue",
-            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Individual",
+            denyButtonText: "Team",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#198754",
+            denyButtonColor: "#510dfd",
             cancelButtonColor: "#6c757d",
-            inputValidator: (value) =>
-                new Promise(resolve =>
-                    value ? resolve(undefined) : resolve("Please select a tournament type")
-                ),
         })
 
-        if (type) {
-            setPendingTournamentType(type as "individual" | "team")
+        if (result.isConfirmed) {
+            setPendingTournamentType("individual")
+            setShowAddModal(true)
+        } else if (result.isDenied) {
+            setPendingTournamentType("team")
             setShowAddModal(true)
         }
     }
@@ -343,18 +341,9 @@ export function TournamentConsole() {
                                                     <>
                                                         <button
                                                             onClick={() => handleAddPlayersClick(row)}
-                                                            style={{
-                                                                background: "transparent",
-                                                                border: "1px solid rgba(224,211,24,0.4)",
-                                                                color: "#e0d318d4",
-                                                                borderRadius: "6px",
-                                                                padding: "5px 12px",
-                                                                fontSize: "1.0rem",
-                                                                letterSpacing: "1px",
-                                                                cursor: "pointer",
-                                                            }}
+                                                            className="btn-register"
                                                         >
-                                                            + Add Players
+                                                            {row.tournamentType === "team" ? "+ Add Teams" : "+ Add Players"}
                                                         </button>
                                                         <Button className="btn-create" variant="primary" onClick={() => handleAddRound(row)}>
                                                             + Add Round

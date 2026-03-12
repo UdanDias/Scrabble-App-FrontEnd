@@ -1,7 +1,7 @@
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
 
-const removeTeamUrl = "http://localhost:8081/scrabbleapp2026/api/v1/team/removeteam"
+const removeTeamUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/removeteam"
 
 const RemoveTournamentTeam = async (tournamentTeamId: string) => {
     try {

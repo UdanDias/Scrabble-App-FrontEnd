@@ -9,6 +9,7 @@ interface Tournament {
     tournamentId: string
     tournamentName: string
     status: string
+    tournamentType?: "individual" | "team"
 }
 
 interface AddTournamentProps {
@@ -16,19 +17,21 @@ interface AddTournamentProps {
     handleClose: () => void
     handleAdd: (newTournament: Tournament) => void
     refreshTable: () => void
+    tournamentType: "individual" | "team"
 }
 
-const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTournamentProps) => {
+const AddTournament = ({ show, handleClose, handleAdd, refreshTable, tournamentType }: AddTournamentProps) => {
     const [details, setDetails] = useState({
         tournamentName: "",
-        status: "UPCOMING"
+        status: "UPCOMING",
     })
 
     useEffect(() => {
         if (show) {
-            setDetails({ 
+            setDetails({
                 tournamentName: "",
-                status: "UPCOMING" })
+                status: "UPCOMING",
+            })
         }
     }, [show])
 
@@ -38,7 +41,7 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
 
     const handleSubmit = async () => {
         try {
-            const created = await CreateTournament(details)
+            const created = await CreateTournament({ ...details, tournamentType })
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -70,16 +73,31 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
             Toast.fire({ icon: "error", title: "Tournament Creation Failed" });
         }
     }
+
     const statusOptions = [
-    { value: "UPCOMING", label: "Upcoming" },
-    { value: "ONGOING", label: "Ongoing" },
-    { value: "FINISHED", label: "Finished" },
-]
+        { value: "UPCOMING", label: "Upcoming" },
+        { value: "ONGOING", label: "Ongoing" },
+        { value: "FINISHED", label: "Finished" },
+    ]
 
     return (
         <Modal show={show} onHide={handleClose} className="dark-modal">
             <Modal.Header closeButton>
-                <Modal.Title>Add Tournament</Modal.Title>
+                <Modal.Title>
+                    Add Tournament
+                    <span style={{
+                        marginLeft: "10px",
+                        fontSize: "0.7rem",
+                        letterSpacing: "3px",
+                        color: tournamentType === "team" ? "#a78bfa" : "#5ee5aa",
+                        border: `1px solid ${tournamentType === "team" ? "rgba(167,139,250,0.3)" : "rgba(94,229,170,0.3)"}`,
+                        borderRadius: "4px",
+                        padding: "2px 8px",
+                        verticalAlign: "middle",
+                    }}>
+                        {tournamentType.charAt(0).toUpperCase() + tournamentType.slice(1)}
+                    </span>
+                </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <FloatingLabel label="Tournament Name" className="mb-3">
@@ -88,21 +106,22 @@ const AddTournament = ({ show, handleClose, handleAdd, refreshTable }: AddTourna
                         name="tournamentName"
                         placeholder="Tournament Name"
                         value={details.tournamentName}
-                        onChange={handleOnChange} />
+                        onChange={handleOnChange}
+                    />
                 </FloatingLabel>
-                    <div className="mb-3">
-                        <ReactSelect
-                            options={statusOptions}
-                            styles={customStyles}
-                            placeholder="Select Status"
-                            menuPortalTarget={document.body}
-                            menuPosition="fixed"
-                            value={statusOptions.find(o => o.value === details.status) ?? null}
-                            onChange={(selected) =>
-                                setDetails(prev => ({ ...prev, status: selected?.value ?? "" }))
-                            }
-                        />
-                    </div>
+                <div className="mb-3">
+                    <ReactSelect
+                        options={statusOptions}
+                        styles={customStyles}
+                        placeholder="Select Status"
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        value={statusOptions.find(o => o.value === details.status) ?? null}
+                        onChange={(selected) =>
+                            setDetails(prev => ({ ...prev, status: selected?.value ?? "" }))
+                        }
+                    />
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button className="btn-edit" onClick={handleClose}>Close</Button>

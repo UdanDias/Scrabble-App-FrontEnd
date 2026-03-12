@@ -1,12 +1,12 @@
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
 
-const registerTeamUrl = "http://localhost:8081/scrabbleapp2026/api/v1/team/registerteam"
+const registerTeamUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/registerteam"
 
-const RegisterTournamentTeam = async (tournamentId: string, TeamId: string) => {
+const RegisterTournamentTeam = async (tournamentId: string, teamId: string) => {
     try {
         const response = await axios.post(
-            `${registerTeamUrl}?tournamentId=${tournamentId}&playerId=${TeamId}`,
+            `${registerTeamUrl}?tournamentId=${tournamentId}&teamId=${teamId}`,
             {},
             { headers: { Authorization: FetchToken() } }
         )

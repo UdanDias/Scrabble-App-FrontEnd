@@ -505,10 +505,10 @@ export const PairingsConsole: React.FC = () => {
                         <table className="table console-table mb-0">
                             <thead>
                                 <tr>
-                                    <th style={{ width: "80px" }}>BOARD</th>
-                                    <th>PLAYER 1</th>
+                                    <th style={{ width: "80px",textAlign: "center" }}>BOARD</th>
+                                    <th style={{ textAlign: "center" }}>PLAYER 1</th>
                                     <th style={{ textAlign: "center", width: "60px" }}>VS</th>
-                                    <th>PLAYER 2</th>
+                                    <th style={{ textAlign: "center" }}>PLAYER 2</th>
                                     <th style={{ width: "120px", textAlign: "center" }}>WINS</th>
                                 </tr>
                             </thead>
@@ -517,10 +517,10 @@ export const PairingsConsole: React.FC = () => {
                                     <React.Fragment key={groupNum}>
                                         {groupPairings.map(pair => (
                                             <tr key={pair.boardNumber}>
-                                                <td><span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>#{pair.boardNumber}</span></td>
-                                                <td>{pair.player1Name}</td>
+                                                <td style={{ textAlign: "center" }}><span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>#{pair.boardNumber}</span></td>
+                                                <td style={{ textAlign: "center" }}>{pair.player1Name}</td>
                                                 <td style={{ textAlign: "center" }}><span style={{ color: "#bfd0e150", fontWeight: "bold", fontSize: "0.75rem", letterSpacing: "1px" }}>VS</span></td>
-                                                <td>{pair.player2Name}</td>
+                                                <td style={{ textAlign: "center" }}>{pair.player2Name}</td>
                                                 <td style={{ textAlign: "center" }}><span style={{ color: "#bfd0e180", fontSize: "0.82rem" }}>{winsDisplay(pair.player1Wins)}W · {winsDisplay(pair.player2Wins)}W</span></td>
                                             </tr>
                                         ))}
@@ -528,15 +528,25 @@ export const PairingsConsole: React.FC = () => {
                                 ))}
                                 {byePairing && (
                                     <React.Fragment>
+                                        
                                         <tr>
-                                            <td colSpan={5} style={{ borderTop: "1px solid rgba(29,97,193,0.3)", padding: "6px 14px", fontSize: "0.68rem", letterSpacing: "2px", color: "#5293ee80", textTransform: "uppercase", backgroundColor: "#060413" }}>Bye</td>
-                                        </tr>
-                                        <tr>
-                                            <td><span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>#{byePairing.boardNumber}</span></td>
-                                            <td>{byePairing.player1Name}</td>
-                                            <td style={{ textAlign: "center" }}><span className="badge-game-bye" style={{ fontSize: "0.7rem" }}>BYE</span></td>
-                                            <td><span style={{ color: "#bfd0e140", fontStyle: "italic" }}>—</span></td>
-                                            <td style={{ textAlign: "center" }}><span style={{ color: "#5293ee", fontSize: "0.85rem" }}>{winsDisplay(byePairing.player1Wins)}W</span></td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>
+                                                    #{byePairing.boardNumber}
+                                                </span>
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>{byePairing.player1Name}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <span className="badge-game-bye" style={{ fontSize: "0.7rem" }}>BYE</span>
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <span style={{ color: "#bfd0e140", fontStyle: "italic" }}>—</span>
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <span style={{ color: "#5293ee", fontSize: "0.85rem" }}>
+                                                    {winsDisplay(byePairing.player1Wins)}W
+                                                </span>
+                                            </td>
                                         </tr>
                                     </React.Fragment>
                                 )}

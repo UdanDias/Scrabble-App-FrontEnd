@@ -1,7 +1,7 @@
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
 
-const getTournamentTeamsUrl = "http://localhost:8081/scrabbleapp2026/api/v1/team/getteams"
+const getTournamentTeamsUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/getteams"
 
 const GetTournamentTeam = async (tournamentId: string) => {
     try {
