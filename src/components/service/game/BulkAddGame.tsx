@@ -86,7 +86,7 @@ export function BulkAddGame({ show, handleClose, handleAdd, roundId, players }: 
         setSubmitting(true);
         try {
             await axios.post(
-                "http://localhost:8081/scrabbleapp2026/api/v1/game/addbulk",
+                "http://localhost:8081/scrabbleapp2026/api/v1/game/addgames/bulk",
                 payload,
                 { headers: { "Content-Type": "application/json", Authorization: FetchToken() } }
             );
