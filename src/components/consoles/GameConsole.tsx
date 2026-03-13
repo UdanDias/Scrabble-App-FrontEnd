@@ -12,6 +12,7 @@ import { getPlayer } from "../service/player/GetPlayer";
 import { SelectModal } from "./Selectmodal";
 import { ConsoleHeader } from "./ConsoleHeader";
 import { sortByNumberAsc } from "../utils/Sorters";
+import { BulkAddGame } from "../service/game/BulkAddGame"; 
 
 
 interface Game {
@@ -99,6 +100,7 @@ export function GameConsole() {
     const [showAddByeGameModal, SetShowAddByeGameModal] = useState(false);
     const [selectedRoundId, SetSelectedRoundId] = useState<string | null>(null);
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
+    const [showBulkAddGameModal, setShowBulkAddGameModal] = useState(false);
     
 
     // SelectModal state
@@ -243,24 +245,32 @@ export function GameConsole() {
 
                         // Step 3 — select game type
                         const result = await Swal.fire({
-                            title: "Select Game Type",
-                            icon: "question",
-                            showConfirmButton: true,
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: "Regular Game",
-                            denyButtonText: "Bye Game",
-                            cancelButtonText: "Cancel",
-                            confirmButtonColor: "#510dfd",
-                            denyButtonColor: "#19876f",
-                            cancelButtonColor: "#6c757d",
-                        });
+                        title: "Select Game Type",
+                        icon: "question",
+                        showConfirmButton: true,
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: "Regular Game",
+                        denyButtonText: "Bye Game",
+                        cancelButtonText: "Cancel",
+                        // ✅ Add this:
+                        footer: `<button id="bulk-btn" class="swal2-confirm swal2-styled" 
+                            style="background:#e0a918;color:#000;margin-top:6px;width:100%">
+                            ⚡ Bulk Add Games
+                        </button>`,
+                        didOpen: () => {
+                            document.getElementById("bulk-btn")?.addEventListener("click", () => {
+                                Swal.close();
+                                setShowBulkAddGameModal(true);
+                            });
+                        },
+                        confirmButtonColor: "#510dfd",
+                        denyButtonColor: "#19876f",
+                        cancelButtonColor: "#6c757d",
+                    });
 
-                        if (result.isConfirmed) {
-                            SetShowAddGameModal(true);
-                        } else if (result.isDenied) {
-                            SetShowAddByeGameModal(true);
-                        }
+                    if (result.isConfirmed) SetShowAddGameModal(true);
+                    else if (result.isDenied) SetShowAddByeGameModal(true);
                     },
                 });
             },
@@ -349,6 +359,13 @@ export function GameConsole() {
                 handleClose={() => SetShowAddByeGameModal(false)}
                 handleAdd={handleOnAddBye}
                 roundId={selectedRoundId}
+            />
+            <BulkAddGame
+                show={showBulkAddGameModal}
+                handleClose={() => setShowBulkAddGameModal(false)}
+                handleAdd={handleOnAdd}
+                roundId={selectedRoundId}
+                players={players}
             />
 
             <SelectModal
