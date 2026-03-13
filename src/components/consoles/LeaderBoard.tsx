@@ -28,7 +28,8 @@ interface RankedTeamData {
     teamId: string;
     teamName: string;
     teamRank: number;
-    totalWins: number;
+    roundWins: number;       // ✅ primary sort key — rounds won (3+ board wins)
+    totalWins: number;       // same value as roundWins, kept for Swiss compat
     totalGamesPlayed: number;
     avgMargin: number;
     cumMargin: number;
@@ -56,7 +57,7 @@ export function LeaderBoard() {
     const [selectedTournamentName, setSelectedTournamentName] = useState<string>("");
     const [tournamentType, setTournamentType] = useState<"individual" | "team">("individual");
     const [activeKey, setActiveKey] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false); // ✅ loading state
+    const [isLoading, setIsLoading] = useState(false);
 
     const isMinitournament = selectedTournamentName === MINI_TOURNAMENT_NAME;
 
@@ -65,6 +66,7 @@ export function LeaderBoard() {
         ...tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }))
     ];
 
+    // ── PDF Download ──────────────────────────────────────────────────────────
     const handleDownloadPDF = () => {
         const doc = new jsPDF();
         const pageWidth = 210;
@@ -76,7 +78,7 @@ export function LeaderBoard() {
         const rankColWidth = 20;
         const nameColWidth = 45;
         const gamesColW = 18;
-        const winsColW = 16;
+        const winsColW = 22;   // slightly wider to fit "RND WINS"
         const cumColW = 22;
         const oldColW = showElo ? 22 : 0;
         const newColW = showElo ? 22 : 0;
@@ -116,7 +118,8 @@ export function LeaderBoard() {
         doc.text("#RANK", col1X, headerY + 6.5, { align: "center" });
         doc.text(isIndividual ? "PLAYER" : "TEAM", col2X, headerY + 6.5, { align: "center" });
         doc.text("GAMES", col3X, headerY + 6.5, { align: "center" });
-        doc.text("WINS", col4X, headerY + 6.5, { align: "center" });
+        // ✅ Column header changes based on type
+        doc.text(isIndividual ? "WINS" : "RND WINS", col4X, headerY + 6.5, { align: "center" });
         doc.text("CUM MGN", col5X, headerY + 6.5, { align: "center" });
         if (showElo) {
             doc.text("OLD", col6X, headerY + 6.5, { align: "center" });
@@ -161,7 +164,7 @@ export function LeaderBoard() {
                 rank: t.teamRank,
                 name: t.teamName,
                 games: t.totalGamesPlayed,
-                wins: t.totalWins,
+                wins: t.roundWins,   // ✅ show roundWins in the wins column for teams
                 cum: t.cumMargin,
                 oldElo: "—", newElo: null, change: "—",
                 changePositive: false, changeNegative: false, provisional: false,
@@ -214,13 +217,14 @@ export function LeaderBoard() {
 
         if (showElo && rankedPlayerData.some(p => p.provisional)) {
             doc.setFontSize(6); doc.setTextColor(82, 147, 238);
-            doc.text("* Provisional rating (fewer than 20 games played)", marginX, 288, { align: "left" });
+            doc.text(`* Provisional rating (fewer than ${PROVISIONAL_THRESHOLD} games played)`, marginX, 288, { align: "left" });
         }
         doc.setFontSize(7); doc.setTextColor(80, 80, 80);
         doc.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 292, { align: "center" });
         doc.save(`leaderboard-${tournamentLabel}.pdf`);
     };
 
+    // ── Helpers ───────────────────────────────────────────────────────────────
     const sortPlayers = (players: RankedPlayerData[]) =>
         [...players].sort((a, b) => {
             if (a.totalGamesPlayed === 0 && b.totalGamesPlayed > 0) return 1;
@@ -228,7 +232,6 @@ export function LeaderBoard() {
             return a.playerRank - b.playerRank;
         });
 
-    // ✅ handlePopulateLeaderBoard with loading state
     const handlePopulateLeaderBoard = async (tournamentId?: string, type?: "individual" | "team") => {
         const activeType = type ?? tournamentType;
         setActiveKey(null);
@@ -267,6 +270,7 @@ export function LeaderBoard() {
         handlePopulateLeaderBoard(selectedTournamentId || undefined, type);
     };
 
+    // ── Select styles ─────────────────────────────────────────────────────────
     const selectStyles = {
         control: (base: any, state: any) => ({ ...base, backgroundColor: "#0d0c18", border: `1px solid ${state.isFocused ? "#e0d318" : "#e0d318"}`, borderRadius: "8px", boxShadow: state.isFocused ? "0 0 12px rgba(224,211,24,0.4)" : "0 0 6px rgba(224,211,24,0.15)", outline: state.isFocused ? "1px solid #e0d318" : "1px solid rgba(224,211,24,0.2)", "&:hover": { borderColor: "rgba(224,211,24,0.6)", boxShadow: "0 0 10px rgba(224,211,24,0.3)" } }),
         valueContainer: (base: any) => ({ ...base, justifyContent: "center" }),
@@ -288,17 +292,18 @@ export function LeaderBoard() {
 
     const hasData = tournamentType === "individual" ? rankedPlayerData.length > 0 : rankedTeamData.length > 0;
 
+    // ── Render ────────────────────────────────────────────────────────────────
     return (
         <div className="leaderboard-page">
             <div style={{ marginLeft: "-30px" }}>
                 <ConsoleHeader title="Leaderboard" subtitle="Tournament rankings and player standings" />
             </div>
             <div className="console-table-container">
+
+                {/* ── Top bar ── */}
                 <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
                     {hasData && !isLoading && (
                         <div style={{ position: "absolute", right: 0, display: "flex", gap: "8px" }}>
-
-                            {/* Manual refresh button */}
                             <button
                                 onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
                                 style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
@@ -306,13 +311,11 @@ export function LeaderBoard() {
                                 onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
-                                    <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15"/>
+                                    <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
+                                    <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15" />
                                 </svg>
                                 Refresh
                             </button>
-
-                            {/* Download PDF button */}
                             <button
                                 onClick={handleDownloadPDF}
                                 style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
@@ -354,7 +357,7 @@ export function LeaderBoard() {
                     </div>
                 </div>
 
-                {/* No tournament selected */}
+                {/* ── No tournament selected ── */}
                 {!selectedTournamentId && (
                     <div style={{ textAlign: "center", marginTop: "60px" }}>
                         <div style={{ fontSize: "2.5rem", marginBottom: "12px", opacity: 0.3 }}>🏆</div>
@@ -367,7 +370,6 @@ export function LeaderBoard() {
                 {/* ── Individual leaderboard ── */}
                 {selectedTournamentId && tournamentType === "individual" && (
                     <div className="console-table-wrapper">
-                        {/* ✅ Show spinner while loading, hide table header too */}
                         {isLoading ? (
                             <LoadingSpinner message="Fetching leaderboard" />
                         ) : (
@@ -517,8 +519,19 @@ export function LeaderBoard() {
                                                 <div className="leaderboard-inner-table-wrapper">
                                                     <table className="leaderboard-inner-table w-100">
                                                         <tbody>
-                                                            <tr><th>Total Games</th><td>{team.totalGamesPlayed}</td><th>Total Wins</th><td>{team.totalWins}</td></tr>
-                                                            <tr><th>Cum Margin</th><td>{team.cumMargin}</td><th>Avg Margin</th><td>{team.avgMargin}</td></tr>
+                                                            <tr>
+                                                                <th>Total Games</th>
+                                                                <td>{team.totalGamesPlayed}</td>
+                                                                {/* ✅ Round Wins label */}
+                                                                <th>Round Wins</th>
+                                                                <td>{team.roundWins}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Cum Margin</th>
+                                                                <td>{team.cumMargin}</td>
+                                                                <th>Avg Margin</th>
+                                                                <td>{team.avgMargin}</td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -547,6 +560,7 @@ export function LeaderBoard() {
                         )}
                     </div>
                 )}
+
             </div>
         </div>
     );
