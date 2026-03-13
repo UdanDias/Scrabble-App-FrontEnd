@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import Select from "react-select";
 import { ConsoleHeader } from "./ConsoleHeader";
 import jsPDF from "jspdf";
+import { LoadingSpinner } from "../utils/LoadingSpinner";
 
 interface RankedPlayerData {
     playerId: string;
@@ -40,7 +41,7 @@ interface Tournament {
 }
 
 const MINI_TOURNAMENT_NAME = "Mini Tournament Uok";
-const PROVISIONAL_THRESHOLD = 3;
+const PROVISIONAL_THRESHOLD = 10;
 
 const tournamentTypeOptions = [
     { value: "individual", label: "Individual" },
@@ -55,6 +56,7 @@ export function LeaderBoard() {
     const [selectedTournamentName, setSelectedTournamentName] = useState<string>("");
     const [tournamentType, setTournamentType] = useState<"individual" | "team">("individual");
     const [activeKey, setActiveKey] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false); // ✅ loading state
 
     const isMinitournament = selectedTournamentName === MINI_TOURNAMENT_NAME;
 
@@ -226,14 +228,18 @@ export function LeaderBoard() {
             return a.playerRank - b.playerRank;
         });
 
+    // ✅ handlePopulateLeaderBoard with loading state
     const handlePopulateLeaderBoard = async (tournamentId?: string, type?: "individual" | "team") => {
         const activeType = type ?? tournamentType;
         setActiveKey(null);
         if (!tournamentId) { SetRankedPlayerData([]); setRankedTeamData([]); return; }
 
+        setIsLoading(true);
+
         if (activeType === "team") {
             try { setRankedTeamData(await GetTeamLeaderboard(tournamentId)); }
             catch { Swal.fire({ title: "Error", text: "Failed to fetch team leaderboard.", icon: "error" }); setRankedTeamData([]); }
+            finally { setIsLoading(false); }
             return;
         }
         try {
@@ -246,6 +252,8 @@ export function LeaderBoard() {
             else if (error?.response?.status !== 401)
                 Swal.fire({ title: "Error", text: "Failed to fetch leaderboard data.", icon: "error" });
             SetRankedPlayerData([]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -287,8 +295,24 @@ export function LeaderBoard() {
             </div>
             <div className="console-table-container">
                 <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
-                    {hasData && (
-                        <div style={{ position: "absolute", right: 0 }}>
+                    {hasData && !isLoading && (
+                        <div style={{ position: "absolute", right: 0, display: "flex", gap: "8px" }}>
+
+                            {/* Manual refresh button */}
+                            <button
+                                onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
+                                style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                                onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(82,147,238,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(82,147,238,0.3)"; }}
+                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                                    <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15"/>
+                                </svg>
+                                Refresh
+                            </button>
+
+                            {/* Download PDF button */}
                             <button
                                 onClick={handleDownloadPDF}
                                 style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
@@ -343,191 +367,184 @@ export function LeaderBoard() {
                 {/* ── Individual leaderboard ── */}
                 {selectedTournamentId && tournamentType === "individual" && (
                     <div className="console-table-wrapper">
-                        <Table className="leaderboard-header-table" bordered>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "55px", fontSize: "18px" }}>#Rank</th>
+                        {/* ✅ Show spinner while loading, hide table header too */}
+                        {isLoading ? (
+                            <LoadingSpinner message="Fetching leaderboard" />
+                        ) : (
+                            <>
+                                <Table className="leaderboard-header-table" bordered>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "55px", fontSize: "18px" }}>#Rank</th>
+                                            {isMinitournament ? (
+                                                <th style={{ textAlign: "center", paddingLeft: "200px", fontSize: "18px" }}>Player</th>
+                                            ) : (
+                                                <th style={{ textAlign: "center", fontSize: "18px", paddingRight: "120px" }}>Player</th>
+                                            )}
+                                            {isMinitournament && (
+                                                <>
+                                                    <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Old</th>
+                                                    <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>New</th>
+                                                    <th style={{ width: "80px", textAlign: "center", fontSize: "12px", color: "#e0d318a0", paddingRight: "45px" }}>Change</th>
+                                                </>
+                                            )}
+                                        </tr>
+                                    </thead>
+                                </Table>
 
-                                    {/* Mini: paddingLeft offsets the name rightward since Elo cols balance the right */}
-                                    {isMinitournament ? (
-                                        <th style={{ textAlign: "center", paddingLeft: "200px", fontSize: "18px" }}>Player</th>
-                                    ) : (
-                                        <th style={{ textAlign: "center", fontSize: "18px" ,paddingRight: "120px"}}>Player</th>
-                                    )}
+                                <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
+                                    {rankedPlayerData.length === 0 ? (
+                                        <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>No players found.</div>
+                                    ) : rankedPlayerData.map((player, index) => {
+                                        const diff = (player.eloRating != null && player.previousEloRating != null)
+                                            ? player.eloRating - player.previousEloRating : null;
+                                        const diffColor = diff == null ? "#888" : diff > 0 ? "#4caf81" : diff < 0 ? "#e05555" : "#888";
+                                        const diffArrow = diff == null ? "—" : diff > 0 ? "▲" : diff < 0 ? "▼" : "—";
 
-                                    {isMinitournament && (
-                                        <>
-                                            <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Old</th>
-                                            <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>New</th>
-                                            <th style={{ width: "80px", textAlign: "center", fontSize: "12px", color: "#e0d318a0", paddingRight: "45px" }}>Change</th>
-                                        </>
-                                    )}
-                                </tr>
-                            </thead>
-                        </Table>
-
-                        <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
-                            {rankedPlayerData.length === 0 ? (
-                                <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>No players found.</div>
-                            ) : rankedPlayerData.map((player, index) => {
-                                const diff = (player.eloRating != null && player.previousEloRating != null)
-                                    ? player.eloRating - player.previousEloRating : null;
-                                const diffColor = diff == null ? "#888" : diff > 0 ? "#4caf81" : diff < 0 ? "#e05555" : "#888";
-                                const diffArrow = diff == null ? "—" : diff > 0 ? "▲" : diff < 0 ? "▼" : "—";
-
-                                return (
-                                    <Accordion.Item eventKey={String(index)} key={player.playerId}>
-                                        <Accordion.Header>
-                                            <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
-
-                                                {/* Rank — 55px */}
-                                                <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
-                                                    #{player.playerRank}
-                                                </div>
-
-                                                {isMinitournament ? (
-                                                    // Mini: original paddingLeft style — Elo cols on right naturally balance
-                                                    <div style={{ flex: 1, textAlign: "center", paddingLeft: "200px", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                        {player.username ?? `${player.firstName} ${player.lastName}`}
-                                                        {player.provisional && (
-                                                            <span style={{ marginLeft: "8px", fontSize: "0.6rem", letterSpacing: "1px", color: "#5293ee", border: "1px solid rgba(82,147,238,0.3)", borderRadius: "4px", padding: "2px 6px", verticalAlign: "middle" }}>
-                                                                PROVISIONAL
-                                                            </span>
+                                        return (
+                                            <Accordion.Item eventKey={String(index)} key={player.playerId}>
+                                                <Accordion.Header>
+                                                    <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
+                                                        <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
+                                                            #{player.playerRank}
+                                                        </div>
+                                                        {isMinitournament ? (
+                                                            <div style={{ flex: 1, textAlign: "center", paddingLeft: "200px", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                                {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                                {player.provisional && (
+                                                                    <span style={{ marginLeft: "8px", fontSize: "0.6rem", letterSpacing: "1px", color: "#5293ee", border: "1px solid rgba(82,147,238,0.3)", borderRadius: "4px", padding: "2px 6px", verticalAlign: "middle" }}>
+                                                                        PROVISIONAL
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                                {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                            </div>
+                                                        )}
+                                                        {isMinitournament && player.eloRating != null && (
+                                                            <>
+                                                                <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: "#ffffff8c" }}>
+                                                                    {player.previousEloRating != null ? player.previousEloRating.toFixed(0) : "—"}
+                                                                </div>
+                                                                <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: player.provisional ? "#5293ee" : "#e0d318d4", fontWeight: "bold" }}>
+                                                                    {player.eloRating.toFixed(0)}
+                                                                </div>
+                                                                <div style={{ width: "80px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: diffColor, fontWeight: "bold" }}>
+                                                                    {diff != null ? `${diffArrow} ${Math.abs(diff).toFixed(0)}` : "—"}
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                        {!isMinitournament && (
+                                                            <div style={{ width: "55px", flexShrink: 0 }} />
                                                         )}
                                                     </div>
-                                                ) : (
-                                                    // Non-mini: no padding, balanced by 55px right spacer
-                                                    <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                        {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                </Accordion.Header>
+                                                <Accordion.Body>
+                                                    <div className="leaderboard-inner-table-wrapper">
+                                                        <table className="leaderboard-inner-table w-100">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>Total Games Played</th><td>{player.totalGamesPlayed}</td>
+                                                                    <th>Total Wins</th><td>{player.totalWins}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Cum Margin</th><td>{player.cumMargin}</td>
+                                                                    <th>Avg Margin</th><td>{player.avgMargin}</td>
+                                                                </tr>
+                                                                {isMinitournament && (
+                                                                    <tr>
+                                                                        <th>Status</th>
+                                                                        <td colSpan={3} style={{ color: player.provisional ? "#5293ee" : "#5ee5aa", fontSize: "0.8rem" }}>
+                                                                            {player.provisional
+                                                                                ? `Provisional · ${PROVISIONAL_THRESHOLD - player.totalGamesPlayed} game${PROVISIONAL_THRESHOLD - player.totalGamesPlayed !== 1 ? "s" : ""} to establish`
+                                                                                : "Established"}
+                                                                        </td>
+                                                                    </tr>
+                                                                )}
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                )}
-
-                                                {/* Elo columns — Mini only */}
-                                                {isMinitournament && player.eloRating != null && (
-                                                    <>
-                                                        <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: "#ffffff8c" }}>
-                                                            {player.previousEloRating != null ? player.previousEloRating.toFixed(0) : "—"}
-                                                        </div>
-                                                        <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: player.provisional ? "#5293ee" : "#e0d318d4", fontWeight: "bold" }}>
-                                                            {player.eloRating.toFixed(0)}
-                                                        </div>
-                                                        <div style={{ width: "80px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: diffColor, fontWeight: "bold" }}>
-                                                            {diff != null ? `${diffArrow} ${Math.abs(diff).toFixed(0)}` : "—"}
-                                                        </div>
-                                                    </>
-                                                )}
-
-                                                {/* Non-mini: 55px right spacer mirrors rank div — truly centers the name */}
-                                                {!isMinitournament && (
-                                                    <div style={{ width: "55px", flexShrink: 0 }} />
-                                                )}
-                                            </div>
-                                        </Accordion.Header>
-                                        <Accordion.Body>
-                                            <div className="leaderboard-inner-table-wrapper">
-                                                <table className="leaderboard-inner-table w-100">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th>Total Games Played</th><td>{player.totalGamesPlayed}</td>
-                                                            <th>Total Wins</th><td>{player.totalWins}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Cum Margin</th><td>{player.cumMargin}</td>
-                                                            <th>Avg Margin</th><td>{player.avgMargin}</td>
-                                                        </tr>
-                                                        {isMinitournament && (
-                                                            <tr>
-                                                                <th>Status</th>
-                                                                <td colSpan={3} style={{ color: player.provisional ? "#5293ee" : "#5ee5aa", fontSize: "0.8rem" }}>
-                                                                    {player.provisional
-                                                                        ? `Provisional · ${PROVISIONAL_THRESHOLD - player.totalGamesPlayed} games to establish`
-                                                                        : "Established"}
-                                                                </td>
-                                                            </tr>
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="leaderboard-rank-badge">
-                                                <span className={`rank-badge ${player.playerRank === 1 ? "rank-badge-gold" : player.playerRank === 2 ? "rank-badge-silver" : player.playerRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
-                                                    Rank #{player.playerRank}
-                                                </span>
-                                            </div>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                );
-                            })}
-                        </Accordion>
+                                                    <div className="leaderboard-rank-badge">
+                                                        <span className={`rank-badge ${player.playerRank === 1 ? "rank-badge-gold" : player.playerRank === 2 ? "rank-badge-silver" : player.playerRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
+                                                            Rank #{player.playerRank}
+                                                        </span>
+                                                    </div>
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        );
+                                    })}
+                                </Accordion>
+                            </>
+                        )}
                     </div>
                 )}
 
                 {/* ── Team leaderboard ── */}
                 {selectedTournamentId && tournamentType === "team" && (
                     <div className="console-table-wrapper">
-                        {rankedTeamData.length === 0 ? (
+                        {isLoading ? (
+                            <LoadingSpinner message="Fetching leaderboard" />
+                        ) : rankedTeamData.length === 0 ? (
                             <div style={{ color: "#bfd0e1d1", textAlign: "center", padding: "20px" }}>No team data found for this tournament.</div>
-                        ) : (<>
-                            <Table className="leaderboard-header-table" bordered>
-                                <thead>
-                                    <tr>
-                                        {/* Rank — 55px */}
-                                        <th style={{ width: "55px", fontSize: "20px" }}>#Rank</th>
-                                        {/* Team — centered */}
-                                        <th style={{ textAlign: "center", fontSize: "20px",paddingRight: "80px" }}>Team</th>
-                                        {/* Right spacer mirrors rank width — balances centering */}
-                                        <th style={{ width: "55px", padding: 0, border: "none", background: "transparent" }} />
-                                    </tr>
-                                </thead>
-                            </Table>
+                        ) : (
+                            <>
+                                <Table className="leaderboard-header-table" bordered>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "55px", fontSize: "20px" }}>#Rank</th>
+                                            <th style={{ textAlign: "center", fontSize: "20px", paddingRight: "80px" }}>Team</th>
+                                            <th style={{ width: "55px", padding: 0, border: "none", background: "transparent" }} />
+                                        </tr>
+                                    </thead>
+                                </Table>
 
-                            <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
-                                {rankedTeamData.map((team, index) => (
-                                    <Accordion.Item eventKey={String(index)} key={team.teamId}>
-                                        <Accordion.Header>
-                                            <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
-                                                {/* Rank — 55px */}
-                                                <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
-                                                    #{team.teamRank}
-                                                </div>
-                                                {/* Team name — centered between rank div and right spacer */}
-                                                <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                    {team.teamName}
-                                                </div>
-                                                {/* Right spacer — 55px mirrors rank div */}
-                                                <div style={{ width: "55px", flexShrink: 0 }} />
-                                            </div>
-                                        </Accordion.Header>
-                                        <Accordion.Body>
-                                            <div className="leaderboard-inner-table-wrapper">
-                                                <table className="leaderboard-inner-table w-100">
-                                                    <tbody>
-                                                        <tr><th>Total Games</th><td>{team.totalGamesPlayed}</td><th>Total Wins</th><td>{team.totalWins}</td></tr>
-                                                        <tr><th>Cum Margin</th><td>{team.cumMargin}</td><th>Avg Margin</th><td>{team.avgMargin}</td></tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            {team.members?.length > 0 && (
-                                                <div style={{ marginTop: "10px" }}>
-                                                    <p style={{ color: "#5ee5eaa0", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "6px", marginLeft: "5px" }}>Members</p>
-                                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                                                        {team.members.map(m => (
-                                                            <span key={m.playerId} style={{ background: "#0d0c18", border: "1px solid rgba(224,211,24,0.15)", borderRadius: "20px", padding: "3px 10px", fontSize: "0.75rem", color: "#bfd0e1d1" }}>
-                                                                {m.firstName} {m.lastName}
-                                                            </span>
-                                                        ))}
+                                <Accordion className="leaderboard-accordion" activeKey={activeKey ?? undefined} onSelect={k => setActiveKey(k as string | null)}>
+                                    {rankedTeamData.map((team, index) => (
+                                        <Accordion.Item eventKey={String(index)} key={team.teamId}>
+                                            <Accordion.Header>
+                                                <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
+                                                    <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
+                                                        #{team.teamRank}
                                                     </div>
+                                                    <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                        {team.teamName}
+                                                    </div>
+                                                    <div style={{ width: "55px", flexShrink: 0 }} />
                                                 </div>
-                                            )}
-                                            <div className="leaderboard-rank-badge">
-                                                <span className={`rank-badge ${team.teamRank === 1 ? "rank-badge-gold" : team.teamRank === 2 ? "rank-badge-silver" : team.teamRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
-                                                    Rank #{team.teamRank}
-                                                </span>
-                                            </div>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                ))}
-                            </Accordion>
-                        </>)}
+                                            </Accordion.Header>
+                                            <Accordion.Body>
+                                                <div className="leaderboard-inner-table-wrapper">
+                                                    <table className="leaderboard-inner-table w-100">
+                                                        <tbody>
+                                                            <tr><th>Total Games</th><td>{team.totalGamesPlayed}</td><th>Total Wins</th><td>{team.totalWins}</td></tr>
+                                                            <tr><th>Cum Margin</th><td>{team.cumMargin}</td><th>Avg Margin</th><td>{team.avgMargin}</td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {team.members?.length > 0 && (
+                                                    <div style={{ marginTop: "10px" }}>
+                                                        <p style={{ color: "#5ee5eaa0", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "6px", marginLeft: "5px" }}>Members</p>
+                                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                                            {team.members.map(m => (
+                                                                <span key={m.playerId} style={{ background: "#0d0c18", border: "1px solid rgba(224,211,24,0.15)", borderRadius: "20px", padding: "3px 10px", fontSize: "0.75rem", color: "#bfd0e1d1" }}>
+                                                                    {m.firstName} {m.lastName}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div className="leaderboard-rank-badge">
+                                                    <span className={`rank-badge ${team.teamRank === 1 ? "rank-badge-gold" : team.teamRank === 2 ? "rank-badge-silver" : team.teamRank === 3 ? "rank-badge-bronze" : "rank-badge-default"}`}>
+                                                        Rank #{team.teamRank}
+                                                    </span>
+                                                </div>
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    ))}
+                                </Accordion>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

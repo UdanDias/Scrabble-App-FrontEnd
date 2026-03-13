@@ -1,0 +1,66 @@
+/* ── Spinner wrapper ─────────────────────────────────────────────────────── */
+.spinner-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 48px 0;
+    width: 100%;
+}
+
+/* ── Size variants ───────────────────────────────────────────────────────── */
+.spinner-sm .spinner-ring { width: 28px;  height: 28px; }
+.spinner-md .spinner-ring { width: 48px;  height: 48px; }
+.spinner-lg .spinner-ring { width: 72px;  height: 72px; }
+
+/* ── Ring container ──────────────────────────────────────────────────────── */
+.spinner-ring {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.spinner-svg {
+    width: 100%;
+    height: 100%;
+    animation: spinner-rotate 1.4s linear infinite;
+}
+
+/* ── SVG circles ─────────────────────────────────────────────────────────── */
+.spinner-track {
+    stroke: rgba(224, 211, 24, 0.12);
+}
+
+.spinner-arc {
+    stroke: #e0d318;
+    stroke-dasharray: 80 200;
+    stroke-dashoffset: 0;
+    animation: spinner-dash 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(224, 211, 24, 0.6));
+}
+
+/* ── Message text ────────────────────────────────────────────────────────── */
+.spinner-message {
+    color: rgba(191, 208, 225, 0.5);
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+    animation: spinner-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────── */
+@keyframes spinner-rotate {
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes spinner-dash {
+    0%   { stroke-dasharray: 1 200;  stroke-dashoffset: 0;   }
+    50%  { stroke-dasharray: 100 200; stroke-dashoffset: -30; }
+    100% { stroke-dasharray: 100 200; stroke-dashoffset: -130;}
+}
+
+@keyframes spinner-pulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.9; }
+}
