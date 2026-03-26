@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import axios from "axios";
 import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
 interface BulkAddPlayerProps {
     show: boolean;
