@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
- const GetAllTeams = async () => {
+export const GetAllTeams = async () => {
     try {
         const res = await axios.get(`${BASE_URL}/team/getallteams`,
             { headers: { Authorization: FetchToken() } });
@@ -12,4 +12,3 @@ import BASE_URL from "../../../config";
         throw error;
     }
 };
-export default GetAllTeams

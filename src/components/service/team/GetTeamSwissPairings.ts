@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
- const GetTeamSwissPairings = async (tournamentId: string) => {
+export const GetTeamSwissPairings = async (tournamentId: string) => {
     try {
         const res = await axios.get(`${BASE_URL}/team/getteamswisspairing?tournamentId=${tournamentId}`,
             { headers: { Authorization: FetchToken() } });
@@ -12,4 +12,3 @@ import BASE_URL from "../../../config";
         throw error;
     }
 };
-export default GetTeamSwissPairings

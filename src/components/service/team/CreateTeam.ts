@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
- const CreateTeam = async (data: { teamName: string; teamSize: number; playerIds: string[] }) => {
+export const CreateTeam = async (data: { teamName: string; teamSize: number; playerIds: string[] }) => {
     try {
         const res = await axios.post(`${BASE_URL}/team/createteam`, data,
             { headers: { Authorization: FetchToken() } });
@@ -12,4 +12,3 @@ import BASE_URL from "../../../config";
         throw error;
     }
 };
-export default CreateTeam
