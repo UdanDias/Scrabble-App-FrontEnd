@@ -1,18 +1,17 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const createRoundUrl = "http://localhost:8081/scrabbleapp2026/api/v1/round/addround"
-
-const CreateRound = async (roundData: any) => {
+export const CreateRound = async (roundData: any) => {
     try {
-        const response = await axios.post(createRoundUrl, roundData, {
-            headers: { Authorization: FetchToken() }
-        })
-        return response.data
+        const res = await axios.post(
+            `${BASE_URL}/round/addround`,
+            roundData,
+            { headers: { Authorization: FetchToken() } }
+        );
+        return res.data;
     } catch (error) {
-        console.error("error creating round", error)
-        throw error
+        console.error("Error while creating round", error);
+        throw error;
     }
-}
-
-export default CreateRound
+};

@@ -1,18 +1,16 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const deleteTournamentUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/deletetournament"
-
-const DeleteTournament = async (tournamentId: string) => {
+export const DeleteTournament = async (tournamentId: string) => {
     try {
-        const response = await axios.delete(`${deleteTournamentUrl}?tournamentId=${tournamentId}`, {
-            headers: { Authorization: FetchToken() }
-        })
-        return response.data
+        const res = await axios.delete(
+            `${BASE_URL}/tournament/deletetournament?tournamentId=${tournamentId}`,
+            { headers: { Authorization: FetchToken() } }
+        );
+        return res.data;
     } catch (error) {
-        console.error("error deleting tournament", error)
-        throw error
+        console.error("Error while deleting tournament", error);
+        throw error;
     }
-}
-
-export default DeleteTournament
+};

@@ -1,20 +1,17 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const updateTournamentUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/updatetournament"
-
-const UpdateTournament = async (tournamentData: any) => {
+export const UpdateTournament = async (tournamentData: any) => {
     try {
-        const response = await axios.patch(
-            `${updateTournamentUrl}?tournamentId=${tournamentData.tournamentId}`,
+        const res = await axios.patch(
+            `${BASE_URL}/tournament/updatetournament?tournamentId=${tournamentData.tournamentId}`,
             tournamentData,
             { headers: { Authorization: FetchToken() } }
-        )
-        return response.data
+        );
+        return res.data;
     } catch (error) {
-        console.error("error updating tournament", error)
-        throw error
+        console.error("Error while updating tournament", error);
+        throw error;
     }
-}
-
-export default UpdateTournament
+};

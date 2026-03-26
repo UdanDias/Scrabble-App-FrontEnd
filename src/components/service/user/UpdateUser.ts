@@ -1,18 +1,19 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const updateUserUrl="http://localhost:8081/scrabbleapp2026/api/v1/auth/updateuser"
-const UpdateUser=async(userDetails:any)=>{
+export const UpdateUser = async (userDetails: any) => {
     try {
-        const response=await axios.patch(`${updateUserUrl}?userId=${userDetails.userId}`,userDetails,
-            {headers:{
-                Authorization:FetchToken()
-            }})
-        return response.data
-
+        const res = await axios.patch(
+            `${BASE_URL}/auth/updateuser?userId=${userDetails.userId}`,
+            userDetails,
+            {
+                headers: { Authorization: FetchToken() }
+            }
+        );
+        return res.data;
     } catch (error) {
-        console.error("error Updating user Data ",error)
-        throw error
+        console.error("Error while updating user", error);
+        throw error;
     }
-}
-export default UpdateUser
+};

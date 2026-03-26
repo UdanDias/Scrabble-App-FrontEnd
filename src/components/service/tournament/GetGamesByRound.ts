@@ -1,18 +1,16 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const getGamesByRoundUrl = "http://localhost:8081/scrabbleapp2026/api/v1/game/getgamesbyround"
-
-const GetGamesByRound = async (roundId: string) => {
+export const GetGamesByRound = async (roundId: string) => {
     try {
-        const response = await axios.get(`${getGamesByRoundUrl}?roundId=${roundId}`, {
-            headers: { Authorization: FetchToken() }
-        })
-        return response.data
+        const res = await axios.get(
+            `${BASE_URL}/game/getgamesbyround?roundId=${roundId}`,
+            { headers: { Authorization: FetchToken() } }
+        );
+        return res.data;
     } catch (error) {
-        console.error("error fetching games by round", error)
-        throw error
+        console.error("Error while fetching games", error);
+        throw error;
     }
-}
-
-export default GetGamesByRound
+};

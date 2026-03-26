@@ -35,7 +35,7 @@ export function HomeAfter() {
 
   return (
     <div className="home-root">
-      <style>{homeStyles}</style>
+     
 
       {/* ── HERO — full viewport, everything on one screen ── */}
       <section className="h-hero">

@@ -1,19 +1,16 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const getTournamentTeamsUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/getteams"
-
-const GetTournamentTeam = async (tournamentId: string) => {
+export const GetTournamentTeam = async (tournamentId: string) => {
     try {
-        const response = await axios.get(
-            `${getTournamentTeamsUrl}?tournamentId=${tournamentId}`,
+        const res = await axios.get(
+            `${BASE_URL}/tournament/getteams?tournamentId=${tournamentId}`,
             { headers: { Authorization: FetchToken() } }
-        )
-        return response.data
+        );
+        return res.data;
     } catch (error) {
-        console.error("error fetching tournament teams", error)
-        throw error
+        console.error("Error while fetching tournament teams", error);
+        throw error;
     }
-}
-
-export default GetTournamentTeam
+};

@@ -1,20 +1,17 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const completeRoundUrl = "http://localhost:8081/scrabbleapp2026/api/v1/round/completeround"
-
-const CompleteRound = async (roundId: string) => {
+export const CompleteRound = async (roundId: string) => {
     try {
-        const response = await axios.patch(
-            `${completeRoundUrl}?roundId=${roundId}`,
+        const res = await axios.patch(
+            `${BASE_URL}/round/completeround?roundId=${roundId}`,
             {},
             { headers: { Authorization: FetchToken() } }
-        )
-        return response.data
+        );
+        return res.data;
     } catch (error) {
-        console.error("error completing round", error)
-        throw error
+        console.error("Error while completing round", error);
+        throw error;
     }
-}
-
-export default CompleteRound
+};

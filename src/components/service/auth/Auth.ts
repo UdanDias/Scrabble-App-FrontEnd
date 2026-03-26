@@ -1,6 +1,7 @@
 import axios from "axios";
+import BASE_URL from "../../../config";
 
-const baseAuthUrl="http://localhost:8081/scrabbleapp2026/api/v1/auth";
+const baseAuthUrl=`${BASE_URL}`;
 export const SignUpTask=async(signUp:any)=>{
     console.log(signUp);
     try {

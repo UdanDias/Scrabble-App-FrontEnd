@@ -1,19 +1,16 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const removePlayerUrl = "http://localhost:8081/scrabbleapp2026/api/v1/tournament/removeplayer"
-
-const RemoveTournamentPlayer = async (tournamentPlayerId: string) => {
+export const RemoveTournamentPlayer = async (tournamentPlayerId: string) => {
     try {
-        const response = await axios.delete(
-            `${removePlayerUrl}?tournamentPlayerId=${tournamentPlayerId}`,
+        const res = await axios.delete(
+            `${BASE_URL}/tournament/removeplayer?tournamentPlayerId=${tournamentPlayerId}`,
             { headers: { Authorization: FetchToken() } }
-        )
-        return response.data
+        );
+        return res.data;
     } catch (error) {
-        console.error("error removing player from tournament", error)
-        throw error
+        console.error("Error while removing player", error);
+        throw error;
     }
-}
-
-export default RemoveTournamentPlayer
+};

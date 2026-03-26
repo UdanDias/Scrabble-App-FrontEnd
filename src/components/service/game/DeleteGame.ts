@@ -1,18 +1,18 @@
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
+import BASE_URL from "../../../config"
 
-const deleteGameUrl="http://localhost:8081/scrabbleapp2026/api/v1/game/deletegame"
-const DeleteGame=async(gameId:string)=>{
+const deleteGameUrl = `${BASE_URL}/game/deletegame`
+
+const DeleteGame = async (gameId: string) => {
     try {
         await axios.delete(`${deleteGameUrl}?gameId=${gameId}`,
-            {headers:{
-                Authorization:FetchToken()
-            }})
-       
-
+            {headers: {Authorization: FetchToken()}}
+        )
     } catch (error) {
-        console.error("error deleting game Data ",error)
+        console.error("error deleting game Data ", error)
         throw error
     }
 }
+
 export default DeleteGame

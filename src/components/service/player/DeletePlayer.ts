@@ -1,16 +1,18 @@
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
+import BASE_URL from "../../../config"
 
-const deletePlayerUrl="http://localhost:8081/scrabbleapp2026/api/v1/player/deleteplayer"
-const DeletePlayer=async(playerId:string)=>{
+const deletePlayerUrl = `${BASE_URL}/player/deleteplayer`
+
+const DeletePlayer = async (playerId: string) => {
     try {
         await axios.delete(`${deletePlayerUrl}?playerId=${playerId}`,
-            {headers:{
-                Authorization:FetchToken()
-            }})
+            {headers: {Authorization: FetchToken()}}
+        )
     } catch (error) {
-        console.error("Error occurred while deleting player",error)
-        throw error;
+        console.error("Error occurred while deleting player", error)
+        throw error
     }
 }
-export default DeletePlayer;
+
+export default DeletePlayer

@@ -1,17 +1,14 @@
 import axios from "axios";
 import FetchToken from "../auth/FetchToken";
-
-
-const BASE = "http://localhost:8081/scrabbleapp2026/api/v1/team";
+import BASE_URL from "../../../config";
 
 export const GetAllTeams = async () => {
     try {
-        const res = await axios.get(`${BASE}/getallteams`,
+        const res = await axios.get(`${BASE_URL}/team/getallteams`,
             { headers: { Authorization: FetchToken() } });
         return res.data;
     } catch (error) {
-        console.error("error while fetching team data",error)
+        console.error("error while fetching team data", error)
         throw error;
     }
-   
 };

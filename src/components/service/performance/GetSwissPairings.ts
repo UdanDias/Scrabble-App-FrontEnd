@@ -1,8 +1,8 @@
-// GetSwissPairings.ts
 import axios from "axios"
 import FetchToken from "../auth/FetchToken"
+import BASE_URL from "../../../config"
 
-const getSwissPairingsUrl = "http://localhost:8081/scrabbleapp2026/api/v1/performance/getswisspairing"
+const getSwissPairingsUrl = `${BASE_URL}/performance/getswisspairing`
 
 const GetSwissPairings = async (tournamentId: string) => {
     try {

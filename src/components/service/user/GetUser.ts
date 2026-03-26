@@ -1,18 +1,18 @@
-import axios from "axios"
-import FetchToken from "../auth/FetchToken"
+import axios from "axios";
+import FetchToken from "../auth/FetchToken";
+import BASE_URL from "../../../config";
 
-const getUserUrl="http://localhost:8081/scrabbleapp2026/api/v1/auth/getallusers"
-const GetUsers=async()=>{
+export const GetUsers = async () => {
     try {
-        const response=await axios.get(getUserUrl,
-            {headers:{
-                Authorization:FetchToken()
-            }})
-        return response.data
-
+        const res = await axios.get(
+            `${BASE_URL}/auth/getallusers`,
+            {
+                headers: { Authorization: FetchToken() }
+            }
+        );
+        return res.data;
     } catch (error) {
-        console.error("error Fetching user Data ",error)
-        throw error
+        console.error("Error while fetching users", error);
+        throw error;
     }
-}
-export default GetUsers
+};
