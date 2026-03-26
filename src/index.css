@@ -1603,7 +1603,7 @@ input:-webkit-autofill:active {
     transition: all .25s; display: inline-block;
   }
   .h-btn-gold:hover {
-    background: #f5f0e8;
+    background: #d7d742!important;
     box-shadow: 0 0 32px rgba(224,211,24,.45);
     transform: translateY(-2px);
   }
