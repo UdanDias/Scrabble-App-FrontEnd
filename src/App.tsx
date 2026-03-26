@@ -31,6 +31,15 @@ function AppLayout() {
   
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
+  // Auto-close sidebar on route change and ensure auth pages collapse sidebar
+  useEffect(() => {
+    if (isAuthPage) {
+      setSidebarOpen(false);
+    }
+    // Close mobile sidebar on any navigation change
+    setSidebarOpen(false);
+  }, [location.pathname, isAuthPage]);
+
   // BUG FIX: Instead of returning null (blank screen), 
   // show your loading animation here so it's visible on first load.
   if (loading) {
@@ -55,6 +64,12 @@ function AppLayout() {
       <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div style={{ display: 'flex', minHeight: '100vh' }}>
         {!isAuthPage && <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />}
+        {!isAuthPage && (
+          <div
+            className={`sidebar-backdrop ${sidebarOpen ? 'visible' : ''}`}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
         <div
           className={`main-content ${!isAuthPage ? (sidebarOpen ? 'sidebar-open' : 'sidebar-closed') : ''}`}
           style={{
