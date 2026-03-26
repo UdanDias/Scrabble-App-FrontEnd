@@ -71,7 +71,7 @@ function AppLayout() {
           />
         )}
         <div
-          className={`main-content ${!isAuthPage ? (sidebarOpen ? 'sidebar-open' : 'sidebar-closed') : ''}`}
+          className={`main-content ${isAuthPage ? 'no-sidebar' : (sidebarOpen ? 'sidebar-open' : 'sidebar-closed')}`}
           style={{
             flex: 1,
             backgroundColor: '#0d1117',
