@@ -21,47 +21,34 @@ import { HomeAfter } from './components/consoles/HomeAfter';
 import Footer from './components/consoles/Footer';
 import { PairingsConsole } from './components/consoles/PairingConsole';
 import { TeamsConsole } from './components/consoles/TeamConsole';
-import { OverlaySpinner } from './components/utils/OverlaySpinner';
 
 function AppLayout() {
   const { role, loading } = useAuth();
   const isAdmin = role === "ROLE_ADMIN";
   const location = useLocation();
-  const [routeLoading, setRouteLoading] = useState(false);
   
-  useEffect(() => {
-  setRouteLoading(true);
-
-  const timeout = setTimeout(() => {
-    setRouteLoading(false);
-  }, 300);
-
-  return () => clearTimeout(timeout);
-}, [location.pathname]);
   
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
   // BUG FIX: Instead of returning null (blank screen), 
   // show your loading animation here so it's visible on first load.
-  // if (loading) {
-  //   return (
-  //     <div style={{ 
-  //       backgroundColor: '#0d1117', 
-  //       height: '100vh', 
-  //       display: 'flex', 
-  //       justifyContent: 'center', 
-  //       alignItems: 'center',
-  //       color: 'white' 
-  //     }}>
-  //       <div className="spinner-border text-primary" role="status">
-  //         <span className="visually-hidden">Loading...</span>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-if (loading || routeLoading) {
-  return <OverlaySpinner message="Loading..." />;
-}
+  if (loading) {
+    return (
+      <div style={{ 
+        backgroundColor: '#0d1117', 
+        height: '100vh', 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        color: 'white' 
+      }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ paddingTop: '60px' }}>
       <NavBar />
@@ -104,7 +91,14 @@ if (loading || routeLoading) {
 }
 
 const App: React.FC = () => {
- 
+  // FORCE REFRESH LOGIC
+  useEffect(() => {
+    const hasRefreshed = sessionStorage.getItem('app_initialized');
+    if (!hasRefreshed) {
+      sessionStorage.setItem('app_initialized', 'true');
+      window.location.reload();
+    }
+  }, []);
 
   return (
     <Router>
@@ -116,7 +110,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-function useState(arg0: boolean): [any, any] {
-  throw new Error('Function not implemented.');
-}
