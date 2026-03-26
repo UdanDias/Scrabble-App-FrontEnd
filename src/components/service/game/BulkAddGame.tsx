@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import { customStyles } from "../styles/CustomStyles";
+import BASE_URL from "../../../config";
 
 interface PlayerOption {
     value: string;
@@ -58,52 +59,74 @@ export function BulkAddGame({ show, handleClose, handleAdd, roundId, players }: 
         setRows(prev => prev.map(r => r.id === id ? { ...r, [field]: value } : r));
 
     const handleSubmit = async () => {
-        // Validate all rows
-        for (let i = 0; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r.player1Id || !r.player2Id) {
-                Swal.fire({ icon: "warning", title: `Row ${i + 1}: Please select both players.` });
-                return;
-            }
-            if (r.player1Id === r.player2Id) {
-                Swal.fire({ icon: "warning", title: `Row ${i + 1}: Player 1 and Player 2 cannot be the same.` });
-                return;
-            }
-            if (r.score1 === "" || r.score2 === "") {
-                Swal.fire({ icon: "warning", title: `Row ${i + 1}: Please enter both scores.` });
-                return;
-            }
+    // Validate all rows
+    for (let i = 0; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r.player1Id || !r.player2Id) {
+            Swal.fire({ icon: "warning", title: `Row ${i + 1}: Please select both players.` });
+            return;
         }
-
-        const payload = rows.map(r => ({
-            roundId,
-            player1Id: r.player1Id,
-            player2Id: r.player2Id,
-            score1: Number(r.score1),
-            score2: Number(r.score2),
-        }));
-
-        setSubmitting(true);
-        try {
-            await axios.post(
-                "http://localhost:8081/scrabbleapp2026/api/v1/game/addgames/bulk",
-                payload,
-                { headers: { "Content-Type": "application/json", Authorization: FetchToken() } }
-            );
-
-            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true })
-                .fire({ icon: "success", title: `${rows.length} game(s) added successfully` });
-
-            handleAdd();
-            handleClose_();
-        } catch {
-            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true })
-                .fire({ icon: "error", title: "Bulk game import failed" });
-        } finally {
-            setSubmitting(false);
+        if (r.player1Id === r.player2Id) {
+            Swal.fire({ icon: "warning", title: `Row ${i + 1}: Player 1 and Player 2 cannot be the same.` });
+            return;
         }
-    };
+        if (r.score1 === "" || r.score2 === "") {
+            Swal.fire({ icon: "warning", title: `Row ${i + 1}: Please enter both scores.` });
+            return;
+        }
+    }
 
+    const payload = rows.map(r => ({
+        roundId,
+        player1Id: r.player1Id,
+        player2Id: r.player2Id,
+        score1: Number(r.score1),
+        score2: Number(r.score2),
+    }));
+
+    setSubmitting(true);
+    try {
+        // Use BASE_URL instead of localhost
+        await axios.post(
+            `${BASE_URL}/game/addgames/bulk`,
+            payload,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: FetchToken(),
+                },
+            }
+        );
+
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        }).fire({
+            icon: "success",
+            title: `${rows.length} game(s) added successfully`,
+        });
+
+        handleAdd();
+        handleClose_();
+    } catch (error) {
+        console.error("Bulk game import failed", error);
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        }).fire({
+            icon: "error",
+            title: "Bulk game import failed",
+        });
+    } finally {
+        setSubmitting(false);
+    }
+};
     return (
         <Modal show={show} onHide={handleClose_} className="dark-modal" size="xl">
             <Modal.Header closeButton>
