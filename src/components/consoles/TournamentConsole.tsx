@@ -15,12 +15,13 @@ import { ConsoleHeader } from "./ConsoleHeader"
 import { useAuth } from "../auth/AuthProvider"
 import { TournamentPlayersModal } from "../service/tournament/TournamentPlayersModal"
 import { sortByNumberAsc } from "../utils/Sorters"
+import { OverlaySpinner } from "../utils/OverlaySpinner"
 
 interface Tournament {
     tournamentId: string
     tournamentName: string
     status: string
-    tournamentType?: "individual" | "team"   // ← new optional field
+    tournamentType?: "individual" | "team"
 }
 
 interface Round {
@@ -28,11 +29,6 @@ interface Round {
     tournamentId: string
     roundNumber: number
     completed: boolean
-}
-
-const loadData = async (setData: React.Dispatch<React.SetStateAction<Tournament[]>>) => {
-    const data = await GetTournaments()
-    setData(data)
 }
 
 const getStatusBadge = (status: string) => {
@@ -63,9 +59,11 @@ export function TournamentConsole() {
     const [modalTournamentName, setModalTournamentName] = useState<string>("")
     const [selectedRoundCompleted, setSelectedRoundCompleted] = useState(false)
 
-    // ── tournament type: tracked for the Add modal and the Add Players modal ──
     const [pendingTournamentType, setPendingTournamentType] = useState<"individual" | "team">("individual")
     const [modalTournamentType, setModalTournamentType]     = useState<"individual" | "team">("individual")
+
+    // ✅ State for Dynamic Loading Messages
+    const [loadingMessage, setLoadingMessage] = useState<string | null>("Loading Tournaments...");
 
     const [selectModal, setSelectModal] = useState<{
         show: boolean
@@ -84,13 +82,34 @@ export function TournamentConsole() {
         onConfirm: () => {},
     })
 
+    // ✅ Updated loadData to support the Spinner
+    const loadData = async (message: string | null = null) => {
+        const startTime = Date.now();
+        if (message) setLoadingMessage(message);
+        
+        try {
+            const data = await GetTournaments();
+            setTournamentData(data);
+            
+            // Ensure the spinner shows for at least 800ms for a smooth 3D flip
+            const duration = Date.now() - startTime;
+            if (duration < 800) {
+                setTimeout(() => setLoadingMessage(null), 800 - duration);
+            } else {
+                setLoadingMessage(null);
+            }
+        } catch (error) {
+            console.error("Failed to load tournaments", error);
+            setLoadingMessage(null);
+        }
+    }
+
     useEffect(() => {
-        loadData(setTournamentData)
+        loadData("Fetching Tournament Records...");
     }, [])
 
     const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }))
 
-    // ── Ask for tournament type BEFORE opening the Add modal ─────────────────
     const handleAddTournamentClick = async () => {
         const result = await Swal.fire({
             title: "Tournament Type",
@@ -141,19 +160,24 @@ export function TournamentConsole() {
                 confirmButtonText: "Yes, delete it!"
             })
             if (confirm.isConfirmed) {
+                setLoadingMessage("Deleting Tournament..."); // ✅ Spinner on
                 try {
                     await DeleteTournament(tournament.tournamentId)
-                    setTournamentData(prev => prev.filter(t => t.tournamentId !== tournament.tournamentId))
+                    await loadData("Refreshing Dashboard..."); // ✅ Spinner updates
                     Swal.fire("Deleted!", "Tournament has been deleted.", "success")
                 } catch {
+                    setLoadingMessage(null);
                     Swal.fire("Error", "Failed to delete tournament.", "error")
                 }
             }
         } else if (result.isDenied) {
+            setLoadingMessage("Fetching Rounds..."); // ✅ Spinner on
             let rounds: Round[] = []
             try {
                 rounds = await GetRoundsByTournament(tournament.tournamentId)
+                setLoadingMessage(null);
             } catch {
+                setLoadingMessage(null);
                 Swal.fire("Error", "Failed to fetch rounds.", "error")
                 return
             }
@@ -192,10 +216,13 @@ export function TournamentConsole() {
                     confirmButtonText: "Yes, delete it!"
                 })
                 if (confirm.isConfirmed) {
+                    setLoadingMessage("Deleting Round..."); // ✅ Spinner on
                     try {
                         await DeleteRound(roundId)
+                        setLoadingMessage(null);
                         Swal.fire("Deleted!", `Round ${selectedRound?.roundNumber} has been deleted.`, "success")
                     } catch {
+                        setLoadingMessage(null);
                         Swal.fire("Error", "Failed to delete round.", "error")
                     }
                 }
@@ -215,11 +242,11 @@ export function TournamentConsole() {
     }
 
     const handleAdd = (newTournament: Tournament) => {
-        // Attach the type chosen before opening the modal
         setTournamentData(prev => [...prev, { ...newTournament, tournamentType: pendingTournamentType }])
     }
 
     const handleAddRound = async (tournament: Tournament) => {
+        setLoadingMessage("Preparing Round Setup..."); // ✅ Spinner on
         setSelectedTournamentId(tournament.tournamentId)
         setSelectedTournamentName(tournament.tournamentName)
         try {
@@ -227,11 +254,12 @@ export function TournamentConsole() {
             setNextRoundNumber(rounds.length + 1)
         } catch {
             setNextRoundNumber(1)
+        } finally {
+            setLoadingMessage(null);
+            setShowAddRoundModal(true)
         }
-        setShowAddRoundModal(true)
     }
 
-    // ── Open Add Players modal — carry the tournament's type ──────────────────
     const handleAddPlayersClick = (row: Tournament) => {
         setModalTournamentId(row.tournamentId)
         setModalTournamentName(row.tournamentName)
@@ -259,10 +287,13 @@ export function TournamentConsole() {
     }
 
     const showRoundSelector = async (tournament: Tournament) => {
+        setLoadingMessage("Fetching Rounds..."); // ✅ Spinner on
         let rounds: Round[] = []
         try {
             rounds = await GetRoundsByTournament(tournament.tournamentId)
+            setLoadingMessage(null);
         } catch {
+            setLoadingMessage(null);
             Swal.fire("Error", "Failed to fetch rounds.", "error")
             return
         }
@@ -301,6 +332,9 @@ export function TournamentConsole() {
 
     return (
         <>
+            {/* ✅ Spinner triggers whenever loadingMessage is not null */}
+            {loadingMessage && <OverlaySpinner message={loadingMessage} />}
+
             <div className="console-page">
                 <ConsoleHeader
                     title="Tournament Console"
@@ -312,7 +346,6 @@ export function TournamentConsole() {
                         <Button className="btn-view" variant="info" onClick={handleViewRoundsClick}>
                             View Tournaments
                         </Button>
-                        {/* ── Uses new handler that asks type first ── */}
                         <Button className="btn-create" variant="success" onClick={handleAddTournamentClick}>
                             + Add Tournament
                         </Button>
@@ -373,7 +406,7 @@ export function TournamentConsole() {
                     show={showAddModal}
                     handleClose={() => setShowAddModal(false)}
                     handleAdd={handleAdd}
-                    refreshTable={() => loadData(setTournamentData)}
+                    refreshTable={() => loadData("Updating Tournament List...")}
                     tournamentType={pendingTournamentType}
                 />
                 <EditTournament
@@ -381,7 +414,7 @@ export function TournamentConsole() {
                     selectedRow={selectedRow}
                     handleClose={() => setShowEditModal(false)}
                     handleUpdate={handleOnUpdate}
-                    refreshTable={() => loadData(setTournamentData)}
+                    refreshTable={() => loadData("Saving Changes...")}
                 />
 
                 <RoundGamesModal
@@ -412,7 +445,6 @@ export function TournamentConsole() {
                     onCancel={closeSelectModal}
                 />
 
-                {/* tournamentType passed so the modal loads players or teams accordingly */}
                 <TournamentPlayersModal
                     show={!!modalTournamentId}
                     onHide={() => setModalTournamentId(null)}

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Accordion, Button, Modal, FloatingLabel, Form } from "react-bootstrap";
 import { getPlayerIdFromToken } from "../service/auth/GetPlayerId";
@@ -8,6 +7,7 @@ import UpdatePlayer from "../service/player/UpdatePlayer";
 import ReactSelect from "react-select";
 import { customStyles } from "../service/styles/CustomStyles";
 import { ConsoleHeader } from "./ConsoleHeader";
+import { OverlaySpinner } from "../utils/OverlaySpinner"; // Added this
 import Swal from "sweetalert2";
 import GetTournaments from "../service/tournament/GetTournaments";
 import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoardByTournament";
@@ -59,9 +59,11 @@ export function Profile() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editData, setEditData] = useState<Player | null>(null);
     const [miniTournamentRank, setMiniTournamentRank] = useState<number | null>(null);
+    const [isInitialLoading, setIsInitialLoading] = useState(true); // Added loading state
     const MINI_TOURNAMENT_NAME = "Mini Tournament Uok";
 
     const fetchData = async () => {
+        const startTime = Date.now(); // Start timer for the "S" spinner
         const playerId = getPlayerIdFromToken();
         if (playerId) {
             try {
@@ -86,6 +88,14 @@ export function Profile() {
                 }
             } catch (error) {
                 console.error("Error fetching profile data:", error);
+            } finally {
+                // Ensure spinner stays for at least 1 second for smooth transition
+                const displayTime = Date.now() - startTime;
+                if (displayTime < 1000) {
+                    setTimeout(() => setIsInitialLoading(false), 1000 - displayTime);
+                } else {
+                    setIsInitialLoading(false);
+                }
             }
         }
     };
@@ -102,10 +112,7 @@ export function Profile() {
         setEditData(null);
     };
 
-    // const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setEditData((prev) => prev ? { ...prev, [e.target.name]: e.target.value } : prev);
-    // };
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement|HTMLTextAreaElement>) => {
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setEditData((prev) => prev ? { 
             ...prev, 
@@ -113,53 +120,32 @@ export function Profile() {
         } : prev);
     };
 
-    // const handleSave = async () => {
-    //     if (!editData) return;
-    //     try {
-    //         const updated = await UpdatePlayer(editData);
-    //         SetPlayer(updated);
-    //         handleEditClose();
-    //     } catch (error) {
-    //         console.error("Error updating player:", error);
-    //     }
-    // };
-    // const handleSave = async () => {
-    //     if (!editData) return;
-    //     try {
-    //         const { age, ...dataToSend } = editData;
-    //         await UpdatePlayer(editData);
-    //         await fetchData();    // re-fetch everything instead of relying on returned value
-    //         handleEditClose();
-    //     } catch (error) {
-    //         console.error("Error updating player:", error);
-    //     }
-    // };
     const handleSave = async () => {
-    if (!editData) return;
+        if (!editData) return;
 
-    const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        try {
+            const { age, ...dataToSend } = editData;
+            await UpdatePlayer(editData);
+            await fetchData();
+            handleEditClose();
+            Toast.fire({ icon: "success", title: "Player Updated Successfully" });
+        } catch (error) {
+            console.error("Error updating player:", error);
+            Toast.fire({ icon: "error", title: "Failed To Update Player" });
         }
-    });
-
-    try {
-        const { age, ...dataToSend } = editData;
-        await UpdatePlayer(editData);
-        await fetchData();
-        handleEditClose();
-        Toast.fire({ icon: "success", title: "Player Updated Successfully" });
-    } catch (error) {
-        console.error("Error updating player:", error);
-        Toast.fire({ icon: "error", title: "Failed To Update Player" });
-    }
-};
+    };
 
     const getGameResult = (game: PlayerGame) => {
         if (game.bye) return <span className="badge-game-bye">Bye Game</span>;
@@ -167,6 +153,7 @@ export function Profile() {
         if (game.winnerId === player?.playerId) return <span className="badge-game-won">Won the Game</span>;
         return <span className="badge-game-lost">Lost the Game</span>;
     };
+
     const genderOptions = [
         { value: "Male", label: "Male" },
         { value: "Female", label: "Female" },
@@ -174,11 +161,13 @@ export function Profile() {
 
     return (
         <>
+            {/* Added the overlay spinner here */}
+            {isInitialLoading && <OverlaySpinner message="Loading Profile..." />}
+
             <div className="console-page">
                 <ConsoleHeader
                     title="Profile"
                     subtitle={player ? `Welcome back, ${player.firstName} ${player.lastName} ✦` : "Loading..."}
-                    
                 />
                 <div className="console-table-container" style={{ width: '70%' }}>
 
@@ -255,25 +244,6 @@ export function Profile() {
                                 </table>
                             </div>
                             <div className="d-flex justify-content-center mt-3 gap-3">
-                                {/* <div className="d-flex flex-column align-items-center gap-2">
-                                    <span className={`badge fs-6 ${
-                                        performance?.playerRank === 1 ? "badge-rank-1" :
-                                        performance?.playerRank === 2 ? "badge-rank-2" :
-                                        performance?.playerRank === 3 ? "badge-rank-3" :
-                                        "badge-rank-default"
-                                    }`}>
-                                        Rank #{performance?.playerRank}
-                                    </span>
-                                    <span style={{
-                                        fontSize: "0.65rem",
-                                        letterSpacing: "1px",
-                                        color: "#bfd0e180",
-                                        textTransform: "uppercase"
-                                    }}>
-                                        Overall
-                                    </span>
-                                </div> */}
-
                                 {miniTournamentRank !== null && (
                                     <div className="d-flex flex-column align-items-center gap-2">
                                         <span className={`badge fs-6 ${
@@ -298,74 +268,72 @@ export function Profile() {
                         </div>
 
                         {/* Games Card */}
-                        {/* Games Card */}
-                            <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
-                                <h3 className="profile-card-title">Games</h3>
+                        <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
+                            <h3 className="profile-card-title">Games</h3>
 
-                                {/* ONLY ONE scroll container */}
-                                <div className="profile-scroll-area" style={{ flex: 1 }}>
-                                    {games && games.length === 0 ? (
-                                        <div className="d-flex justify-content-center align-items-center h-100">
-                                            <p className="profile-value">No games found.</p>
-                                        </div>
-                                    ) : (
-                                        <Accordion className="leaderboard-accordion" alwaysOpen>
-                                            {games?.map((game, index) => (
-                                                <Accordion.Item eventKey={String(index)} key={game.gameId}>
-                                                    <Accordion.Header>
-                                                        Game {index + 1}
-                                                    </Accordion.Header>
+                            <div className="profile-scroll-area" style={{ flex: 1 }}>
+                                {games && games.length === 0 ? (
+                                    <div className="d-flex justify-content-center align-items-center h-100">
+                                        <p className="profile-value">No games found.</p>
+                                    </div>
+                                ) : (
+                                    <Accordion className="leaderboard-accordion" alwaysOpen>
+                                        {games?.map((game, index) => (
+                                            <Accordion.Item eventKey={String(index)} key={game.gameId}>
+                                                <Accordion.Header>
+                                                    Game {index + 1}
+                                                </Accordion.Header>
 
-                                                    <Accordion.Body>
-                                                        <div className="leaderboard-inner-table-wrapper">
-                                                            <table className="profile-games-table w-100">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <th>Game ID</th>
-                                                                        <td>{game.gameId}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Date</th>
-                                                                        <td>{game.gameDate}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Player 1</th>
-                                                                        <td>{game.player1Name}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Player 2</th>
-                                                                        <td>{game.player2Name}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Score</th>
-                                                                        <td>{game.score1} - {game.score2}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Margin</th>
-                                                                        <td>{game.margin}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Winner</th>
-                                                                        <td>{game.winnerName}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Tied</th>
-                                                                        <td>{game.gameTied ? "Yes" : "No"}</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                <Accordion.Body>
+                                                    <div className="leaderboard-inner-table-wrapper">
+                                                        <table className="profile-games-table w-100">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>Game ID</th>
+                                                                    <td>{game.gameId}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Date</th>
+                                                                    <td>{game.gameDate}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Player 1</th>
+                                                                    <td>{game.player1Name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Player 2</th>
+                                                                    <td>{game.player2Name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Score</th>
+                                                                    <td>{game.score1} - {game.score2}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Margin</th>
+                                                                    <td>{game.margin}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Winner</th>
+                                                                    <td>{game.winnerName}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Tied</th>
+                                                                    <td>{game.gameTied ? "Yes" : "No"}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
 
-                                                        <div className="leaderboard-rank-badge">
-                                                            {getGameResult(game)}
-                                                        </div>
-                                                    </Accordion.Body>
-                                                </Accordion.Item>
-                                            ))}
-                                        </Accordion>
-                                    )}
-                                </div>
+                                                    <div className="leaderboard-rank-badge">
+                                                        {getGameResult(game)}
+                                                    </div>
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        ))}
+                                    </Accordion>
+                                )}
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>

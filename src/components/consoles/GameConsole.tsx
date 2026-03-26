@@ -13,6 +13,7 @@ import { SelectModal } from "./Selectmodal";
 import { ConsoleHeader } from "./ConsoleHeader";
 import { sortByNumberAsc } from "../utils/Sorters";
 import { BulkAddGame } from "../service/game/BulkAddGame"; 
+import { OverlaySpinner } from "../utils/OverlaySpinner";
 
 
 interface Game {
@@ -101,6 +102,37 @@ export function GameConsole() {
     const [selectedRoundId, SetSelectedRoundId] = useState<string | null>(null);
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
     const [showBulkAddGameModal, setShowBulkAddGameModal] = useState(false);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+useEffect(() => {
+    const init = async () => {
+        const startTime = Date.now();
+        setIsInitialLoading(true);
+
+        try {
+            const playersList = await getPlayer();
+            setPlayers(playersList);
+            await loadGameData(SetGameData, playersList);
+
+            // Calculate timing
+            const duration = Date.now() - startTime;
+            const minWait = 1000; // 1 second for a premium feel
+
+            if (duration < minWait) {
+                setTimeout(() => setIsInitialLoading(false), minWait - duration);
+            } else {
+                // Ensure the table has finished "painting"
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => setIsInitialLoading(false));
+                });
+            }
+        } catch (error) {
+            console.error("error during init", error);
+            setIsInitialLoading(false);
+        }
+    };
+    init();
+}, []);
     
 
     // SelectModal state
@@ -183,68 +215,85 @@ export function GameConsole() {
        Step 3 → Game Type
     =========================== */
     const handleAddClick = async () => {
-        let tournaments: Tournament[] = [];
-        try {
-            tournaments = await GetTournaments();
-        } catch {
-            Swal.fire("Error", "Failed to fetch tournaments.", "error");
-            return;
-        }
+    // 1. Show the golden 'S' while fetching tournaments
+    setIsInitialLoading(true); 
 
-        if (tournaments.length === 0) {
-            Swal.fire("No Tournaments", "Please create a tournament and a round before adding a game.", "warning");
-            return;
-        }
+    let tournaments: Tournament[] = [];
+    try {
+        tournaments = await GetTournaments();
+    } catch (error) {
+        console.error("Failed to fetch tournaments", error);
+        Swal.fire("Error", "Failed to fetch tournaments.", "error");
+        setIsInitialLoading(false);
+        return;
+    }
 
-        // Step 1 — select tournament
-        const tournamentOptions = tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }));
+    // Hide spinner once data is ready for the SelectModal
+    setIsInitialLoading(false);
 
-        setSelectModal({
-            show: true,
-            title: "Select Tournament",
-            subtitle: "Select a tournament for this game",
-            options: tournamentOptions,
-            placeholder: "Select a tournament",
-            confirmText: "Next",
-            onConfirm: async (tournamentId) => {
-                closeSelectModal();
+    if (tournaments.length === 0) {
+        Swal.fire("No Tournaments", "Please create a tournament and a round before adding a game.", "warning");
+        return;
+    }
 
-                let rounds: Round[] = [];
-                try {
-                    rounds = await GetRoundsByTournament(tournamentId);
-                } catch {
-                    Swal.fire("Error", "Failed to fetch rounds.", "error");
-                    return;
-                }
+    // Step 1 — select tournament
+    const tournamentOptions = tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }));
 
-                if (rounds.length === 0) {
-                    Swal.fire("No Rounds", "This tournament has no rounds. Please add a round first.", "warning");
-                    return;
-                }
+    setSelectModal({
+        show: true,
+        title: "Select Tournament",
+        subtitle: "Select a tournament for this game",
+        options: tournamentOptions,
+        placeholder: "Select a tournament",
+        confirmText: "Next",
+        onConfirm: async (tournamentId) => {
+            // Close the first modal immediately
+            closeSelectModal();
 
-                // Step 2 — select round
-                const roundOptions = sortByNumberAsc(
-                    rounds.map(r => ({
-                        value: r.roundId,
-                        label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
-                        roundNumber: r.roundNumber,
-                    })),
-                    "roundNumber"
-                );
+            // 2. Show spinner while fetching rounds for this specific tournament
+            setIsInitialLoading(true);
 
-                setSelectModal({
-                    show: true,
-                    title: "Select Round",
-                    subtitle: "Select a round for this game",
-                    options: roundOptions,
-                    placeholder: "Select a round",
-                    confirmText: "Next",
-                    onConfirm: async (roundId) => {
-                        closeSelectModal();
-                        SetSelectedRoundId(roundId);
+            let rounds: Round[] = [];
+            try {
+                rounds = await GetRoundsByTournament(tournamentId);
+            } catch (error) {
+                console.error("Failed to fetch rounds", error);
+                Swal.fire("Error", "Failed to fetch rounds.", "error");
+                setIsInitialLoading(false);
+                return;
+            }
 
-                        // Step 3 — select game type
-                        const result = await Swal.fire({
+            // Hide spinner to show the Rounds Modal
+            setIsInitialLoading(false);
+
+            if (rounds.length === 0) {
+                Swal.fire("No Rounds", "This tournament has no rounds. Please add a round first.", "warning");
+                return;
+            }
+
+            // Step 2 — select round
+            const roundOptions = sortByNumberAsc(
+                rounds.map(r => ({
+                    value: r.roundId,
+                    label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
+                    roundNumber: r.roundNumber,
+                })),
+                "roundNumber"
+            );
+
+            setSelectModal({
+                show: true,
+                title: "Select Round",
+                subtitle: "Select a round for this game",
+                options: roundOptions,
+                placeholder: "Select a round",
+                confirmText: "Next",
+                onConfirm: async (roundId) => {
+                    closeSelectModal();
+                    SetSelectedRoundId(roundId);
+
+                    // Step 3 — select game type (Instant Swal, no loading needed)
+                    const result = await Swal.fire({
                         title: "Select Game Type",
                         icon: "question",
                         showConfirmButton: true,
@@ -253,7 +302,6 @@ export function GameConsole() {
                         confirmButtonText: "Regular Game",
                         denyButtonText: "Bye Game",
                         cancelButtonText: "Cancel",
-                        // ✅ Add this:
                         footer: `<button id="bulk-btn" class="swal2-confirm swal2-styled" 
                             style="background:#e0a918;color:#000;margin-top:6px;width:100%">
                             ⚡ Bulk Add Games
@@ -271,11 +319,11 @@ export function GameConsole() {
 
                     if (result.isConfirmed) SetShowAddGameModal(true);
                     else if (result.isDenied) SetShowAddByeGameModal(true);
-                    },
-                });
-            },
-        });
-    };
+                },
+            });
+        },
+    });
+};
 
     /* ===========================
        TABLE HEADERS
@@ -292,6 +340,7 @@ export function GameConsole() {
     =========================== */
     return (
         <div className="console-page">
+            {isInitialLoading && <OverlaySpinner message="Synchronizing Tournament Data..." />}
             <ConsoleHeader
                 title="Game Console"
                 subtitle="Manage and track all tournament games"

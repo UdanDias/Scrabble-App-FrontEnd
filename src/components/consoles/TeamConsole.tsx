@@ -4,11 +4,12 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { customStyles } from "../service/styles/CustomStyles";
 import { GetAllTeams } from "../service/team/GetAllTeams";
-import {  CreateTeam} from "../service/team/CreateTeam";
-import {  UpdateTeam } from "../service/team/UpdateTeam";
-import {  DeleteTeam } from "../service/team/DeleteTeam";
+import { CreateTeam } from "../service/team/CreateTeam";
+import { UpdateTeam } from "../service/team/UpdateTeam";
+import { DeleteTeam } from "../service/team/DeleteTeam";
 import { getPlayer } from "../service/player/GetPlayer";
 import { ConsoleHeader } from "./ConsoleHeader";
+import { OverlaySpinner } from "../utils/OverlaySpinner";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface TeamMember {
@@ -101,7 +102,6 @@ const AddTeamModal: React.FC<AddTeamModalProps> = ({ show, players, onClose, onS
                     Create Team
                 </h4>
 
-                {/* Team Name */}
                 <div style={{ marginBottom: "16px" }}>
                     <label style={labelStyle}>Team Name</label>
                     <input
@@ -113,7 +113,6 @@ const AddTeamModal: React.FC<AddTeamModalProps> = ({ show, players, onClose, onS
                     />
                 </div>
 
-                {/* Team Size */}
                 <div style={{ marginBottom: "20px" }}>
                     <label style={labelStyle}>Team Size (number of players)</label>
                     <input
@@ -128,7 +127,6 @@ const AddTeamModal: React.FC<AddTeamModalProps> = ({ show, players, onClose, onS
                     />
                 </div>
 
-                {/* Player selects — rendered based on teamSize */}
                 {typeof teamSize === "number" && teamSize > 0 && (
                     <div style={{ marginBottom: "20px" }}>
                         <label style={{ ...labelStyle, marginBottom: "12px", display: "block" }}>
@@ -160,7 +158,6 @@ const AddTeamModal: React.FC<AddTeamModalProps> = ({ show, players, onClose, onS
                     </div>
                 )}
 
-                {/* Buttons */}
                 <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "8px" }}>
                     <button onClick={handleSave} disabled={saving} style={confirmBtnStyle}>
                         {saving ? "Saving..." : "Create Team"}
@@ -218,8 +215,7 @@ const EditTeamModal: React.FC<EditTeamModalProps> = ({ show, team, players, onCl
     };
 
     const handleSave = async () => {
-        if (!team) return;
-        if (!teamName.trim()) return;
+        if (!team || !teamName.trim()) return;
         const validIds = selectedPlayers.filter(Boolean) as string[];
         setSaving(true);
         try {
@@ -293,11 +289,18 @@ export const TeamsConsole: React.FC = () => {
     const [teams, setTeams] = useState<Team[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [showAdd, setShowAdd] = useState(false);
     const [editTeam, setEditTeam] = useState<Team | null>(null);
     const [activeKey, setActiveKey] = useState<string | null>(null);
 
-    const loadAll = async () => {
+    const loadAll = async (isFirstLoad = false) => {
+        const startTime = Date.now();
+        if (isFirstLoad) {
+            setIsInitialLoading(true);
+        }
+        
+        setLoading(true);
         try {
             const [teamData, playerData] = await Promise.all([GetAllTeams(), getPlayer()]);
             setTeams(teamData);
@@ -306,10 +309,25 @@ export const TeamsConsole: React.FC = () => {
             Swal.fire({ toast: true, position: "top-end", icon: "error", title: "Failed to load data", showConfirmButton: false, timer: 2500 });
         } finally {
             setLoading(false);
+            
+            if (isFirstLoad) {
+                const duration = Date.now() - startTime;
+                const minWait = 1000; // Match GameConsole's timing
+                
+                if (duration < minWait) {
+                    setTimeout(() => setIsInitialLoading(false), minWait - duration);
+                } else {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => setIsInitialLoading(false));
+                    });
+                }
+            } else {
+                setIsInitialLoading(false);
+            }
         }
     };
 
-    useEffect(() => { loadAll(); }, []);
+    useEffect(() => { loadAll(true); }, []);
 
     const handleDelete = async (team: Team) => {
         const confirm = await Swal.fire({
@@ -325,107 +343,100 @@ export const TeamsConsole: React.FC = () => {
         try {
             await DeleteTeam(team.teamId);
             Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Team deleted", showConfirmButton: false, timer: 2500 });
-            loadAll();
+            loadAll(false); // Silent refresh
         } catch {
             Swal.fire({ toast: true, position: "top-end", icon: "error", title: "Failed to delete", showConfirmButton: false, timer: 2500 });
         }
     };
 
-    const getPlayerName = (playerId: string) => {
-        const p = players.find(pl => pl.playerId === playerId);
-        return p ? `${p.firstName} ${p.lastName}` : playerId;
-    };
-
     return (
         <div className="console-page">
+            {/* The Golden S Spinner */}
+            {isInitialLoading && <OverlaySpinner message="Loading Teams..." />}
+
             <ConsoleHeader title="Teams" subtitle="Manage teams and their members" />
 
             <div className="create-button d-flex justify-content-end p-2">
-                <Button className="btn-create"style={{marginBottom:"-15px"}} onClick={() => setShowAdd(true)}>+ Add Team</Button>
+                <Button className="btn-create" style={{ marginBottom: "-15px" }} onClick={() => setShowAdd(true)}>+ Add Team</Button>
             </div>
 
             <div className="console-table-container">
-                {loading ? (
-                    <div style={{ textAlign: "center", color: "#e0d318a0", padding: "40px", letterSpacing: "2px" }}>Loading teams...</div>
+                {/* Secondary loading indicator for background refreshes */}
+                {loading && !isInitialLoading ? (
+                    <div style={{ textAlign: "center", color: "#e0d318a0", padding: "40px", letterSpacing: "2px" }}>Refreshing...</div>
                 ) : teams.length === 0 ? (
                     <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
                         <p style={{ fontSize: "0.9rem", letterSpacing: "1px" }}>No teams created yet.</p>
                     </div>
                 ) : (
-                <>
-                    <Table className="leaderboard-header-table "   bordered>
-                        <thead>
-                            <tr>
-                                <th style={{ width: "60px", fontSize: "20px" }}>#No</th>
-                                <th style={{ textAlign: "center", fontSize: "20px" }}>Team Name</th>
-                                <th style={{ width: "160px", textAlign: "center", fontSize: "20px" }}>Action</th>
-                            </tr>
-                        </thead>
-                    </Table>
-                    <Accordion
-                        className="leaderboard-accordion"
-                        activeKey={activeKey ?? undefined}
-                        onSelect={k => setActiveKey(k as string | null)}
-                    >
-                        {teams.map((team, index) => (
-                            <Accordion.Item eventKey={String(index)} key={team.teamId}>
-                                <Accordion.Header>
-                                    <div className="d-flex w-100 pe-3 align-items-center position-relative">
-                                        {/* Left: number */}
-                                        <span style={{ color: "#e0d318a0", fontSize: "1rem", minWidth: "24px" }}>
-                                            {index + 1}.
-                                        </span>
-
-                                        {/* Center: team name */}
-                                        <div className="position-absolute start-50 translate-middle-x" style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                                            {team.teamName}
-                                            <span style={{ color: "#bfd0e150", fontSize: "0.75rem", marginLeft: "8px" }}>
-                                                ({team.members?.length ?? 0}/{team.teamSize} players)
+                    <>
+                        <Table className="leaderboard-header-table" bordered>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "60px", fontSize: "20px" }}>#No</th>
+                                    <th style={{ textAlign: "center", fontSize: "20px" }}>Team Name</th>
+                                    <th style={{ width: "160px", textAlign: "center", fontSize: "20px" }}>Action</th>
+                                </tr>
+                            </thead>
+                        </Table>
+                        <Accordion
+                            className="leaderboard-accordion"
+                            activeKey={activeKey ?? undefined}
+                            onSelect={k => setActiveKey(k as string | null)}
+                        >
+                            {teams.map((team, index) => (
+                                <Accordion.Item eventKey={String(index)} key={team.teamId}>
+                                    <Accordion.Header>
+                                        <div className="d-flex w-100 pe-3 align-items-center position-relative">
+                                            <span style={{ color: "#e0d318a0", fontSize: "1rem", minWidth: "24px" }}>
+                                                {index + 1}.
                                             </span>
-                                        </div>
 
-                                        {/* Right: buttons */}
-                                        <div style={{ display: "flex", gap: "8px", marginLeft: "auto" }} onClick={e => e.stopPropagation()}>
-                                            <Button className="btn-edit" style={{ padding: "7px 14px" }} onClick={() => setEditTeam(team)}>Edit</Button>
-                                            <Button className="btn-delete" style={{ padding: "7px 14px" }} onClick={() => handleDelete(team)}>Delete</Button>
+                                            <div className="position-absolute start-50 translate-middle-x" style={{ fontWeight: "bold", fontSize: "1rem" }}>
+                                                {team.teamName}
+                                                <span style={{ color: "#bfd0e150", fontSize: "0.75rem", marginLeft: "8px" }}>
+                                                    ({team.members?.length ?? 0}/{team.teamSize} players)
+                                                </span>
+                                            </div>
+
+                                            <div style={{ display: "flex", gap: "8px", marginLeft: "auto" }} onClick={e => e.stopPropagation()}>
+                                                <Button className="btn-edit" style={{ padding: "7px 14px" }} onClick={() => setEditTeam(team)}>Edit</Button>
+                                                <Button className="btn-delete" style={{ padding: "7px 14px" }} onClick={() => handleDelete(team)}>Delete</Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Accordion.Header>
-                                <Accordion.Body>
-                                    <div className="leaderboard-inner-table-wrapper">
-                                        {team.members && team.members.length > 0 ? (
-                                            <table className="leaderboard-inner-table w-100" >
-                                                <thead >
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Player ID</th>
-                                                        <th>Name</th>
-                                                        
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {team.members.map((member, i) => (
-                                                        <tr key={member.playerId}>
-                                                            <td>{i + 1}</td>
-                                                            <td>{member.playerId}</td>
-                                                            <td>{member.firstName} {member.lastName}</td>
-                                                            
+                                    </Accordion.Header>
+                                    <Accordion.Body>
+                                        <div className="leaderboard-inner-table-wrapper">
+                                            {team.members && team.members.length > 0 ? (
+                                                <table className="leaderboard-inner-table w-100" >
+                                                    <thead >
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Player ID</th>
+                                                            <th>Name</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        ) : (
-                                            <p style={{ color: "#bfd0e150", fontSize: "0.85rem", margin: 0, padding: "8px" }}>
-                                                No players assigned yet.
-                                            </p>
-                                        )}
-                                    </div>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        ))}
-                    </Accordion>
-                </>
-                    
+                                                    </thead>
+                                                    <tbody>
+                                                        {team.members.map((member, i) => (
+                                                            <tr key={member.playerId}>
+                                                                <td>{i + 1}</td>
+                                                                <td>{member.playerId}</td>
+                                                                <td>{member.firstName} {member.lastName}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            ) : (
+                                                <p style={{ color: "#bfd0e150", fontSize: "0.85rem", margin: 0, padding: "8px" }}>
+                                                    No players assigned yet.
+                                                </p>
+                                            )}
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            ))}
+                        </Accordion>
+                    </>
                 )}
             </div>
 
@@ -433,14 +444,14 @@ export const TeamsConsole: React.FC = () => {
                 show={showAdd}
                 players={players}
                 onClose={() => setShowAdd(false)}
-                onSave={loadAll}
+                onSave={() => loadAll(false)}
             />
             <EditTeamModal
                 show={!!editTeam}
                 team={editTeam}
                 players={players}
                 onClose={() => setEditTeam(null)}
-                onSave={loadAll}
+                onSave={() => loadAll(false)}
             />
         </div>
     );

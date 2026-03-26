@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 import BulkAddPlayer from '../service/player/Bulkaddplayer';
 import { ConsoleHeader } from './ConsoleHeader';
 import { useAuth } from '../auth/AuthProvider';
+import { OverlaySpinner } from '../utils/OverlaySpinner';
+
 
 interface Player {
     playerId: string;
@@ -24,13 +26,8 @@ interface Player {
     faculty: string;
     academicLevel: string;
     accountCreatedDate: string;
-    username: string; // ✅ added
+    username: string;
 }
-
-export const loadData = async (SetPlayerData: React.Dispatch<React.SetStateAction<Player[]>>) => {
-    const playerDetails = await getPlayer();
-    SetPlayerData(playerDetails);
-};
 
 export function PlayerConsole() {
     const { role } = useAuth();
@@ -42,7 +39,45 @@ export function PlayerConsole() {
     const [showAddPlayerModal, SetShowAddPlayerModal] = useState(false);
     const [showGamesByPlayerModal, setShowGamesByPlayerModal] = useState(false);
     const [showBulkModal, setShowBulkModal] = useState(false);
+    
+    // ✅ Add loading state
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
 
+    /* ===========================
+        DATA LOADING LOGIC
+    =========================== */
+    const loadData = async (showSpinner: boolean = false) => {
+        const startTime = Date.now();
+        if (showSpinner) setIsInitialLoading(true);
+
+        try {
+            const playerDetails = await getPlayer();
+            SetPlayerData(playerDetails);
+            
+            // Minimum wait logic for premium feel
+            const duration = Date.now() - startTime;
+            const minWait = 800; 
+
+            if (duration < minWait) {
+                setTimeout(() => setIsInitialLoading(false), minWait - duration);
+            } else {
+                setIsInitialLoading(false);
+            }
+        } catch (error) {
+            console.error("Error loading players:", error);
+            setIsInitialLoading(false);
+        }
+    };
+
+    useEffect(() => { 
+        loadData(true); 
+    }, []);
+
+    const refreshTable = () => loadData(true);
+
+    /* ===========================
+        HANDLERS
+    =========================== */
     const handleDelete = async (playerId: string) => {
         try {
             const confirm = await Swal.fire({
@@ -55,21 +90,23 @@ export function PlayerConsole() {
                 confirmButtonText: "Yes, Delete It!"
             });
             if (!confirm.isConfirmed) return;
+
+            setIsInitialLoading(true); // Show spinner during delete API call
             await DeletePlayer(playerId);
-            const Toast = Swal.mixin({
-                toast: true, position: "top-end", showConfirmButton: false,
-                timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+            
+            await loadData(false); // Refresh data silently then hide spinner
+            setIsInitialLoading(false);
+
+            Swal.fire({ 
+                toast: true, position: "top-end", icon: "success", 
+                title: "Deleted Player Successfully", showConfirmButton: false, timer: 3000 
             });
-            Toast.fire({ icon: "success", title: "Deleted Player Successfully" });
-            SetPlayerData(playerData.filter(player => player.playerId !== playerId));
         } catch (error) {
-            const Toast = Swal.mixin({
-                toast: true, position: "top-end", showConfirmButton: false,
-                timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+            setIsInitialLoading(false);
+            Swal.fire({ 
+                toast: true, position: "top-end", icon: "error", 
+                title: "Player Deletion Failed", showConfirmButton: false, timer: 3000 
             });
-            Toast.fire({ icon: "error", title: "Player Deletion Failed" });
         }
     };
 
@@ -77,12 +114,9 @@ export function PlayerConsole() {
         SetPlayerData(playerData.map(p => p.playerId === updatedPlayer.playerId ? updatedPlayer : p));
     };
 
-    const refreshTable = () => loadData(SetPlayerData);
     const handleAdd = (newPlayer: Player) => SetPlayerData(prev => [...prev, newPlayer]);
     const handleEdit = (row: Player) => { SetSelectedRow(row); SetShowEditPlayerModal(true); };
     const handleGetGamesByPlayer = (row: Player) => { SetSelectedRow(row); setShowGamesByPlayerModal(true); };
-
-    useEffect(() => { loadData(SetPlayerData); }, []);
 
     const tHeads: string[] = [
         "Player Id", "First Name", "Last Name", "Username", "Age", "Gender",
@@ -92,6 +126,9 @@ export function PlayerConsole() {
 
     return (
         <>
+            {/* ✅ Global Spinner Overlay */}
+            {isInitialLoading && <OverlaySpinner message="Loading Player Records..." />}
+
             <div className="console-page">
                 <ConsoleHeader
                     title="Player Console"
@@ -107,7 +144,6 @@ export function PlayerConsole() {
 
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
-                        {/* ✅ Same pattern as GameConsole — explicit <td> per field, Action rendered last manually */}
                         <Table striped bordered hover className="console-table text-center align-middle">
                             <thead>
                                 <tr>
@@ -117,7 +153,6 @@ export function PlayerConsole() {
                             <tbody>
                                 {playerData.map(row => (
                                     <tr key={row.playerId}>
-                                        {/* ✅ Explicit td per field — no Object.values(), same as GameConsole */}
                                         <td>{row.playerId}</td>
                                         <td>{row.firstName}</td>
                                         <td>{row.lastName}</td>
@@ -131,7 +166,6 @@ export function PlayerConsole() {
                                         <td>{row.faculty}</td>
                                         <td>{row.academicLevel}</td>
                                         <td>{row.accountCreatedDate}</td>
-                                        {/* ✅ Action column — explicit, last, matches header exactly */}
                                         <td>
                                             <div className="d-flex justify-content-center gap-2">
                                                 <Button className="btn-games" onClick={() => handleGetGamesByPlayer(row)}>Games</Button>
@@ -170,7 +204,7 @@ export function PlayerConsole() {
                     <BulkAddPlayer
                         show={showBulkModal}
                         handleClose={() => setShowBulkModal(false)}
-                        refreshTable={() => loadData(SetPlayerData)}
+                        refreshTable={refreshTable}
                     />
                 </div>
             </div>
