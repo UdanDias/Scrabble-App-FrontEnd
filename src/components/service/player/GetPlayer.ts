@@ -30,7 +30,7 @@ export const getSelectedPlayer = async (playerId: string) => {
     }
 }
 
-export const getGamesByPlayer = async (playerId: string) => {
+ export const getGamesByPlayer = async (playerId: string) => {
     try {
         const response = await axios.get(`${getgamesByPlayerIdUrl}?playerId=${playerId}`,
             {headers: {Authorization: FetchToken()}}

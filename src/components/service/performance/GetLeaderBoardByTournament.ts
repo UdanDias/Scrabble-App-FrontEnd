@@ -5,7 +5,7 @@ import BASE_URL from "../../../config";
 const getLeaderBoardByTournamentUrl = `${BASE_URL}/performance/getrankedplayers/tournament`;
 const recalculateUrl = `${BASE_URL}/performance/recalculate`;
 
-export const GetLeaderBoardByTournament = async (tournamentId: string) => {
+ const GetLeaderBoardByTournament = async (tournamentId: string) => {
     try {
         const headers = { Authorization: FetchToken() };
 
@@ -25,3 +25,4 @@ export const GetLeaderBoardByTournament = async (tournamentId: string) => {
         throw error;
     }
 };
+export default GetLeaderBoardByTournament

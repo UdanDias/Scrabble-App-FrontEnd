@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const DeleteTeam = async (teamId: string) => {
+ const DeleteTeam = async (teamId: string) => {
     try {
         const res = await axios.delete(`${BASE_URL}/team/deleteteam?teamId=${teamId}`,
             { headers: { Authorization: FetchToken() } });
@@ -12,3 +12,4 @@ export const DeleteTeam = async (teamId: string) => {
         throw error;
     }
 };
+export default DeleteTeam

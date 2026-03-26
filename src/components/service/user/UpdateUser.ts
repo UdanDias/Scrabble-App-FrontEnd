@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const UpdateUser = async (userDetails: any) => {
+ const UpdateUser = async (userDetails: any) => {
     try {
         const res = await axios.patch(
             `${BASE_URL}/auth/updateuser?userId=${userDetails.userId}`,
@@ -17,3 +17,4 @@ export const UpdateUser = async (userDetails: any) => {
         throw error;
     }
 };
+export default UpdateUser

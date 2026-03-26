@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const DeleteUser = async (userId: string) => {
+ const DeleteUser = async (userId: string) => {
     try {
         const res = await axios.delete(
             `${BASE_URL}/auth/deleteuser?userId=${userId}`,
@@ -16,3 +16,4 @@ export const DeleteUser = async (userId: string) => {
         throw error;
     }
 };
+export default DeleteUser

@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const GetUsers = async () => {
+ const GetUsers = async () => {
     try {
         const res = await axios.get(
             `${BASE_URL}/auth/getallusers`,
@@ -16,3 +16,4 @@ export const GetUsers = async () => {
         throw error;
     }
 };
+export default GetUsers
