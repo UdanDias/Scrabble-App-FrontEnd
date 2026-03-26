@@ -144,7 +144,8 @@ export function PlayerConsole() {
 
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
-                        <Table striped bordered hover className="console-table text-center align-middle">
+                        <div className="table-responsive">
+                            <Table striped bordered hover className="console-table text-center align-middle">
                             <thead>
                                 <tr>
                                     {tHeads.map(head => <th key={head}>{head}</th>)}
@@ -181,6 +182,7 @@ export function PlayerConsole() {
                                 ))}
                             </tbody>
                         </Table>
+                        </div>
                     </div>
 
                     <EditPlayer

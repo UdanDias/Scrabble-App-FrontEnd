@@ -354,7 +354,8 @@ export function TournamentConsole() {
 
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
-                        <Table striped bordered hover className="console-table">
+                        <div className="table-responsive">
+                            <Table striped bordered hover className="console-table">
                             <thead>
                                 <tr>
                                     {tHeads.map(h => (
@@ -399,6 +400,7 @@ export function TournamentConsole() {
                                 ))}
                             </tbody>
                         </Table>
+                        </div>
                     </div>
                 </div>
 

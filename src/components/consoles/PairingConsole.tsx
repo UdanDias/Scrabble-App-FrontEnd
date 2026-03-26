@@ -502,22 +502,23 @@ export const PairingsConsole: React.FC = () => {
                     </div>
 
                     <div className="console-table-wrapper">
-                        <table className="table console-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "80px",textAlign: "center" }}>BOARD</th>
-                                    <th style={{ textAlign: "center" }}>PLAYER 1</th>
-                                    <th style={{ textAlign: "center", width: "60px" }}>VS</th>
-                                    <th style={{ textAlign: "center" }}>PLAYER 2</th>
-                                    <th style={{ width: "120px", textAlign: "center" }}>WINS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Array.from(groupedPairings.entries()).map(([groupNum, groupPairings]) => (
-                                    <React.Fragment key={groupNum}>
-                                        {groupPairings.map(pair => (
-                                            <tr key={pair.boardNumber}>
-                                                <td style={{ textAlign: "center" }}><span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>#{pair.boardNumber}</span></td>
+                        <div className="table-responsive">
+                            <table className="table console-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "80px",textAlign: "center" }}>BOARD</th>
+                                        <th style={{ textAlign: "center" }}>PLAYER 1</th>
+                                        <th style={{ textAlign: "center", width: "60px" }}>VS</th>
+                                        <th style={{ textAlign: "center" }}>PLAYER 2</th>
+                                        <th style={{ width: "120px", textAlign: "center" }}>WINS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Array.from(groupedPairings.entries()).map(([groupNum, groupPairings]) => (
+                                        <React.Fragment key={groupNum}>
+                                            {groupPairings.map(pair => (
+                                                <tr key={pair.boardNumber}>
+                                                    <td style={{ textAlign: "center" }}><span style={{ color: "#e0d318a0", fontWeight: "bold", fontSize: "0.85rem" }}>#{pair.boardNumber}</span></td>
                                                 <td style={{ textAlign: "center" }}>{pair.player1Name}</td>
                                                 <td style={{ textAlign: "center" }}><span style={{ color: "#bfd0e150", fontWeight: "bold", fontSize: "0.75rem", letterSpacing: "1px" }}>VS</span></td>
                                                 <td style={{ textAlign: "center" }}>{pair.player2Name}</td>
@@ -552,6 +553,7 @@ export const PairingsConsole: React.FC = () => {
                                 )}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             )}
@@ -569,13 +571,14 @@ export const PairingsConsole: React.FC = () => {
                     </div>
 
                     <div className="console-table-wrapper">
-                        <table className="table console-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "80px" }}>BOARD</th>
-                                    <th>TEAM 1</th>
-                                    <th style={{ textAlign: "center", width: "60px" }}>VS</th>
-                                    <th>TEAM 2</th>
+                        <div className="table-responsive">
+                            <table className="table console-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "80px" }}>BOARD</th>
+                                        <th>TEAM 1</th>
+                                        <th style={{ textAlign: "center", width: "60px" }}>VS</th>
+                                        <th>TEAM 2</th>
                                     <th style={{ width: "120px", textAlign: "center" }}>WINS</th>
                                 </tr>
                             </thead>
@@ -609,6 +612,7 @@ export const PairingsConsole: React.FC = () => {
                                 )}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             )}

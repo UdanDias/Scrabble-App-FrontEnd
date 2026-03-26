@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,6 +27,7 @@ function AppLayout() {
   const isAdmin = role === "ROLE_ADMIN";
   const location = useLocation();
   
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
@@ -51,13 +52,13 @@ function AppLayout() {
 
   return (
     <div style={{ paddingTop: '60px' }}>
-      <NavBar />
+      <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div style={{ display: 'flex', minHeight: '100vh' }}>
-        {!isAuthPage && <Sidebar />}
+        {!isAuthPage && <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />}
         <div
+          className={`main-content ${!isAuthPage ? (sidebarOpen ? 'sidebar-open' : 'sidebar-closed') : ''}`}
           style={{
             flex: 1,
-            marginLeft: isAuthPage ? 0 : '220px',
             backgroundColor: '#0d1117',
             minHeight: '100vh',
             overflowX: 'hidden',

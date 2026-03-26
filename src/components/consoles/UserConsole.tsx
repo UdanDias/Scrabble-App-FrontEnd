@@ -146,7 +146,8 @@ export function UserConsole() {
                             </div>
                         )}
                         
-                        <Table striped bordered hover className="console-table">
+                        <div className="table-responsive">
+                            <Table striped bordered hover className="console-table">
                             <thead>
                                 <tr>
                                     {tHeads.map((headings) => (
@@ -182,6 +183,7 @@ export function UserConsole() {
                                 )}
                             </tbody>
                         </Table>
+                        </div>
                     </div>
                 </div>
 

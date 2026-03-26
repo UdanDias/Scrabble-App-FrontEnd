@@ -355,36 +355,38 @@ useEffect(() => {
 
             <div className="console-table-container">
                 <div className="console-table-wrapper">
-                    <Table striped bordered hover className="console-table text-center align-middle">
-                        <thead>
-                            <tr>
-                                {theads.map(head => <th key={head}>{head}</th>)}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {gameData.map(row => (
-                                <tr key={row.gameId}>
-                                    <td>{row.gameId}</td>
-                                    <td>{row.player1Id}</td>
-                                    <td>{row.player2Id}</td>
-                                    <td>{row.score1}</td>
-                                    <td>{row.score2}</td>
-                                    <td>{row.margin}</td>
-                                    <td>{row.isgameTied ? "Yes" : "No"}</td>
-                                    <td>{row.winnerId}</td>
-                                    <td>{row.gameDate}</td>
-                                    <td>{row.isByeGame ? "Yes" : "No"}</td>
-                                    <td>{row.roundId}</td>
-                                    <td>
-                                        <div className="d-flex justify-content-center gap-2">
-                                            <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
-                                            <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>
-                                        </div>
-                                    </td>
+                    <div className="table-responsive">
+                        <Table striped bordered hover className="console-table text-center align-middle">
+                            <thead>
+                                <tr>
+                                    {theads.map(head => <th key={head}>{head}</th>)}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {gameData.map(row => (
+                                    <tr key={row.gameId}>
+                                        <td>{row.gameId}</td>
+                                        <td>{row.player1Id}</td>
+                                        <td>{row.player2Id}</td>
+                                        <td>{row.score1}</td>
+                                        <td>{row.score2}</td>
+                                        <td>{row.margin}</td>
+                                        <td>{row.isgameTied ? "Yes" : "No"}</td>
+                                        <td>{row.winnerId}</td>
+                                        <td>{row.gameDate}</td>
+                                        <td>{row.isByeGame ? "Yes" : "No"}</td>
+                                        <td>{row.roundId}</td>
+                                        <td>
+                                            <div className="d-flex justify-content-center gap-2">
+                                                <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
+                                                <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
             </div>
 
