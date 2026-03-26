@@ -15,3 +15,4 @@ export const RegisterTournamentPlayer = async (tournamentId: string, playerId: s
         throw error;
     }
 };
+export default RegisterTournamentPlayer

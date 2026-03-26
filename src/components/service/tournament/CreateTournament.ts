@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const CreateTournament = async (tournamentData: any) => {
+const CreateTournament = async (tournamentData: any) => {
     try {
         const res = await axios.post(
             `${BASE_URL}/tournament/addtournament`,
@@ -15,3 +15,4 @@ export const CreateTournament = async (tournamentData: any) => {
         throw error;
     }
 };
+export default CreateTournament

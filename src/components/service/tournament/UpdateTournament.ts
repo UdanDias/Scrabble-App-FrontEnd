@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const UpdateTournament = async (tournamentData: any) => {
+ const UpdateTournament = async (tournamentData: any) => {
     try {
         const res = await axios.patch(
             `${BASE_URL}/tournament/updatetournament?tournamentId=${tournamentData.tournamentId}`,
@@ -15,3 +15,4 @@ export const UpdateTournament = async (tournamentData: any) => {
         throw error;
     }
 };
+export default UpdateTournament

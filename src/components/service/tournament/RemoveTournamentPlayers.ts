@@ -14,3 +14,4 @@ export const RemoveTournamentPlayer = async (tournamentPlayerId: string) => {
         throw error;
     }
 };
+export default RemoveTournamentPlayer

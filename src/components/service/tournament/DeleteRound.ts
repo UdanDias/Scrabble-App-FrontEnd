@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const DeleteRound = async (roundId: string) => {
+ const DeleteRound = async (roundId: string) => {
     try {
         const res = await axios.delete(
             `${BASE_URL}/round/deleteround?roundId=${roundId}`,
@@ -14,3 +14,4 @@ export const DeleteRound = async (roundId: string) => {
         throw error;
     }
 };
+export default DeleteRound

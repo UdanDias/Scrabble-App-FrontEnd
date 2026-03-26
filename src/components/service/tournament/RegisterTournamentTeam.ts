@@ -15,3 +15,4 @@ export const RegisterTournamentTeam = async (tournamentId: string, teamId: strin
         throw error;
     }
 };
+export default RegisterTournamentTeam

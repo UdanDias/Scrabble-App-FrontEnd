@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const GetAllPlayers = async () => {
+ const GetAllPlayers = async () => {
     try {
         const res = await axios.get(
             `${BASE_URL}/player/getallplayers`,
@@ -14,3 +14,4 @@ export const GetAllPlayers = async () => {
         throw error;
     }
 };
+export default GetAllPlayers

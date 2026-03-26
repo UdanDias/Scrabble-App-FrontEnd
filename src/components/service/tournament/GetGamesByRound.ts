@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const GetGamesByRound = async (roundId: string) => {
+ const GetGamesByRound = async (roundId: string) => {
     try {
         const res = await axios.get(
             `${BASE_URL}/game/getgamesbyround?roundId=${roundId}`,
@@ -14,3 +14,4 @@ export const GetGamesByRound = async (roundId: string) => {
         throw error;
     }
 };
+export default GetGamesByRound

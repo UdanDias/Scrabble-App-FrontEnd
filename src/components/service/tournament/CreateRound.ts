@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const CreateRound = async (roundData: any) => {
+const CreateRound = async (roundData: any) => {
     try {
         const res = await axios.post(
             `${BASE_URL}/round/addround`,
@@ -15,3 +15,4 @@ export const CreateRound = async (roundData: any) => {
         throw error;
     }
 };
+export default CreateRound

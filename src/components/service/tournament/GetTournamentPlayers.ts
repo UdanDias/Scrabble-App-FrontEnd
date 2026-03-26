@@ -2,7 +2,7 @@ import axios from "axios";
 import FetchToken from "../auth/FetchToken";
 import BASE_URL from "../../../config";
 
-export const GetTournamentPlayers = async (tournamentId: string) => {
+ const GetTournamentPlayers = async (tournamentId: string) => {
     try {
         const res = await axios.get(
             `${BASE_URL}/tournament/getplayers?tournamentId=${tournamentId}`,
@@ -14,3 +14,4 @@ export const GetTournamentPlayers = async (tournamentId: string) => {
         throw error;
     }
 };
+export default GetTournamentPlayers
