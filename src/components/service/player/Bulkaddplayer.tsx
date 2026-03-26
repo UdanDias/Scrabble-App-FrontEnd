@@ -47,45 +47,72 @@ const BulkAddPlayer = ({ show, handleClose, refreshTable }: BulkAddPlayerProps) 
         setError("");
         handleClose();
     };
-
-    const handleSubmit = async () => {
-        let parsed: any[];
-        try {
-            parsed = JSON.parse(jsonInput);
-            if (!Array.isArray(parsed)) {
-                setError("Input must be a JSON array [ {...}, {...} ]");
-                return;
-            }
-            if (parsed.length === 0) {
-                setError("Array is empty — add at least one player object.");
-                return;
-            }
-        } catch {
-            setError("Invalid JSON — check for missing commas, brackets, or quotes.");
+const handleSubmit = async () => {
+    let parsed: any[];
+    try {
+        parsed = JSON.parse(jsonInput);
+        if (!Array.isArray(parsed)) {
+            setError("Input must be a JSON array [ {...}, {...} ]");
             return;
         }
-
-        setError("");
-
-        try {
-            await axios.post(
-                "http://localhost:8081/scrabbleapp2026/api/v1/player/addplayers/bulk",
-                parsed,
-                { headers: { "Content-Type": "application/json", Authorization: FetchToken() } }
-            );
-
-            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
-            }).fire({ icon: "success", title: `${parsed.length} player(s) added successfully` });
-
-            refreshTable();
-            handleClose_();
-        } catch (err) {
-            Swal.mixin({ toast: true, position: "top-end", showConfirmButton: false, timer: 3000, timerProgressBar: true,
-                didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
-            }).fire({ icon: "error", title: "Bulk player import failed" });
+        if (parsed.length === 0) {
+            setError("Array is empty — add at least one player object.");
+            return;
         }
-    };
+    } catch {
+        setError("Invalid JSON — check for missing commas, brackets, or quotes.");
+        return;
+    }
+
+    setError("");
+
+    try {
+        await axios.post(
+            `${BASE_URL}/player/addplayers/bulk`, // <-- updated to use BASE_URL
+            parsed,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: FetchToken(),
+                },
+            }
+        );
+
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        }).fire({
+            icon: "success",
+            title: `${parsed.length} player(s) added successfully`,
+        });
+
+        refreshTable();
+        handleClose_();
+    } catch (err) {
+        console.error("Bulk player import failed", err);
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        }).fire({
+            icon: "error",
+            title: "Bulk player import failed",
+        });
+    }
+};
 
     const handleLoadExample = () => {
         setJsonInput(EXAMPLE);
