@@ -447,17 +447,17 @@ export function LeaderBoard() {
                                                         <table className="leaderboard-inner-table w-100">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th>Total Games Played</th><td>{player.totalGamesPlayed}</td>
-                                                                    <th>Total Wins</th><td>{player.totalWins}</td>
+                                                                    <th>Total Games Played</th><td data-label="Total Games Played">{player.totalGamesPlayed}</td>
+                                                                    <th>Total Wins</th><td data-label="Total Wins">{player.totalWins}</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th>Cum Margin</th><td>{player.cumMargin}</td>
-                                                                    <th>Avg Margin</th><td>{player.avgMargin}</td>
+                                                                    <th>Cum Margin</th><td data-label="Cum Margin">{player.cumMargin}</td>
+                                                                    <th>Avg Margin</th><td data-label="Avg Margin">{player.avgMargin}</td>
                                                                 </tr>
                                                                 {isMinitournament && (
                                                                     <tr>
                                                                         <th>Status</th>
-                                                                        <td colSpan={3} style={{ color: player.provisional ? "#5293ee" : "#5ee5aa", fontSize: "0.8rem" }}>
+                                                                        <td data-label="Status" colSpan={3} style={{ color: player.provisional ? "#5293ee" : "#5ee5aa", fontSize: "0.8rem" }}>
                                                                             {player.provisional
                                                                                 ? `Provisional · ${PROVISIONAL_THRESHOLD - player.totalGamesPlayed} game${PROVISIONAL_THRESHOLD - player.totalGamesPlayed !== 1 ? "s" : ""} to establish`
                                                                                 : "Established"}

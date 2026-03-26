@@ -365,18 +365,18 @@ useEffect(() => {
                             <tbody>
                                 {gameData.map(row => (
                                     <tr key={row.gameId}>
-                                        <td>{row.gameId}</td>
-                                        <td>{row.player1Id}</td>
-                                        <td>{row.player2Id}</td>
-                                        <td>{row.score1}</td>
-                                        <td>{row.score2}</td>
-                                        <td>{row.margin}</td>
-                                        <td>{row.isgameTied ? "Yes" : "No"}</td>
-                                        <td>{row.winnerId}</td>
-                                        <td>{row.gameDate}</td>
-                                        <td>{row.isByeGame ? "Yes" : "No"}</td>
-                                        <td>{row.roundId}</td>
-                                        <td>
+                                        <td data-label="Game Id">{row.gameId}</td>
+                                        <td data-label="Player1 Name">{row.player1Id}</td>
+                                        <td data-label="Player2 Name">{row.player2Id}</td>
+                                        <td data-label="Score 1">{row.score1}</td>
+                                        <td data-label="Score 2">{row.score2}</td>
+                                        <td data-label="Margin">{row.margin}</td>
+                                        <td data-label="Game Tied">{row.isgameTied ? "Yes" : "No"}</td>
+                                        <td data-label="Winner">{row.winnerId}</td>
+                                        <td data-label="Game Date">{row.gameDate}</td>
+                                        <td data-label="Is Bye Game">{row.isByeGame ? "Yes" : "No"}</td>
+                                        <td data-label="Round">{row.roundId}</td>
+                                        <td data-label="Action">
                                             <div className="d-flex justify-content-center gap-2">
                                                 <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
                                                 <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>

@@ -165,14 +165,14 @@ export function UserConsole() {
                                 ) : (
                                     userData.map((row, index) => (
                                         <tr key={row.userId || index}>
-                                            <td className="text-center">{row.userId}</td>
-                                            <td className="text-center">{row.playerId}</td>
-                                            <td className="text-center">{row.firstName}</td>
-                                            <td className="text-center">{row.lastName}</td>
-                                            <td className="text-center">{row.email}</td>
-                                            <td className="text-center" style={{ textTransform: 'capitalize' }}>{row.role}</td>
-                                            <td className="text-center">{row.accountCreatedDate}</td>
-                                            <td>
+                                            <td data-label="User Id" className="text-center">{row.userId}</td>
+                                            <td data-label="Player Id" className="text-center">{row.playerId}</td>
+                                            <td data-label="First Name" className="text-center">{row.firstName}</td>
+                                            <td data-label="Last Name" className="text-center">{row.lastName}</td>
+                                            <td data-label="Email" className="text-center">{row.email}</td>
+                                            <td data-label="Role" className="text-center" style={{ textTransform: 'capitalize' }}>{row.role}</td>
+                                            <td data-label="Account Created Date" className="text-center">{row.accountCreatedDate}</td>
+                                            <td data-label="Action">
                                                 <div className="d-flex gap-2 justify-content-center">
                                                     <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
                                                     <Button className="btn-delete" onClick={() => handleDelete(row.userId)}>Delete</Button>

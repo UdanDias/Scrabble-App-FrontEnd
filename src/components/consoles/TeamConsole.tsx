@@ -419,9 +419,9 @@ export const TeamsConsole: React.FC = () => {
                                                     <tbody>
                                                         {team.members.map((member, i) => (
                                                             <tr key={member.playerId}>
-                                                                <td>{i + 1}</td>
-                                                                <td>{member.playerId}</td>
-                                                                <td>{member.firstName} {member.lastName}</td>
+                                                                <td data-label="#">{i + 1}</td>
+                                                                <td data-label="Player ID">{member.playerId}</td>
+                                                                <td data-label="Name">{member.firstName} {member.lastName}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>

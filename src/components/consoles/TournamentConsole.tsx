@@ -366,10 +366,10 @@ export function TournamentConsole() {
                             <tbody>
                                 {tournamentData.map((row, index) => (
                                     <tr key={row.tournamentId || index}>
-                                        <td className="text-center">{row.tournamentId}</td>
-                                        <td className="text-center">{row.tournamentName}</td>
-                                        <td className="text-center">{getStatusBadge(row.status)}</td>
-                                        <td>
+                                        <td data-label="Tournament ID" className="text-center">{row.tournamentId}</td>
+                                        <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
+                                        <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
+                                        <td data-label="Action">
                                             <div className="d-flex gap-2 justify-content-center">
                                                 {isAdmin ? (
                                                     <>

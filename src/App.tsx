@@ -26,33 +26,66 @@ function AppLayout() {
   const { role, loading } = useAuth();
   const isAdmin = role === "ROLE_ADMIN";
   const location = useLocation();
-  
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+  const [navbarHeight, setNavbarHeight] = useState(60);
+
   const isAuthPage = ['/', '/signin', '/signup', '/home'].includes(location.pathname);
 
-  // Auto-close sidebar on route change and ensure auth pages collapse sidebar
+  // Measure real navbar height and keep CSS variable in sync
+  const syncNavbarHeight = () => {
+    const navbar = document.querySelector('.custom-navbar') as HTMLElement;
+    if (navbar) {
+      const height = Math.ceil(navbar.getBoundingClientRect().height);
+      setNavbarHeight(height);
+      document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+    }
+  };
+
+  // On mount + every resize
   useEffect(() => {
-    if (isAuthPage) {
+    syncNavbarHeight();
+    window.addEventListener('resize', syncNavbarHeight);
+    return () => window.removeEventListener('resize', syncNavbarHeight);
+  }, []);
+
+  // Re-measure on route change (nav items may change, affecting height)
+  useEffect(() => {
+    // Small delay so the DOM has updated before measuring
+    const t = setTimeout(syncNavbarHeight, 50);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
+
+  // Close sidebar on mobile when navigating
+  useEffect(() => {
+    if (window.innerWidth < 992) {
       setSidebarOpen(false);
     }
-    // Close mobile sidebar on any navigation change
-    setSidebarOpen(false);
-  }, [location.pathname, isAuthPage]);
+  }, [location.pathname]);
 
-  // BUG FIX: Instead of returning null (blank screen), 
-  // show your loading animation here so it's visible on first load.
+  // Reset sidebar on desktop resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (loading) {
     return (
-      <div style={{ 
-        backgroundColor: '#0d1117', 
-        height: '100vh', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        color: 'white' 
-      }}>
-        <div className="spinner-border text-primary" role="status">
+      <div
+        style={{
+          backgroundColor: '#0d1117',
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <div className="spinner-border text-warning" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       </div>
@@ -60,27 +93,32 @@ function AppLayout() {
   }
 
   return (
-    <div style={{ paddingTop: '60px' }}>
+    <div style={{ paddingTop: navbarHeight }}>
+      {/* Navbar — fixed, height is measured dynamically */}
       <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div style={{ display: 'flex', minHeight: '100vh' }}>
-        {!isAuthPage && <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />}
-        {!isAuthPage && (
-          <div
-            className={`sidebar-backdrop ${sidebarOpen ? 'visible' : ''}`}
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+
+      {/* Backdrop — mobile only, dims content when sidebar is open */}
+      {!isAuthPage && (
         <div
-          className={`main-content ${isAuthPage ? 'no-sidebar' : (sidebarOpen ? 'sidebar-open' : 'sidebar-closed')}`}
-          style={{
-            flex: 1,
-            backgroundColor: '#0d1117',
-            minHeight: '100vh',
-            overflowX: 'hidden',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+          className={`sidebar-backdrop ${sidebarOpen ? 'visible' : ''}`}
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main flex row: sidebar + content */}
+      <div className="app-body">
+        {!isAuthPage && (
+          <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+        )}
+
+        <main
+          className={`main-content ${
+            isAuthPage
+              ? 'no-sidebar'
+              : sidebarOpen
+              ? 'sidebar-open'
+              : 'sidebar-closed'
+          }`}
         >
           <div style={{ flex: 1 }}>
             <Routes>
@@ -90,32 +128,32 @@ function AppLayout() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/user" element={isAdmin ? <UserConsole /> : <Navigate to="/leaderboard" />} />
-              <Route path="/game" element={isAdmin ? <GameConsole /> : <Navigate to="/leaderboard" />} />
+              <Route
+                path="/user"
+                element={isAdmin ? <UserConsole /> : <Navigate to="/leaderboard" />}
+              />
+              <Route
+                path="/game"
+                element={isAdmin ? <GameConsole /> : <Navigate to="/leaderboard" />}
+              />
               <Route path="/player" element={<PlayerConsole />} />
               <Route path="/tournament" element={<TournamentConsole />} />
-              <Route path="/teams" element={isAdmin ? <TeamsConsole /> : <Navigate to="/leaderboard" />} />
-              <Route path='/pairings' element={<PairingsConsole />} />
+              <Route
+                path="/teams"
+                element={isAdmin ? <TeamsConsole /> : <Navigate to="/leaderboard" />}
+              />
+              <Route path="/pairings" element={<PairingsConsole />} />
               <Route path="/leaderboard" element={<LeaderBoard />} />
             </Routes>
           </div>
           <Footer />
-        </div>
+        </main>
       </div>
     </div>
   );
 }
 
 const App: React.FC = () => {
-  // FORCE REFRESH LOGIC
-  useEffect(() => {
-    const hasRefreshed = sessionStorage.getItem('app_initialized');
-    if (!hasRefreshed) {
-      sessionStorage.setItem('app_initialized', 'true');
-      window.location.reload();
-    }
-  }, []);
-
   return (
     <Router>
       <AuthProvider>

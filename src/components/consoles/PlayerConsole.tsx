@@ -154,20 +154,20 @@ export function PlayerConsole() {
                             <tbody>
                                 {playerData.map(row => (
                                     <tr key={row.playerId}>
-                                        <td>{row.playerId}</td>
-                                        <td>{row.firstName}</td>
-                                        <td>{row.lastName}</td>
-                                        <td>{row.username}</td>
-                                        <td>{row.age}</td>
-                                        <td>{row.gender}</td>
-                                        <td>{row.dob}</td>
-                                        <td>{row.email}</td>
-                                        <td>{row.phone}</td>
-                                        <td>{row.address}</td>
-                                        <td>{row.faculty}</td>
-                                        <td>{row.academicLevel}</td>
-                                        <td>{row.accountCreatedDate}</td>
-                                        <td>
+                                        <td data-label="Player Id">{row.playerId}</td>
+                                        <td data-label="First Name">{row.firstName}</td>
+                                        <td data-label="Last Name">{row.lastName}</td>
+                                        <td data-label="Username">{row.username}</td>
+                                        <td data-label="Age">{row.age}</td>
+                                        <td data-label="Gender">{row.gender}</td>
+                                        <td data-label="Date Of Birth">{row.dob}</td>
+                                        <td data-label="Email">{row.email}</td>
+                                        <td data-label="Phone">{row.phone}</td>
+                                        <td data-label="Address">{row.address}</td>
+                                        <td data-label="Faculty">{row.faculty}</td>
+                                        <td data-label="Academic Level">{row.academicLevel}</td>
+                                        <td data-label="Account Created Date">{row.accountCreatedDate}</td>
+                                        <td data-label="Action">
                                             <div className="d-flex justify-content-center gap-2">
                                                 <Button className="btn-games" onClick={() => handleGetGamesByPlayer(row)}>Games</Button>
                                                 {isAdmin && (
