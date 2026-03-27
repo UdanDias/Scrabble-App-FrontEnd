@@ -328,6 +328,58 @@ export function TournamentConsole() {
         })
     }
 
+    const handleActionsClick = (row: Tournament) => {
+        const isTeam = row.tournamentType === "team";
+        const playersBtnLabel = isTeam ? "Add Teams" : "Add Players";
+
+        Swal.fire({
+            title: "Choose Action",
+            html: `
+                <div style="display: flex; flex-direction: row; gap: 8px; justify-content: center; padding: 10px 0; overflow-x: auto;">
+                    <button id="swal-players" class="swal-action-btn btn-register" style="flex: 1; min-width: 100px; padding: 10px 5px; font-size: 0.85rem;">
+                        ${playersBtnLabel}
+                    </button>
+                    <button id="swal-add-round" class="swal-action-btn btn-create" style="flex: 1; min-width: 100px; padding: 10px 5px; font-size: 0.85rem; background-color: #0d6efd; color: white; border: none; border-radius: 4px;">
+                        + Round
+                    </button>
+                    <button id="swal-edit" class="swal-action-btn btn-edit" style="flex: 1; min-width: 80px; padding: 10px 5px; font-size: 0.85rem; background-color: #6c757d; color: white; border: none; border-radius: 4px;">
+                        Edit
+                    </button>
+                    <button id="swal-delete" class="swal-action-btn btn-delete" style="flex: 1; min-width: 80px; padding: 10px 5px; font-size: 0.85rem; background-color: #dc3545; color: white; border: none; border-radius: 4px;">
+                        Delete
+                    </button>
+                </div>
+            `,
+            showConfirmButton: false,
+            showCancelButton: true,
+            cancelButtonText: "Close",
+            background: "#0d0c18",
+            color: "#bfd0e1d1",
+            cancelButtonColor: "#444",
+            didOpen: () => {
+                const content = Swal.getHtmlContainer();
+                if (content) {
+                    content.querySelector("#swal-players")?.addEventListener("click", () => {
+                        Swal.close();
+                        handleAddPlayersClick(row);
+                    });
+                    content.querySelector("#swal-add-round")?.addEventListener("click", () => {
+                        Swal.close();
+                        handleAddRound(row);
+                    });
+                    content.querySelector("#swal-edit")?.addEventListener("click", () => {
+                        Swal.close();
+                        handleEdit(row);
+                    });
+                    content.querySelector("#swal-delete")?.addEventListener("click", () => {
+                        Swal.close();
+                        handleDelete(row);
+                    });
+                }
+            }
+        });
+    };
+
     const tHeads = ["Tournament ID", "Tournament Name", "Status", "Action"]
 
     return (
@@ -370,25 +422,18 @@ export function TournamentConsole() {
                                         <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
                                         <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
                                         <td data-label="Action">
-                                            <div className="d-flex gap-2 justify-content-center">
+                                            <div className="d-flex justify-content-center">
                                                 {isAdmin ? (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleAddPlayersClick(row)}
-                                                            className="btn-register"
-                                                        >
-                                                            {row.tournamentType === "team" ? "+ Add Teams" : "+ Add Players"}
-                                                        </button>
-                                                        <Button className="btn-create" variant="primary" onClick={() => handleAddRound(row)}>
-                                                            + Add Round
-                                                        </Button>
-                                                        <Button className="btn-edit" variant="secondary" onClick={() => handleEdit(row)}>
-                                                            Edit
-                                                        </Button>
-                                                        <Button className="btn-delete" variant="danger" onClick={() => handleDelete(row)}>
-                                                            Delete
-                                                        </Button>
-                                                    </>
+                                                    <Button 
+                                                        className="btn-actions-outlined" 
+                                                        variant="outline-warning" 
+                                                        onClick={() => handleActionsClick(row)}
+                                                        style={{ background: "transparent", border: "1px solid #e0d318", color: "#e0d318", fontWeight: "bold", padding: "6px 16px", borderRadius: "20px", fontSize: "0.85rem", transition: "all 0.3s ease" }}
+                                                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(224,211,24,0.1)"; e.currentTarget.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
+                                                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.boxShadow = "none"; }}
+                                                    >
+                                                        Actions
+                                                    </Button>
                                                 ) : (
                                                     <Button className="btn-view" variant="info" onClick={() => showRoundSelector(row)}>
                                                         View Rounds
