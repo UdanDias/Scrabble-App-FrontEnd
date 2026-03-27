@@ -417,12 +417,12 @@ export function TournamentConsole() {
                             </thead>
                             <tbody>
                                 {tournamentData.map((row, index) => (
-                                    <tr key={row.tournamentId || index}>
+                                    <tr key={(row.tournamentId || index) + (role || 'loading')}>
                                         <td data-label="Tournament ID" className="text-center">{row.tournamentId}</td>
                                         <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
                                         <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
                                         <td data-label="Action">
-                                            <div className="d-flex justify-content-center">
+                                            <div className="d-flex justify-content-end" style={{ paddingRight: "42px" }}>
                                                 {isAdmin ? (
                                                     <Button 
                                                         className="btn-actions-outlined" 
