@@ -169,7 +169,7 @@ export function Profile() {
                     title="Profile"
                     subtitle={player ? `Welcome back, ${player.firstName} ${player.lastName} ✦` : "Loading..."}
                 />
-                <div className="console-table-container" style={{ width: '70%' }}>
+                <div className="profile-main-container">
 
                     {/* Personal Details Card */}
                     <div className="profile-card mb-4">
@@ -216,10 +216,10 @@ export function Profile() {
                     </div>
 
                     {/* Bottom Section */}
-                    <div className="d-flex gap-4 align-items-stretch">
+                    <div className="profile-bottom-section">
 
                         {/* Performance Card */}
-                        <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
+                        <div className="profile-card profile-bottom-card">
                             <h3 className="profile-card-title">Performance</h3>
                             <div className="leaderboard-inner-table-wrapper">
                                 <table className="profile-games-table w-100">
@@ -268,7 +268,7 @@ export function Profile() {
                         </div>
 
                         {/* Games Card */}
-                        <div className="profile-card profile-bottom-card" style={{ width: '50%' }}>
+                        <div className="profile-card profile-bottom-card">
                             <h3 className="profile-card-title">Games</h3>
 
                             <div className="profile-scroll-area" style={{ flex: 1 }}>
