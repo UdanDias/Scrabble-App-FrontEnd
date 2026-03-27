@@ -221,49 +221,51 @@ export function Profile() {
                         {/* Performance Card */}
                         <div className="profile-card profile-bottom-card">
                             <h3 className="profile-card-title">Performance</h3>
-                            <div className="leaderboard-inner-table-wrapper">
-                                <table className="profile-games-table w-100">
-                                    <tbody>
-                                        <tr>
-                                            <th>Player ID</th>
-                                            <td colSpan={3}>{performance?.playerId}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Cum Margin</th>
-                                            <td>{performance?.cumMargin}</td>
-                                            <th>Total Games</th>
-                                            <td>{performance?.totalGamesPlayed}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Avg Margin</th>
-                                            <td>{performance?.avgMargin}</td>
-                                            <th>Total Wins</th>
-                                            <td>{performance?.totalWins}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="d-flex justify-content-center mt-3 gap-3">
-                                {miniTournamentRank !== null && (
-                                    <div className="d-flex flex-column align-items-center gap-2">
-                                        <span className={`badge fs-6 ${
-                                            miniTournamentRank === 1 ? "badge-rank-1" :
-                                            miniTournamentRank === 2 ? "badge-rank-2" :
-                                            miniTournamentRank === 3 ? "badge-rank-3" :
-                                            "badge-rank-default"
-                                        }`}>
-                                            Rank #{miniTournamentRank}
-                                        </span>
-                                        <span style={{
-                                            fontSize: "0.65rem",
-                                            letterSpacing: "1px",
-                                            color: "#bfd0e180",
-                                            textTransform: "uppercase"
-                                        }}>
-                                            Mini Tournament
-                                        </span>
-                                    </div>
-                                )}
+                            <div className="profile-scroll-area" style={{ flex: 1 }}>
+                                <div className="leaderboard-inner-table-wrapper">
+                                    <table className="profile-games-table w-100">
+                                        <tbody>
+                                            <tr>
+                                                <th>Player ID</th>
+                                                <td colSpan={3}>{performance?.playerId}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Cum Margin</th>
+                                                <td>{performance?.cumMargin}</td>
+                                                <th>Total Games</th>
+                                                <td>{performance?.totalGamesPlayed}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Avg Margin</th>
+                                                <td>{performance?.avgMargin}</td>
+                                                <th>Total Wins</th>
+                                                <td>{performance?.totalWins}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="d-flex justify-content-center mt-3 gap-3">
+                                    {miniTournamentRank !== null && (
+                                        <div className="d-flex flex-column align-items-center gap-2">
+                                            <span className={`badge fs-6 ${
+                                                miniTournamentRank === 1 ? "badge-rank-1" :
+                                                miniTournamentRank === 2 ? "badge-rank-2" :
+                                                miniTournamentRank === 3 ? "badge-rank-3" :
+                                                "badge-rank-default"
+                                            }`}>
+                                                Rank #{miniTournamentRank}
+                                            </span>
+                                            <span style={{
+                                                fontSize: "0.65rem",
+                                                letterSpacing: "1px",
+                                                color: "#bfd0e180",
+                                                textTransform: "uppercase"
+                                            }}>
+                                                Mini Tournament
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
