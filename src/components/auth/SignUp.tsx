@@ -85,7 +85,7 @@ export const SignUp=()=>{
     
     return (
         <>
-        <div className="auth-container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div className="auth-container d-flex flex-column justify-content-center align-items-center">
             <div className="auth-border-signup">
                 <div className=" d-flex flex-column align-items-center mb-3">
                     <h1 className="h-hero-title-auth">SCRABBLIX</h1>
@@ -153,7 +153,7 @@ export const SignUp=()=>{
                      </div>
                     
                     <div className="d-flex justify-content-center mt-2">
-                        <Button  className="h-btn-outline"  type="submit">Register</Button>
+                        <button className="h-btn-outline" type="submit">REGISTER</button>
                     </div>
                 </Form>
             </div>

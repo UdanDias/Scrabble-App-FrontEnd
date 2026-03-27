@@ -430,6 +430,12 @@ code {
 .auth-container {
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;  /* breathing room top/bottom, and sides on mobile */
 }
 
 .auth-container::before {
@@ -469,8 +475,14 @@ code {
   line-height: 1;
   color: #e0d318;
   text-shadow: 0 0 50px rgba(224, 211, 24, 0.45), 0 0 120px rgba(224, 211, 24, 0.12);
-  letter-spacing: 8px;
+  letter-spacing: 4px;
   animation: hFadeUp 0.9s ease 0.08s both;
+  margin-bottom: 24px;
+  width: 400px;           /* same width as the card */
+  max-width: 95vw;        /* same max as card on mobile */
+  box-sizing: border-box;
+  text-align: center;     /* ← centered, not left */
+  padding: 0;             /* ← no extra padding, card width handles alignment */
 }
 
 /* ── Login ── */
@@ -483,6 +495,7 @@ code {
   padding: 40px;
   border-radius: 16px;
   border: 1px solid rgba(224, 211, 24, 0.15);
+  margin: 0; 
   box-shadow: 0 4px 300px rgba(97, 71, 6, 0.8);
 }
 
@@ -491,8 +504,13 @@ code {
     width: 95vw !important;
     padding: 24px 16px !important;
   }
+    .h-hero-title-auth {
+    font-size: 2rem !important;
+    letter-spacing: 4px !important;
+    padding: 0 16px !important;   /* matches reduced form padding */
+    margin-bottom: 20px !important;
+  }
 }
-
 .auth-border-login .auth-font {
   color: #e0d318a2;
   text-shadow: 0 0 15px rgba(224, 211, 24, 0.638);
@@ -534,6 +552,7 @@ code {
   border-radius: 16px;
   border: 1px solid rgba(224, 211, 24, 0.15);
   box-shadow: 0 4px 120px rgba(97, 71, 6, 0.8);
+  margin: 40px auto;
 }
 
 @media (max-width: 991.98px) {
