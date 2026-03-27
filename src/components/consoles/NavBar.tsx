@@ -50,40 +50,46 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
     };
 
     return (
-        <Navbar className="custom-navbar" data-bs-theme="dark" expand="lg">
-            {/* Hamburger menu for mobile when sidebar is present */}
+    <Navbar className="custom-navbar" data-bs-theme="dark" expand={false}>
+        <div className="d-flex align-items-center w-100 px-2">
+
+            {/* Hamburger for sidebar — mobile only, auth pages hidden */}
             {!isAuthPage && (
-                <Button 
-                    variant="outline-light" 
-                    className="d-lg-none me-2" 
+                <Button
+                    variant="outline-light"
+                    className="d-lg-none me-2 flex-shrink-0"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
                     aria-label="Toggle sidebar"
+                    style={{ padding: '4px 8px' }}
                 >
                     <span className="navbar-toggler-icon"></span>
                 </Button>
             )}
-            {/* Brand always on the left */}
-            <Navbar.Brand href="#" className="fw-bold fs-4 px-2">SCRABBLIX</Navbar.Brand>
 
+            {/* Brand */}
+            <Navbar.Brand href="#" className="fw-bold flex-shrink-0">
+                SCRABBLIX
+            </Navbar.Brand>
+
+            {/* Nav links — always horizontal, pushed right */}
             {!isAuthenticated ? (
-                // No token: links sit right next to the brand on the left
-                <Nav>
-                    {/* <Nav.Link as={NavLink} to="/unauthhome">Home</Nav.Link> */}
+                <Nav className="ms-auto d-flex flex-row align-items-center flex-nowrap gap-2">
                     <Nav.Link as={NavLink} to="/home">Home</Nav.Link>
                     <Nav.Link as={NavLink} to="/signin">Login</Nav.Link>
                     <Nav.Link as={NavLink} to="/signup">Register</Nav.Link>
-                    
                 </Nav>
             ) : (
-                // Has token: links pushed to the far right with ms-auto
-                <Nav className="ms-auto">
-                    <Nav.Link as={NavLink} className="me-3" to="/homeafter">HOME</Nav.Link>
-                    <Nav.Link as={NavLink} className="me-3" to="/signup">REGISTER</Nav.Link>
-                    <Button variant="warning" className="me-3" onClick={handleOnClick}>LOG OUT</Button>
+                <Nav className="ms-auto d-flex flex-row align-items-center flex-nowrap gap-2">
+                    <Nav.Link as={NavLink} to="/homeafter">HOME</Nav.Link>
+                    <Nav.Link as={NavLink} to="/signup">REGISTER</Nav.Link>
+                    <Button variant="warning" className="ms-2" onClick={handleOnClick}>
+                        LOG OUT
+                    </Button>
                 </Nav>
             )}
-        </Navbar>
-    );
+        </div>
+    </Navbar>
+);
 }
 
 export default NavBar;
