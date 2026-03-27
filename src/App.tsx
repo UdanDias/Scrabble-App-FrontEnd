@@ -21,6 +21,7 @@ import { HomeAfter } from './components/consoles/HomeAfter';
 import Footer from './components/consoles/Footer';
 import { PairingsConsole } from './components/consoles/PairingConsole';
 import { TeamsConsole } from './components/consoles/TeamConsole';
+import { AnimatedBackground } from './components/utils/AnimatedBackground';
 
 function AppLayout() {
   const { role, loading } = useAuth();
@@ -159,6 +160,7 @@ function AppLayout() {
 const App: React.FC = () => {
   return (
     <Router>
+     
       <AuthProvider>
         <AppLayout />
       </AuthProvider>
