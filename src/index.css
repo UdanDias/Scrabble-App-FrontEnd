@@ -1296,11 +1296,29 @@ code {
   width: 30%;
 }
 
+.profile-bottom-section {
+  display: flex;
+  flex-direction: column;
+}
+
 .profile-bottom-card {
   min-height: 200px;
   max-height: 500px;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .profile-bottom-section {
+    flex-direction: row;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .profile-bottom-section .profile-bottom-card {
+    flex: 1;
+    margin-bottom: 0;
+  }
 }
 
 .profile-scroll-area {

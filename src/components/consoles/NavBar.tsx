@@ -21,12 +21,12 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
     const [showRequestsModal, setShowRequestsModal] = useState(false);
 
     const fetchPending = async () => {
-        if (!isAdmin) return;
-        try {
-            const data = await getPendingAdminRequests();
-            setPendingRequests(data);
-        } catch { /* silently fail */ }
-    };
+    if (!isAdmin) return;
+    try {
+        const data = await getPendingAdminRequests();
+        setPendingRequests(Array.isArray(data) ? data : []);  // ← guard here
+    } catch { /* silently fail */ }
+};
 
     useEffect(() => {
         fetchPending();

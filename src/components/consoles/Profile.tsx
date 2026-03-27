@@ -13,7 +13,7 @@ import GetTournaments from "../service/tournament/GetTournaments";
 import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoardByTournament";
 import { useAuth } from "../auth/AuthProvider";
 import { getAdminRequestStatus, requestAdminAccess } from "../service/adminRequest/AdminRequestService";
-import { getUserIdFromToken } from "../service/auth/GetUserId";
+import { getUserEmailFromToken } from "../service/auth/GetEmail";
 
 interface Player {
     playerId: string;
@@ -79,9 +79,9 @@ export function Profile() {
                 SetPerformance(selectedPerformance);
                 SetGames(playerGames);
 
-                const userId = getUserIdFromToken();
-                if (userId) {
-                    const status = await getAdminRequestStatus(userId);
+                const email = getUserEmailFromToken();
+                if (email) {
+                    const status = await getAdminRequestStatus(email);
                     setAdminRequestStatus(status);
                 }
                 // ── Mini Tournament rank ──
@@ -110,16 +110,32 @@ export function Profile() {
         }
     };
     const handleRequestAdmin = async () => {
-    const userId = getUserIdFromToken();
-        if (!userId) return;
+        const email = getUserEmailFromToken();
+        
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        if (!email) {
+            Toast.fire({ icon: "warning", title: "User email not found. Please log in again." });
+            return;
+        }
+
         try {
-            await requestAdminAccess(userId);
+            await requestAdminAccess(email);
             setAdminRequestStatus("PENDING");
-            Swal.fire({ icon: "success", title: "Admin request submitted!", toast: true,
-                position: "top-end", showConfirmButton: false, timer: 3000 });
-        } catch {
-            Swal.fire({ icon: "error", title: "Failed to submit request", toast: true,
-                position: "top-end", showConfirmButton: false, timer: 3000 });
+            Toast.fire({ icon: "success", title: "Admin request submitted successfully!" });
+        } catch (error) {
+            console.error("Admin request error:", error);
+            Toast.fire({ icon: "error", title: "Failed to submit admin request" });
         }
     };
 

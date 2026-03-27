@@ -100,16 +100,7 @@ export const SignUp=()=>{
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Enter Password" name="password" value={user.password} onChange={handleOnChange}/>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="university">
-                                <Form.Label>University</Form.Label>
-                                <Form.Control type="text" placeholder="Enter University"
-                                    name="university" value={user.university} onChange={handleOnChange}/>
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="studentNo">
-                                <Form.Label>Student No</Form.Label>
-                                <Form.Control type="text" placeholder="Enter Student No"
-                                    name="studentNo" value={user.studentNo} onChange={handleOnChange}/>
-                            </Form.Group>
+                            
                            
                             <Form.Group className="mb-3" controlId="gender">
                                 <Form.Label>Gender</Form.Label>
@@ -131,9 +122,20 @@ export const SignUp=()=>{
                                 <Form.Label>Address</Form.Label>
                                 <Form.Control type="text" placeholder="Enter Address" name="address" value={user.address} onChange={handleOnChange}/>
                             </Form.Group>
+                            <Form.Group className="mb-3" controlId="university">
+                                <Form.Label>University</Form.Label>
+                                <Form.Control type="text" placeholder="Enter University"
+                                    name="university" value={user.university} onChange={handleOnChange}/>
+                            </Form.Group>
+                            
                             <Form.Group className="mb-3" controlId="faculty">
                                 <Form.Label>Faculty</Form.Label>
                                 <Form.Control type="text" placeholder="Enter Faculty" name="faculty" value={user.faculty} onChange={handleOnChange}/>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="studentNo">
+                                <Form.Label>Student No</Form.Label>
+                                <Form.Control type="text" placeholder="Enter Student No"
+                                    name="studentNo" value={user.studentNo} onChange={handleOnChange}/>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="academicLevel">
                                 <Form.Label>Academic Level</Form.Label>
