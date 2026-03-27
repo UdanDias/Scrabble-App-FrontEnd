@@ -382,7 +382,7 @@ export function LeaderBoard() {
                                 <Table className="leaderboard-header-table" bordered>
                                     <thead>
                                         <tr>
-                                            <th style={{ width: "55px", fontSize: "18px" }}>#Rank</th>
+                                            <th className="lb-rank-col" style={{ fontSize: "18px" }}>#Rank</th>
                                             <th style={{ textAlign: "center", fontSize: "18px" }}>Player</th>
                                             {isMinitournament && (
                                                 <>
@@ -408,7 +408,7 @@ export function LeaderBoard() {
                                             <Accordion.Item eventKey={String(index)} key={player.playerId}>
                                                 <Accordion.Header>
                                                     <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
-                                                        <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
+                                                        <div className="rank-divider lb-rank-col" style={{ flexShrink: 0, fontSize: "0.85rem" }}>
                                                             #{player.playerRank}
                                                         </div>
                                                         <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -486,9 +486,9 @@ export function LeaderBoard() {
                                 <Table className="leaderboard-header-table" bordered>
                                     <thead>
                                         <tr>
-                                            <th style={{ width: "55px", fontSize: "20px" }}>#Rank</th>
-                                            <th style={{ textAlign: "center", fontSize: "20px", paddingRight: "80px" }}>Team</th>
-                                            <th style={{ width: "55px", padding: 0, border: "none", background: "transparent" }} />
+                                            <th className="lb-rank-col" style={{ fontSize: "20px" }}>#Rank</th>
+                                            <th style={{ textAlign: "center", fontSize: "20px" }}>Team</th>
+                                            <th className="lb-rank-col" style={{ padding: 0, border: "none", background: "transparent" }} />
                                         </tr>
                                     </thead>
                                 </Table>
@@ -498,7 +498,7 @@ export function LeaderBoard() {
                                         <Accordion.Item eventKey={String(index)} key={team.teamId}>
                                             <Accordion.Header>
                                                 <div style={{ display: "flex", alignItems: "center", width: "100%", paddingRight: "8px" }}>
-                                                    <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
+                                                    <div className="rank-divider lb-rank-col" style={{ flexShrink: 0, fontSize: "0.85rem" }}>
                                                         #{team.teamRank}
                                                     </div>
                                                     <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

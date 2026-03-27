@@ -2139,7 +2139,15 @@ select:focus,
   flex-shrink: 0;
 }
 
+.lb-rank-col {
+  width: 55px;
+}
+
 @media (max-width: 991px) {
+  .lb-rank-col {
+    width: 42px;
+  }
+  
   .lb-top-bar {
     flex-wrap: wrap;
     flex-direction: row; /* Keep it row so we can use order */
