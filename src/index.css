@@ -2115,17 +2115,55 @@ select:focus,
    ===================================================================== */
 .lb-top-bar {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 20px;
 }
 
-.lb-top-row {
+.lb-type-selector {
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.lb-tournament-selector {
+  flex: 1;
+  min-width: 250px;
+}
+
+.lb-action-buttons {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 991px) {
+  .lb-top-bar {
+    flex-wrap: wrap;
+    flex-direction: row; /* Keep it row so we can use order */
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .lb-type-selector {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .lb-action-buttons {
+    order: 2;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+  }
+
+  .lb-tournament-selector {
+    order: 3;
+    width: 100%;
+    flex: 0 0 100%;
+    margin-top: 4px;
+  }
 }
 
 /* =====================================================================
@@ -2163,11 +2201,6 @@ select:focus,
 
   .pairings-stat-strip {
     justify-content: space-around;
-  }
-
-  .lb-top-row {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   /* Card layout for table rows on very small screens */

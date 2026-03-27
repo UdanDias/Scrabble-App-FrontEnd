@@ -302,48 +302,20 @@ export function LeaderBoard() {
 
                 {/* ── Top bar ── */}
                 <div className="lb-top-bar">
-                    {/* Row 1: type selector + action buttons */}
-                    <div className="lb-top-row">
-                        <div style={{ minWidth: "140px", flex: "0 0 auto" }}>
-                            <Select
-                                options={tournamentTypeOptions}
-                                styles={typeSelectStyles}
-                                value={tournamentTypeOptions.find(o => o.value === tournamentType)}
-                                onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")}
-                                menuPortalTarget={document.body}
-                                menuPosition="fixed"
-                            />
-                        </div>
-                        {hasData && !isLoading && (
-                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                                <button
-                                    onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
-                                    style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
-                                    onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(82,147,238,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(82,147,238,0.3)"; }}
-                                    onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
-                                        <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15" />
-                                    </svg>
-                                    Refresh
-                                </button>
-                                <button
-                                    onClick={handleDownloadPDF}
-                                    style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
-                                    onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(224,211,24,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
-                                    onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-                                    </svg>
-                                    Download PDF
-                                </button>
-                            </div>
-                        )}
+                    {/* Component 1: Type selector (Individual/Team) */}
+                    <div className="lb-type-selector">
+                        <Select
+                            options={tournamentTypeOptions}
+                            styles={typeSelectStyles}
+                            value={tournamentTypeOptions.find(o => o.value === tournamentType)}
+                            onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")}
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                        />
                     </div>
-                    {/* Row 2: tournament selector (full width) */}
-                    <div style={{ width: "100%" }}>
+
+                    {/* Component 2: Tournament selector (Middle) */}
+                    <div className="lb-tournament-selector">
                         <Select
                             options={tournamentOptions}
                             styles={selectStyles}
@@ -359,6 +331,35 @@ export function LeaderBoard() {
                             isOptionDisabled={(option) => option.isDisabled === true}
                         />
                     </div>
+
+                    {/* Component 3: Action buttons (Right) */}
+                    {hasData && !isLoading && (
+                        <div className="lb-action-buttons">
+                            <button
+                                onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
+                                style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                                onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(82,147,238,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(82,147,238,0.3)"; }}
+                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
+                                    <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15" />
+                                </svg>
+                                Refresh
+                            </button>
+                            <button
+                                onClick={handleDownloadPDF}
+                                style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                                onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(224,211,24,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
+                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download PDF
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* ── No tournament selected ── */}
