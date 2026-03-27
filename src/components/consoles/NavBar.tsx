@@ -108,10 +108,6 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
                         </Nav>
                     ) : (
                         <Nav className="ms-auto d-flex flex-row align-items-center flex-nowrap gap-2">
-                            <Nav.Link as={NavLink} to="/homeafter">HOME</Nav.Link>
-                            <Nav.Link as={NavLink} to="/signup">REGISTER</Nav.Link>
-
-                            {/* ── Bell icon (admin only) ── */}
                             {isAdmin && (
                                 <button
                                     className="nav-bell-btn"
@@ -126,6 +122,11 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
                                     )}
                                 </button>
                             )}
+                            <Nav.Link as={NavLink} to="/homeafter">HOME</Nav.Link>
+                            <Nav.Link as={NavLink} to="/signup">REGISTER</Nav.Link>
+
+                            {/* ── Bell icon (admin only) ── */}
+                            
 
                             <Button variant="warning" className="ms-2" onClick={handleOnClick}>
                                 LOG OUT
