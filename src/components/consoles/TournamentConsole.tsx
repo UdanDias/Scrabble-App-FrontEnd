@@ -41,7 +41,7 @@ const getStatusBadge = (status: string) => {
 }
 
 export function TournamentConsole() {
-    const { role } = useAuth()
+    const { role, loading } = useAuth()
     const isAdmin = role === "ROLE_ADMIN"
 
     const [tournamentData, setTournamentData]           = useState<Tournament[]>([])
@@ -423,7 +423,9 @@ export function TournamentConsole() {
                                         <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
                                         <td data-label="Action">
                                             <div className="d-flex justify-content-end" style={{ paddingRight: "42px" }}>
-                                                {isAdmin ? (
+                                                {loading ? (
+                                                    <span style={{ color: "#e0d318", fontSize: "0.8rem", opacity: 0.6 }}>Checking...</span>
+                                                ) : isAdmin ? (
                                                     <Button 
                                                         className="btn-actions-outlined" 
                                                         variant="outline-warning" 
