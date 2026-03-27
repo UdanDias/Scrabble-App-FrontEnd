@@ -11,6 +11,9 @@ import { OverlaySpinner } from "../utils/OverlaySpinner"; // Added this
 import Swal from "sweetalert2";
 import GetTournaments from "../service/tournament/GetTournaments";
 import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoardByTournament";
+import { useAuth } from "../auth/AuthProvider";
+import { getAdminRequestStatus, requestAdminAccess } from "../service/adminRequest/AdminRequestService";
+import { getUserIdFromToken } from "../service/auth/GetUserId";
 
 interface Player {
     playerId: string;
@@ -61,6 +64,8 @@ export function Profile() {
     const [miniTournamentRank, setMiniTournamentRank] = useState<number | null>(null);
     const [isInitialLoading, setIsInitialLoading] = useState(true); // Added loading state
     const MINI_TOURNAMENT_NAME = "Mini Tournament Uok";
+    const { role } = useAuth();
+    const [adminRequestStatus, setAdminRequestStatus] = useState<string>("NONE");
 
     const fetchData = async () => {
         const startTime = Date.now(); // Start timer for the "S" spinner
@@ -74,6 +79,11 @@ export function Profile() {
                 SetPerformance(selectedPerformance);
                 SetGames(playerGames);
 
+                const userId = getUserIdFromToken();
+                if (userId) {
+                    const status = await getAdminRequestStatus(userId);
+                    setAdminRequestStatus(status);
+                }
                 // ── Mini Tournament rank ──
                 const tournaments = await GetTournaments();
                 const mini = tournaments.find(
@@ -97,6 +107,19 @@ export function Profile() {
                     setIsInitialLoading(false);
                 }
             }
+        }
+    };
+    const handleRequestAdmin = async () => {
+    const userId = getUserIdFromToken();
+        if (!userId) return;
+        try {
+            await requestAdminAccess(userId);
+            setAdminRequestStatus("PENDING");
+            Swal.fire({ icon: "success", title: "Admin request submitted!", toast: true,
+                position: "top-end", showConfirmButton: false, timer: 3000 });
+        } catch {
+            Swal.fire({ icon: "error", title: "Failed to submit request", toast: true,
+                position: "top-end", showConfirmButton: false, timer: 3000 });
         }
     };
 
@@ -175,7 +198,25 @@ export function Profile() {
                     <div className="profile-card mb-4">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                             <h3 className="profile-card-title mb-0">Personal Details</h3>
-                            <Button className="btn-edit" onClick={handleEditOpen}>Edit Profile</Button>
+                            <div className="d-flex gap-2 align-items-center">
+                                <Button className="btn-edit" onClick={handleEditOpen}>Edit Profile</Button>
+
+                                {role !== "ROLE_ADMIN" && (
+                                    <Button
+                                        className="btn-edit"
+                                        onClick={handleRequestAdmin}
+                                        disabled={adminRequestStatus === "PENDING" || adminRequestStatus === "APPROVED"}
+                                        style={{
+                                            opacity: adminRequestStatus === "PENDING" || adminRequestStatus === "APPROVED" ? 0.6 : 1
+                                        }}
+                                    >
+                                        {adminRequestStatus === "PENDING"  ? "⏳ Request Pending"  :
+                                        adminRequestStatus === "APPROVED" ? "✓ Admin Granted"    :
+                                        adminRequestStatus === "REJECTED" ? "↩ Re-request Admin" :
+                                        "Request Admin Access"}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                         <div className="leaderboard-inner-table-wrapper">
                             <table className="profile-games-table w-100">

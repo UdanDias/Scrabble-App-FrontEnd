@@ -10,8 +10,8 @@ interface SignUp {
     lastName: string;
     email: string;
     password: string;
-    role: string;
-    age: number;
+    university: string;  
+    studentNo: string;   
     gender: string;
     dob: string;
     phone: string;
@@ -21,19 +21,10 @@ interface SignUp {
 }
 export const SignUp=()=>{
     const [user, SetUser] = useState<SignUp>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    role: "",
-    age: 0,
-    gender: "",
-    dob: "",
-    phone: "",
-    address: "",
-    faculty: "",
-    academicLevel: ""
-})
+    firstName: "", lastName: "", email: "", password: "",
+    university: "", studentNo: "",
+    gender: "", dob: "", phone: "", address: "", faculty: "", academicLevel: ""
+});
     const handleOnChange=(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement|HTMLTextAreaElement>)=>{
         SetUser((prev)=>({...prev,[e.target.name]:e.target.value}))
 
@@ -46,8 +37,8 @@ export const SignUp=()=>{
             const token = await SignUpTask(user);
             SetUser({
                 firstName: "", lastName: "", email: "", password: "",
-                role: "", age: 0, gender: "", dob: "", phone: "",
-                address: "", faculty: "", academicLevel: ""
+                university: "", studentNo: "",
+                gender: "", dob: "", phone: "", address: "", faculty: "", academicLevel: ""
             });
             login(token);
 
@@ -109,18 +100,17 @@ export const SignUp=()=>{
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Enter Password" name="password" value={user.password} onChange={handleOnChange}/>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="role">
-                                <Form.Label>Role</Form.Label>
-                                <Form.Select name="role" value={user.role} onChange={handleOnChange}>
-                                    <option value="" disabled>Select a Role</option>
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="USER">USER</option>
-                                </Form.Select>
+                            <Form.Group className="mb-3" controlId="university">
+                                <Form.Label>University</Form.Label>
+                                <Form.Control type="text" placeholder="Enter University"
+                                    name="university" value={user.university} onChange={handleOnChange}/>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="age">
-                                <Form.Label>Age</Form.Label>
-                                <Form.Control type="number" placeholder="Enter Age" name="age" value={user.age} onChange={handleOnChange}/>
+                            <Form.Group className="mb-3" controlId="studentNo">
+                                <Form.Label>Student No</Form.Label>
+                                <Form.Control type="text" placeholder="Enter Student No"
+                                    name="studentNo" value={user.studentNo} onChange={handleOnChange}/>
                             </Form.Group>
+                           
                             <Form.Group className="mb-3" controlId="gender">
                                 <Form.Label>Gender</Form.Label>
                                 <Form.Select name="gender" value={user.gender} onChange={handleOnChange}>

@@ -62,15 +62,17 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                             <span className="sidebar-label">PROFILE</span>
                         </Nav.Link>
 
-                        <Nav.Link as={NavLink} to="/player" className="sidebar-item" onClick={handleNavClick}>
-                            <span className="sidebar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <rect x="2" y="6" width="20" height="12" rx="3"/>
-                                    <path d="M8 12h2m-1-1v2M14 11h.01M16 13h.01"/>
-                                </svg>
-                            </span>
-                            <span className="sidebar-label">PLAYER</span>
-                        </Nav.Link>
+                        {isAdmin && (
+                            <Nav.Link as={NavLink} to="/player" className="sidebar-item" onClick={handleNavClick}>
+                                <span className="sidebar-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="2" y="6" width="20" height="12" rx="3"/>
+                                        <path d="M8 12h2m-1-1v2M14 11h.01M16 13h.01"/>
+                                    </svg>
+                                </span>
+                                <span className="sidebar-label">PLAYER</span>
+                            </Nav.Link>
+                        )}
 
                         <Nav.Link as={NavLink} to="/tournament" className="sidebar-item" onClick={handleNavClick}>
                             <span className="sidebar-icon">

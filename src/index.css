@@ -2247,3 +2247,35 @@ select:focus,
     overflow: hidden;
   }
 }
+/* Bell button */
+.nav-bell-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bfd0e1;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+.nav-bell-btn:hover { color: #f0c040; }
+
+/* Badge count */
+.nav-bell-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+}
