@@ -388,10 +388,10 @@ export const PairingsConsole: React.FC = () => {
     const hasData = activePairings.length > 0;
 
     return (
-        <div className="console-page" style={{ padding: "30px 20px" }}>
+        <div className="console-page" style={{ padding: "20px 12px" }}>
             {/* Header */}
-            <div style={{ textAlign: "center", marginBottom: "32px" }}>
-                <h2 style={{ fontFamily: "'Cinzel Decorative', cursive", color: "#e0d318", letterSpacing: "6px", fontSize: "1.8rem", textShadow: "0 0 30px rgba(224,211,24,.4)", marginBottom: "6px" }}>
+            <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <h2 style={{ fontFamily: "'Cinzel Decorative', cursive", color: "#e0d318", letterSpacing: "4px", fontSize: "clamp(1.2rem, 4vw, 1.8rem)", textShadow: "0 0 30px rgba(224,211,24,.4)", marginBottom: "6px" }}>
                     PAIRINGS
                 </h2>
                 <p style={{ color: "#bfd0e1a0", fontSize: "0.85rem", letterSpacing: "1px" }}>
@@ -400,7 +400,7 @@ export const PairingsConsole: React.FC = () => {
             </div>
 
             {/* Selectors row */}
-            <div style={{ display: "flex", justifyContent: "center", gap: "16px", marginBottom: "36px", flexWrap: "wrap" }}>
+            <div className="pairings-selectors">
                 {/* Tournament type */}
                 <Select
                     options={tournamentTypeOptions}
@@ -417,7 +417,7 @@ export const PairingsConsole: React.FC = () => {
                     options={tournamentOptions}
                     value={selectedTournament}
                     onChange={opt => setSelectedTournament(opt)}
-                    styles={{ ...customStyles, control: (b: any, s: any) => ({ ...customStyles.control(b, s), minWidth: "320px" }) }}
+                    styles={{ ...customStyles, control: (b: any, s: any) => ({ ...customStyles.control(b, s), minWidth: "200px" }) }}
                     placeholder={tournamentsLoading ? "Loading..." : "Select a Tournament"}
                     isLoading={tournamentsLoading}
                     menuPortalTarget={document.body}
@@ -439,6 +439,7 @@ export const PairingsConsole: React.FC = () => {
                             display: "flex",
                             alignItems: "center",
                             gap: "6px",
+                            whiteSpace: "nowrap",
                         }}
                         onMouseEnter={e => {
                             const btn = e.currentTarget;
@@ -461,7 +462,6 @@ export const PairingsConsole: React.FC = () => {
                         Download PDF
                     </button>
                 )}
-                
             </div>
 
             {/* Error */}
@@ -490,15 +490,11 @@ export const PairingsConsole: React.FC = () => {
 
             {/* ── INDIVIDUAL Pairings table ── */}
             {!loading && selectedTournament && tournamentType === "individual" && pairings.length > 0 && (
-                <div className="console-table-container" style={{ width: "90%", margin: "0 auto" }}>
+                <div className="console-table-container">
                     {/* Stats strip */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                        <div style={{ display: "flex", gap: "16px" }}>
-                            <StatCard label="BOARDS" value={boards} />
-                        </div>
-                        <div style={{ flex: 1, display: "flex", justifyContent: "center", marginLeft: "-125px" }}>
-                            <StatCard label="BYE" value={byePairing ? byePairing.player1Name! : "None"} />
-                        </div>
+                    <div className="pairings-stat-strip">
+                        <StatCard label="BOARDS" value={boards} />
+                        <StatCard label="BYE" value={byePairing ? byePairing.player1Name! : "None"} />
                     </div>
 
                     <div className="console-table-wrapper">
@@ -560,14 +556,10 @@ export const PairingsConsole: React.FC = () => {
 
             {/* ── TEAM Pairings table ── */}
             {!loading && selectedTournament && tournamentType === "team" && teamPairings.length > 0 && (
-                <div className="console-table-container" style={{ width: "90%", margin: "0 auto" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                        <div style={{ display: "flex", gap: "16px" }}>
-                            <StatCard label="BOARDS" value={teamBoards} />
-                        </div>
-                        <div style={{ flex: 1, display: "flex", justifyContent: "center", marginLeft: "-125px" }}>
-                            <StatCard label="BYE" value={teamByePairing ? teamByePairing.team1Name : "None"} />
-                        </div>
+                <div className="console-table-container">
+                    <div className="pairings-stat-strip">
+                        <StatCard label="BOARDS" value={teamBoards} />
+                        <StatCard label="BYE" value={teamByePairing ? teamByePairing.team1Name : "None"} />
                     </div>
 
                     <div className="console-table-wrapper">

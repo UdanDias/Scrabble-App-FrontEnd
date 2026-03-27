@@ -145,15 +145,16 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                             </span>
                             <span className="sidebar-label">PAIRINGS</span>
                         </Nav.Link>
-
-                        <div className="sidebar-footer">
-                            <button className="sidebar-logout-btn" onClick={handleLogout}>
-                                <span>LOG OUT</span>
-                            </button>
-                        </div>
                     </>
                 )}
             </Nav>
+            {isAuthenticated && (
+                <div className="sidebar-footer">
+                    <button className="sidebar-logout-btn" onClick={handleLogout}>
+                        <span>LOG OUT</span>
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

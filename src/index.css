@@ -256,19 +256,18 @@ code {
   border-top: 1px solid rgba(224, 211, 24, 0.15);
   padding: 12px 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
   margin-bottom: 12px;
-  flex-shrink: 0; /* never squish or hide the logout button */
 }
 
 .sidebar-logout-btn {
-  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 18px;
-  padding: 12px 20px;
+  padding: 10px 28px;
   background-color: transparent;
   border: 1px solid #e0d318d4 !important;
   color: #e0d318d4 !important;
@@ -2109,4 +2108,101 @@ select:focus,
 @keyframes hFadeUp {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================
+   LEADERBOARD — responsive top bar
+   ===================================================================== */
+.lb-top-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.lb-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =====================================================================
+   PAIRINGS — responsive selectors + stat strip
+   ===================================================================== */
+.pairings-selectors {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.pairings-stat-strip {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Mobile overrides for pairings + leaderboard */
+@media (max-width: 575.98px) {
+  .pairings-selectors {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pairings-selectors > * {
+    width: 100%;
+  }
+
+  .pairings-stat-strip {
+    justify-content: space-around;
+  }
+
+  .lb-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Card layout for table rows on very small screens */
+  .console-table thead {
+    display: none;
+  }
+
+  .console-table tbody td {
+    display: block;
+    text-align: right !important;
+    position: relative;
+    padding-left: 50% !important;
+    white-space: normal !important;
+  }
+
+  .console-table tbody td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 12px;
+    width: 45%;
+    text-align: left;
+    color: #e0d318a0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .console-table tbody tr {
+    display: block;
+    margin-bottom: 8px;
+    border: 1px solid rgba(224,211,24,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
 }

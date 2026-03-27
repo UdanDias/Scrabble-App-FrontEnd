@@ -301,45 +301,49 @@ export function LeaderBoard() {
             <div className="console-table-container">
 
                 {/* ── Top bar ── */}
-                <div style={{ position: "relative", display: "flex", alignItems: "center", marginBottom: "20px" }}>
-                    {hasData && !isLoading && (
-                        <div style={{ position: "absolute", right: 0, display: "flex", gap: "8px" }}>
-                            <button
-                                onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
-                                style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
-                                onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(82,147,238,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(82,147,238,0.3)"; }}
-                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
-                                    <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15" />
-                                </svg>
-                                Refresh
-                            </button>
-                            <button
-                                onClick={handleDownloadPDF}
-                                style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
-                                onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(224,211,24,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
-                                onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-                                </svg>
-                                Download PDF
-                            </button>
+                <div className="lb-top-bar">
+                    {/* Row 1: type selector + action buttons */}
+                    <div className="lb-top-row">
+                        <div style={{ minWidth: "140px", flex: "0 0 auto" }}>
+                            <Select
+                                options={tournamentTypeOptions}
+                                styles={typeSelectStyles}
+                                value={tournamentTypeOptions.find(o => o.value === tournamentType)}
+                                onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")}
+                                menuPortalTarget={document.body}
+                                menuPosition="fixed"
+                            />
                         </div>
-                    )}
-                    <div style={{ flex: "0 0 180px" }}>
-                        <Select
-                            options={tournamentTypeOptions}
-                            styles={typeSelectStyles}
-                            value={tournamentTypeOptions.find(o => o.value === tournamentType)}
-                            onChange={s => handleTypeChange((s?.value ?? "individual") as "individual" | "team")}
-                            menuPortalTarget={document.body}
-                            menuPosition="fixed"
-                        />
+                        {hasData && !isLoading && (
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                                <button
+                                    onClick={() => handlePopulateLeaderBoard(selectedTournamentId || undefined, tournamentType)}
+                                    style={{ background: "transparent", border: "1px solid rgba(82,147,238,0.5)", color: "rgba(82,147,238,0.8)", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                                    onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(82,147,238,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(82,147,238,0.3)"; }}
+                                    onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "rgba(82,147,238,0.8)"; b.style.boxShadow = "none"; }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
+                                        <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0 0 20.49 15" />
+                                    </svg>
+                                    Refresh
+                                </button>
+                                <button
+                                    onClick={handleDownloadPDF}
+                                    style={{ background: "transparent", border: "1px solid rgba(224,211,24,0.6)", color: "#e0d318d4", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", letterSpacing: "1px", cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "6px" }}
+                                    onMouseEnter={e => { const b = e.currentTarget; b.style.backgroundColor = "rgba(224,211,24,0.15)"; b.style.color = "#fff"; b.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
+                                    onMouseLeave={e => { const b = e.currentTarget; b.style.backgroundColor = "transparent"; b.style.color = "#e0d318d4"; b.style.boxShadow = "none"; }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e0d318d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>
+                                    Download PDF
+                                </button>
+                            </div>
+                        )}
                     </div>
-                    <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", width: "400px" }}>
+                    {/* Row 2: tournament selector (full width) */}
+                    <div style={{ width: "100%" }}>
                         <Select
                             options={tournamentOptions}
                             styles={selectStyles}
@@ -378,16 +382,12 @@ export function LeaderBoard() {
                                     <thead>
                                         <tr>
                                             <th style={{ width: "55px", fontSize: "18px" }}>#Rank</th>
-                                            {isMinitournament ? (
-                                                <th style={{ textAlign: "center", paddingLeft: "200px", fontSize: "18px" }}>Player</th>
-                                            ) : (
-                                                <th style={{ textAlign: "center", fontSize: "18px", paddingRight: "120px" }}>Player</th>
-                                            )}
+                                            <th style={{ textAlign: "center", fontSize: "18px" }}>Player</th>
                                             {isMinitournament && (
                                                 <>
-                                                    <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Old</th>
-                                                    <th style={{ width: "90px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>New</th>
-                                                    <th style={{ width: "80px", textAlign: "center", fontSize: "12px", color: "#e0d318a0", paddingRight: "45px" }}>Change</th>
+                                                    <th style={{ width: "70px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Old</th>
+                                                    <th style={{ width: "70px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>New</th>
+                                                    <th style={{ width: "70px", textAlign: "center", fontSize: "12px", color: "#e0d318a0" }}>Change</th>
                                                 </>
                                             )}
                                         </tr>
@@ -410,35 +410,26 @@ export function LeaderBoard() {
                                                         <div className="rank-divider" style={{ width: "55px", flexShrink: 0, fontSize: "0.85rem" }}>
                                                             #{player.playerRank}
                                                         </div>
-                                                        {isMinitournament ? (
-                                                            <div style={{ flex: 1, textAlign: "center", paddingLeft: "200px", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                                {player.username ?? `${player.firstName} ${player.lastName}`}
-                                                                {player.provisional && (
-                                                                    <span style={{ marginLeft: "8px", fontSize: "0.6rem", letterSpacing: "1px", color: "#5293ee", border: "1px solid rgba(82,147,238,0.3)", borderRadius: "4px", padding: "2px 6px", verticalAlign: "middle" }}>
-                                                                        PROVISIONAL
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        ) : (
-                                                            <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                                                {player.username ?? `${player.firstName} ${player.lastName}`}
-                                                            </div>
-                                                        )}
+                                                        <div style={{ flex: 1, textAlign: "center", fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                            {player.username ?? `${player.firstName} ${player.lastName}`}
+                                                            {player.provisional && (
+                                                                <span style={{ marginLeft: "6px", fontSize: "0.6rem", letterSpacing: "1px", color: "#5293ee", border: "1px solid rgba(82,147,238,0.3)", borderRadius: "4px", padding: "2px 5px", verticalAlign: "middle" }}>
+                                                                    PROV
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                         {isMinitournament && player.eloRating != null && (
                                                             <>
-                                                                <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: "#ffffff8c" }}>
+                                                                <div style={{ width: "60px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: "#ffffff8c" }}>
                                                                     {player.previousEloRating != null ? player.previousEloRating.toFixed(0) : "—"}
                                                                 </div>
-                                                                <div style={{ width: "90px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: player.provisional ? "#5293ee" : "#e0d318d4", fontWeight: "bold" }}>
+                                                                <div style={{ width: "60px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: player.provisional ? "#5293ee" : "#e0d318d4", fontWeight: "bold" }}>
                                                                     {player.eloRating.toFixed(0)}
                                                                 </div>
-                                                                <div style={{ width: "80px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: diffColor, fontWeight: "bold" }}>
+                                                                <div style={{ width: "60px", flexShrink: 0, textAlign: "center", fontSize: "0.75rem", color: diffColor, fontWeight: "bold" }}>
                                                                     {diff != null ? `${diffArrow} ${Math.abs(diff).toFixed(0)}` : "—"}
                                                                 </div>
                                                             </>
-                                                        )}
-                                                        {!isMinitournament && (
-                                                            <div style={{ width: "55px", flexShrink: 0 }} />
                                                         )}
                                                     </div>
                                                 </Accordion.Header>
