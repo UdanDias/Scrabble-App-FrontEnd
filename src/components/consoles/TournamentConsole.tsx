@@ -62,8 +62,7 @@ export function TournamentConsole() {
     const [pendingTournamentType, setPendingTournamentType] = useState<"individual" | "team">("individual")
     const [modalTournamentType, setModalTournamentType]     = useState<"individual" | "team">("individual")
 
-    // ✅ State for Dynamic Loading Messages
-    const [loadingMessage, setLoadingMessage] = useState<string | null>("Loading Tournaments...");
+    const [loadingMessage, setLoadingMessage] = useState<string | null>("Loading Tournaments...")
 
     const [selectModal, setSelectModal] = useState<{
         show: boolean
@@ -82,30 +81,28 @@ export function TournamentConsole() {
         onConfirm: () => {},
     })
 
-    // ✅ Updated loadData to support the Spinner
     const loadData = async (message: string | null = null) => {
-        const startTime = Date.now();
-        if (message) setLoadingMessage(message);
-        
+        const startTime = Date.now()
+        if (message) setLoadingMessage(message)
+
         try {
-            const data = await GetTournaments();
-            setTournamentData(data);
-            
-            // Ensure the spinner shows for at least 800ms for a smooth 3D flip
-            const duration = Date.now() - startTime;
+            const data = await GetTournaments()
+            setTournamentData(data)
+
+            const duration = Date.now() - startTime
             if (duration < 800) {
-                setTimeout(() => setLoadingMessage(null), 800 - duration);
+                setTimeout(() => setLoadingMessage(null), 800 - duration)
             } else {
-                setLoadingMessage(null);
+                setLoadingMessage(null)
             }
         } catch (error) {
-            console.error("Failed to load tournaments", error);
-            setLoadingMessage(null);
+            console.error("Failed to load tournaments", error)
+            setLoadingMessage(null)
         }
     }
 
     useEffect(() => {
-        loadData("Fetching Tournament Records...");
+        loadData("Fetching Tournament Records...")
     }, [])
 
     const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }))
@@ -160,24 +157,24 @@ export function TournamentConsole() {
                 confirmButtonText: "Yes, delete it!"
             })
             if (confirm.isConfirmed) {
-                setLoadingMessage("Deleting Tournament..."); // ✅ Spinner on
+                setLoadingMessage("Deleting Tournament...")
                 try {
                     await DeleteTournament(tournament.tournamentId)
-                    await loadData("Refreshing Dashboard..."); // ✅ Spinner updates
+                    await loadData("Refreshing Dashboard...")
                     Swal.fire("Deleted!", "Tournament has been deleted.", "success")
                 } catch {
-                    setLoadingMessage(null);
+                    setLoadingMessage(null)
                     Swal.fire("Error", "Failed to delete tournament.", "error")
                 }
             }
         } else if (result.isDenied) {
-            setLoadingMessage("Fetching Rounds..."); // ✅ Spinner on
+            setLoadingMessage("Fetching Rounds...")
             let rounds: Round[] = []
             try {
                 rounds = await GetRoundsByTournament(tournament.tournamentId)
-                setLoadingMessage(null);
+                setLoadingMessage(null)
             } catch {
-                setLoadingMessage(null);
+                setLoadingMessage(null)
                 Swal.fire("Error", "Failed to fetch rounds.", "error")
                 return
             }
@@ -216,13 +213,13 @@ export function TournamentConsole() {
                     confirmButtonText: "Yes, delete it!"
                 })
                 if (confirm.isConfirmed) {
-                    setLoadingMessage("Deleting Round..."); // ✅ Spinner on
+                    setLoadingMessage("Deleting Round...")
                     try {
                         await DeleteRound(roundId)
-                        setLoadingMessage(null);
+                        setLoadingMessage(null)
                         Swal.fire("Deleted!", `Round ${selectedRound?.roundNumber} has been deleted.`, "success")
                     } catch {
-                        setLoadingMessage(null);
+                        setLoadingMessage(null)
                         Swal.fire("Error", "Failed to delete round.", "error")
                     }
                 }
@@ -246,7 +243,7 @@ export function TournamentConsole() {
     }
 
     const handleAddRound = async (tournament: Tournament) => {
-        setLoadingMessage("Preparing Round Setup..."); // ✅ Spinner on
+        setLoadingMessage("Preparing Round Setup...")
         setSelectedTournamentId(tournament.tournamentId)
         setSelectedTournamentName(tournament.tournamentName)
         try {
@@ -255,7 +252,7 @@ export function TournamentConsole() {
         } catch {
             setNextRoundNumber(1)
         } finally {
-            setLoadingMessage(null);
+            setLoadingMessage(null)
             setShowAddRoundModal(true)
         }
     }
@@ -287,13 +284,13 @@ export function TournamentConsole() {
     }
 
     const showRoundSelector = async (tournament: Tournament) => {
-        setLoadingMessage("Fetching Rounds..."); // ✅ Spinner on
+        setLoadingMessage("Fetching Rounds...")
         let rounds: Round[] = []
         try {
             rounds = await GetRoundsByTournament(tournament.tournamentId)
-            setLoadingMessage(null);
+            setLoadingMessage(null)
         } catch {
-            setLoadingMessage(null);
+            setLoadingMessage(null)
             Swal.fire("Error", "Failed to fetch rounds.", "error")
             return
         }
@@ -329,8 +326,8 @@ export function TournamentConsole() {
     }
 
     const handleActionsClick = (row: Tournament) => {
-        const isTeam = row.tournamentType === "team";
-        const playersBtnLabel = isTeam ? "Add Teams" : "Add Players";
+        const isTeam = row.tournamentType === "team"
+        const playersBtnLabel = isTeam ? "Add Teams" : "Add Players"
 
         Swal.fire({
             title: "Choose Action",
@@ -357,34 +354,33 @@ export function TournamentConsole() {
             color: "#bfd0e1d1",
             cancelButtonColor: "#444",
             didOpen: () => {
-                const content = Swal.getHtmlContainer();
+                const content = Swal.getHtmlContainer()
                 if (content) {
                     content.querySelector("#swal-players")?.addEventListener("click", () => {
-                        Swal.close();
-                        handleAddPlayersClick(row);
-                    });
+                        Swal.close()
+                        handleAddPlayersClick(row)
+                    })
                     content.querySelector("#swal-add-round")?.addEventListener("click", () => {
-                        Swal.close();
-                        handleAddRound(row);
-                    });
+                        Swal.close()
+                        handleAddRound(row)
+                    })
                     content.querySelector("#swal-edit")?.addEventListener("click", () => {
-                        Swal.close();
-                        handleEdit(row);
-                    });
+                        Swal.close()
+                        handleEdit(row)
+                    })
                     content.querySelector("#swal-delete")?.addEventListener("click", () => {
-                        Swal.close();
-                        handleDelete(row);
-                    });
+                        Swal.close()
+                        handleDelete(row)
+                    })
                 }
             }
-        });
-    };
+        })
+    }
 
     const tHeads = ["Tournament ID", "Tournament Name", "Status", "Action"]
 
     return (
         <>
-            {/* ✅ Spinner triggers whenever loadingMessage is not null */}
             {loadingMessage && <OverlaySpinner message={loadingMessage} />}
 
             <div className="console-page">
@@ -407,46 +403,69 @@ export function TournamentConsole() {
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
                         <div className="table-responsive">
-                            <Table striped bordered hover className="console-table">
-                            <thead>
-                                <tr>
-                                    {tHeads.map(h => (
-                                        <th className="text-center" key={h}>{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tournamentData.map((row, index) => (
-                                    <tr key={(row.tournamentId || index) + (role || 'loading')}>
-                                        <td data-label="Tournament ID" className="text-center">{row.tournamentId}</td>
-                                        <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
-                                        <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
-                                        <td data-label="Action">
-                                            <div className="d-flex justify-content-end" style={{ paddingRight: "42px" }}>
-                                                {loading ? (
-                                                    <span style={{ color: "#e0d318", fontSize: "0.8rem", opacity: 0.6 }}>Checking...</span>
-                                                ) : isAdmin ? (
-                                                    <Button 
-                                                        className="btn-actions-outlined" 
-                                                        variant="outline-warning" 
-                                                        onClick={() => handleActionsClick(row)}
-                                                        style={{ background: "transparent", border: "1px solid #e0d318", color: "#e0d318", fontWeight: "bold", padding: "6px 16px", borderRadius: "20px", fontSize: "0.85rem", transition: "all 0.3s ease" }}
-                                                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(224,211,24,0.1)"; e.currentTarget.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"; }}
-                                                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.boxShadow = "none"; }}
-                                                    >
-                                                        Actions
-                                                    </Button>
-                                                ) : (
-                                                    <Button className="btn-view" variant="info" onClick={() => showRoundSelector(row)}>
-                                                        View Rounds
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                            {tournamentData.length === 0 ? (
+                                <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
+                                    <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
+                                        No tournaments created yet.
+                                    </p>
+                                </div>
+                            ) : (
+                                <Table striped bordered hover className="console-table">
+                                    <thead>
+                                        <tr>
+                                            {tHeads.map(h => (
+                                                <th className="text-center" key={h}>{h}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {tournamentData.map((row, index) => (
+                                            <tr key={(row.tournamentId || index) + (role || 'loading')}>
+                                                <td data-label="Tournament ID" className="text-center">{row.tournamentId}</td>
+                                                <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
+                                                <td data-label="Status" className="text-center">{getStatusBadge(row.status)}</td>
+                                                <td data-label="Action">
+                                                    <div className="d-flex justify-content-end" style={{ paddingRight: "42px" }}>
+                                                        {loading ? (
+                                                            <span style={{ color: "#e0d318", fontSize: "0.8rem", opacity: 0.6 }}>Checking...</span>
+                                                        ) : isAdmin ? (
+                                                            <Button
+                                                                className="btn-actions-outlined"
+                                                                variant="outline-warning"
+                                                                onClick={() => handleActionsClick(row)}
+                                                                style={{
+                                                                    background: "transparent",
+                                                                    border: "1px solid #e0d318dc",
+                                                                    color: "#e0d318c8",
+                                                                    fontWeight: "bold",
+                                                                    padding: "6px 12px",
+                                                                    borderRadius: "4px",
+                                                                    fontSize: "0.85rem",
+                                                                    transition: "all 0.3s ease"
+                                                                }}
+                                                                onMouseEnter={e => {
+                                                                    e.currentTarget.style.backgroundColor = "rgba(224,211,24,0.1)"
+                                                                    e.currentTarget.style.boxShadow = "0 0 10px rgba(224,211,24,0.3)"
+                                                                }}
+                                                                onMouseLeave={e => {
+                                                                    e.currentTarget.style.backgroundColor = "transparent"
+                                                                    e.currentTarget.style.boxShadow = "none"
+                                                                }}
+                                                            >
+                                                                Actions
+                                                            </Button>
+                                                        ) : (
+                                                            <Button className="btn-view" variant="info" onClick={() => showRoundSelector(row)}>
+                                                                View Rounds
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -465,7 +484,6 @@ export function TournamentConsole() {
                     handleUpdate={handleOnUpdate}
                     refreshTable={() => loadData("Saving Changes...")}
                 />
-
                 <RoundGamesModal
                     show={showRoundGamesModal}
                     handleClose={() => setShowRoundGamesModal(false)}
@@ -475,7 +493,6 @@ export function TournamentConsole() {
                     isCompleted={selectedRoundCompleted}
                     onRoundCompleted={() => setSelectedRoundCompleted(true)}
                 />
-
                 <AddRound
                     show={showAddRoundModal}
                     tournamentId={selectedTournamentId}
@@ -493,7 +510,6 @@ export function TournamentConsole() {
                     onConfirm={selectModal.onConfirm}
                     onCancel={closeSelectModal}
                 />
-
                 <TournamentPlayersModal
                     show={!!modalTournamentId}
                     onHide={() => setModalTournamentId(null)}

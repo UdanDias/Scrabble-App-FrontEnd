@@ -40,8 +40,6 @@ export function PlayerConsole() {
     const [showAddPlayerModal, SetShowAddPlayerModal] = useState(false);
     const [showGamesByPlayerModal, setShowGamesByPlayerModal] = useState(false);
     const [showBulkModal, setShowBulkModal] = useState(false);
-    
-    // ✅ Add loading state
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
     /* ===========================
@@ -54,10 +52,9 @@ export function PlayerConsole() {
         try {
             const playerDetails = await getPlayer();
             SetPlayerData(playerDetails);
-            
-            // Minimum wait logic for premium feel
+
             const duration = Date.now() - startTime;
-            const minWait = 800; 
+            const minWait = 800;
 
             if (duration < minWait) {
                 setTimeout(() => setIsInitialLoading(false), minWait - duration);
@@ -70,8 +67,8 @@ export function PlayerConsole() {
         }
     };
 
-    useEffect(() => { 
-        loadData(true); 
+    useEffect(() => {
+        loadData(true);
     }, []);
 
     const refreshTable = () => loadData(true);
@@ -92,21 +89,21 @@ export function PlayerConsole() {
             });
             if (!confirm.isConfirmed) return;
 
-            setIsInitialLoading(true); // Show spinner during delete API call
+            setIsInitialLoading(true);
             await DeletePlayer(playerId);
-            
-            await loadData(false); // Refresh data silently then hide spinner
+
+            await loadData(false);
             setIsInitialLoading(false);
 
-            Swal.fire({ 
-                toast: true, position: "top-end", icon: "success", 
-                title: "Deleted Player Successfully", showConfirmButton: false, timer: 3000 
+            Swal.fire({
+                toast: true, position: "top-end", icon: "success",
+                title: "Deleted Player Successfully", showConfirmButton: false, timer: 3000
             });
         } catch (error) {
             setIsInitialLoading(false);
-            Swal.fire({ 
-                toast: true, position: "top-end", icon: "error", 
-                title: "Player Deletion Failed", showConfirmButton: false, timer: 3000 
+            Swal.fire({
+                toast: true, position: "top-end", icon: "error",
+                title: "Player Deletion Failed", showConfirmButton: false, timer: 3000
             });
         }
     };
@@ -127,10 +124,9 @@ export function PlayerConsole() {
 
     return (
         <>
-            {/* ✅ Global Spinner Overlay */}
             {isInitialLoading && <OverlaySpinner message="Loading Player Records..." />}
 
-            <div className="console-page" >
+            <div className="console-page">
                 <ConsoleHeader
                     title="Player Console"
                     subtitle="Manage registered players and their profiles"
@@ -146,43 +142,51 @@ export function PlayerConsole() {
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
                         <div className="table-responsive">
-                            <Table striped bordered hover className="console-table text-center align-middle">
-                            <thead>
-                                <tr>
-                                    {tHeads.map(head => <th key={head}>{head}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {playerData.map(row => (
-                                    <tr key={row.playerId}>
-                                        <td data-label="Player Id">{row.playerId}</td>
-                                        <td data-label="First Name">{row.firstName}</td>
-                                        <td data-label="Last Name">{row.lastName}</td>
-                                        <td data-label="Username">{row.username}</td>
-                                        <td data-label="Age">{row.age}</td>
-                                        <td data-label="Gender">{row.gender}</td>
-                                        <td data-label="Date Of Birth">{row.dob}</td>
-                                        <td data-label="Email">{row.email}</td>
-                                        <td data-label="Phone">{row.phone}</td>
-                                        <td data-label="Address">{row.address}</td>
-                                        <td data-label="Faculty">{row.faculty}</td>
-                                        <td data-label="Academic Level">{row.academicLevel}</td>
-                                        <td data-label="Account Created Date">{row.accountCreatedDate}</td>
-                                        <td data-label="Action">
-                                            <div className="d-flex justify-content-center gap-2">
-                                                <Button className="btn-games" onClick={() => handleGetGamesByPlayer(row)}>Games</Button>
-                                                {isAdmin && (
-                                                    <>
-                                                        <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
-                                                        <Button className="btn-delete" onClick={() => handleDelete(row.playerId)}>Delete</Button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                            {playerData.length === 0 ? (
+                                <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
+                                    <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
+                                        No players registered yet.
+                                    </p>
+                                </div>
+                            ) : (
+                                <Table striped bordered hover className="console-table text-center align-middle">
+                                    <thead>
+                                        <tr>
+                                            {tHeads.map(head => <th key={head}>{head}</th>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {playerData.map(row => (
+                                            <tr key={row.playerId}>
+                                                <td data-label="Player Id">{row.playerId}</td>
+                                                <td data-label="First Name">{row.firstName}</td>
+                                                <td data-label="Last Name">{row.lastName}</td>
+                                                <td data-label="Username">{row.username}</td>
+                                                <td data-label="Age">{row.age}</td>
+                                                <td data-label="Gender">{row.gender}</td>
+                                                <td data-label="Date Of Birth">{row.dob}</td>
+                                                <td data-label="Email">{row.email}</td>
+                                                <td data-label="Phone">{row.phone}</td>
+                                                <td data-label="Address">{row.address}</td>
+                                                <td data-label="Faculty">{row.faculty}</td>
+                                                <td data-label="Academic Level">{row.academicLevel}</td>
+                                                <td data-label="Account Created Date">{row.accountCreatedDate}</td>
+                                                <td data-label="Action">
+                                                    <div className="d-flex justify-content-center gap-2">
+                                                        <Button className="btn-games" onClick={() => handleGetGamesByPlayer(row)}>Games</Button>
+                                                        {isAdmin && (
+                                                            <>
+                                                                <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
+                                                                <Button className="btn-delete" onClick={() => handleDelete(row.playerId)}>Delete</Button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            )}
                         </div>
                     </div>
 

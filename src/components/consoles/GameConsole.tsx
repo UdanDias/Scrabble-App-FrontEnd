@@ -12,7 +12,7 @@ import { getPlayer } from "../service/player/GetPlayer";
 import { SelectModal } from "./Selectmodal";
 import { ConsoleHeader } from "./ConsoleHeader";
 import { sortByNumberAsc } from "../utils/Sorters";
-import { BulkAddGame } from "../service/game/BulkAddGame"; 
+import { BulkAddGame } from "../service/game/BulkAddGame";
 import { OverlaySpinner } from "../utils/OverlaySpinner";
 
 
@@ -104,38 +104,34 @@ export function GameConsole() {
     const [showBulkAddGameModal, setShowBulkAddGameModal] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-useEffect(() => {
-    const init = async () => {
-        const startTime = Date.now();
-        setIsInitialLoading(true);
+    useEffect(() => {
+        const init = async () => {
+            const startTime = Date.now();
+            setIsInitialLoading(true);
 
-        try {
-            const playersList = await getPlayer();
-            setPlayers(playersList);
-            await loadGameData(SetGameData, playersList);
+            try {
+                const playersList = await getPlayer();
+                setPlayers(playersList);
+                await loadGameData(SetGameData, playersList);
 
-            // Calculate timing
-            const duration = Date.now() - startTime;
-            const minWait = 1000; // 1 second for a premium feel
+                const duration = Date.now() - startTime;
+                const minWait = 1000;
 
-            if (duration < minWait) {
-                setTimeout(() => setIsInitialLoading(false), minWait - duration);
-            } else {
-                // Ensure the table has finished "painting"
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => setIsInitialLoading(false));
-                });
+                if (duration < minWait) {
+                    setTimeout(() => setIsInitialLoading(false), minWait - duration);
+                } else {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => setIsInitialLoading(false));
+                    });
+                }
+            } catch (error) {
+                console.error("error during init", error);
+                setIsInitialLoading(false);
             }
-        } catch (error) {
-            console.error("error during init", error);
-            setIsInitialLoading(false);
-        }
-    };
-    init();
-}, []);
-    
+        };
+        init();
+    }, []);
 
-    // SelectModal state
     const [selectModal, setSelectModal] = useState<{
         show: boolean;
         title: string;
@@ -154,22 +150,6 @@ useEffect(() => {
     });
 
     const closeSelectModal = () => setSelectModal(prev => ({ ...prev, show: false }));
-
-    /* ===========================
-       INITIAL LOAD
-    =========================== */
-    useEffect(() => {
-        const init = async () => {
-            try {
-                const playersList = await getPlayer();
-                setPlayers(playersList);
-                await loadGameData(SetGameData, playersList);
-            } catch (error) {
-                console.error("error during init", error);
-            }
-        };
-        init();
-    }, []);
 
     const refreshTable = async () => {
         const playersList = await getPlayer();
@@ -215,115 +195,107 @@ useEffect(() => {
        Step 3 → Game Type
     =========================== */
     const handleAddClick = async () => {
-    // 1. Show the golden 'S' while fetching tournaments
-    setIsInitialLoading(true); 
+        setIsInitialLoading(true);
 
-    let tournaments: Tournament[] = [];
-    try {
-        tournaments = await GetTournaments();
-    } catch (error) {
-        console.error("Failed to fetch tournaments", error);
-        Swal.fire("Error", "Failed to fetch tournaments.", "error");
-        setIsInitialLoading(false);
-        return;
-    }
-
-    // Hide spinner once data is ready for the SelectModal
-    setIsInitialLoading(false);
-
-    if (tournaments.length === 0) {
-        Swal.fire("No Tournaments", "Please create a tournament and a round before adding a game.", "warning");
-        return;
-    }
-
-    // Step 1 — select tournament
-    const tournamentOptions = tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }));
-
-    setSelectModal({
-        show: true,
-        title: "Select Tournament",
-        subtitle: "Select a tournament for this game",
-        options: tournamentOptions,
-        placeholder: "Select a tournament",
-        confirmText: "Next",
-        onConfirm: async (tournamentId) => {
-            // Close the first modal immediately
-            closeSelectModal();
-
-            // 2. Show spinner while fetching rounds for this specific tournament
-            setIsInitialLoading(true);
-
-            let rounds: Round[] = [];
-            try {
-                rounds = await GetRoundsByTournament(tournamentId);
-            } catch (error) {
-                console.error("Failed to fetch rounds", error);
-                Swal.fire("Error", "Failed to fetch rounds.", "error");
-                setIsInitialLoading(false);
-                return;
-            }
-
-            // Hide spinner to show the Rounds Modal
+        let tournaments: Tournament[] = [];
+        try {
+            tournaments = await GetTournaments();
+        } catch (error) {
+            console.error("Failed to fetch tournaments", error);
+            Swal.fire("Error", "Failed to fetch tournaments.", "error");
             setIsInitialLoading(false);
+            return;
+        }
 
-            if (rounds.length === 0) {
-                Swal.fire("No Rounds", "This tournament has no rounds. Please add a round first.", "warning");
-                return;
-            }
+        setIsInitialLoading(false);
 
-            // Step 2 — select round
-            const roundOptions = sortByNumberAsc(
-                rounds.map(r => ({
-                    value: r.roundId,
-                    label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
-                    roundNumber: r.roundNumber,
-                })),
-                "roundNumber"
-            );
+        if (tournaments.length === 0) {
+            Swal.fire("No Tournaments", "Please create a tournament and a round before adding a game.", "warning");
+            return;
+        }
 
-            setSelectModal({
-                show: true,
-                title: "Select Round",
-                subtitle: "Select a round for this game",
-                options: roundOptions,
-                placeholder: "Select a round",
-                confirmText: "Next",
-                onConfirm: async (roundId) => {
-                    closeSelectModal();
-                    SetSelectedRoundId(roundId);
+        const tournamentOptions = tournaments.map(t => ({ value: t.tournamentId, label: t.tournamentName }));
 
-                    // Step 3 — select game type (Instant Swal, no loading needed)
-                    const result = await Swal.fire({
-                        title: "Select Game Type",
-                        icon: "question",
-                        showConfirmButton: true,
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: "Regular Game",
-                        denyButtonText: "Bye Game",
-                        cancelButtonText: "Cancel",
-                        footer: `<button id="bulk-btn" class="swal2-confirm swal2-styled" 
-                            style="background:#e0a918;color:#000;margin-top:6px;width:100%">
-                            ⚡ Bulk Add Games
-                        </button>`,
-                        didOpen: () => {
-                            document.getElementById("bulk-btn")?.addEventListener("click", () => {
-                                Swal.close();
-                                setShowBulkAddGameModal(true);
-                            });
-                        },
-                        confirmButtonColor: "#510dfd",
-                        denyButtonColor: "#19876f",
-                        cancelButtonColor: "#6c757d",
-                    });
+        setSelectModal({
+            show: true,
+            title: "Select Tournament",
+            subtitle: "Select a tournament for this game",
+            options: tournamentOptions,
+            placeholder: "Select a tournament",
+            confirmText: "Next",
+            onConfirm: async (tournamentId) => {
+                closeSelectModal();
 
-                    if (result.isConfirmed) SetShowAddGameModal(true);
-                    else if (result.isDenied) SetShowAddByeGameModal(true);
-                },
-            });
-        },
-    });
-};
+                setIsInitialLoading(true);
+
+                let rounds: Round[] = [];
+                try {
+                    rounds = await GetRoundsByTournament(tournamentId);
+                } catch (error) {
+                    console.error("Failed to fetch rounds", error);
+                    Swal.fire("Error", "Failed to fetch rounds.", "error");
+                    setIsInitialLoading(false);
+                    return;
+                }
+
+                setIsInitialLoading(false);
+
+                if (rounds.length === 0) {
+                    Swal.fire("No Rounds", "This tournament has no rounds. Please add a round first.", "warning");
+                    return;
+                }
+
+                const roundOptions = sortByNumberAsc(
+                    rounds.map(r => ({
+                        value: r.roundId,
+                        label: `Round ${r.roundNumber}${r.roundName ? ` — ${r.roundName}` : ""}`,
+                        roundNumber: r.roundNumber,
+                    })),
+                    "roundNumber"
+                );
+
+                setSelectModal({
+                    show: true,
+                    title: "Select Round",
+                    subtitle: "Select a round for this game",
+                    options: roundOptions,
+                    placeholder: "Select a round",
+                    confirmText: "Next",
+                    onConfirm: async (roundId) => {
+                        closeSelectModal();
+                        SetSelectedRoundId(roundId);
+
+                        const result = await Swal.fire({
+                            title: "Select Game Type",
+                            icon: "question",
+                            showConfirmButton: true,
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: "Regular Game",
+                            denyButtonText: "Bye Game",
+                            cancelButtonText: "Cancel",
+                            footer: `<button id="bulk-btn" class="swal2-confirm swal2-styled" 
+                                style="background:#e0a918;color:#000;margin-top:6px;width:100%">
+                                ⚡ Bulk Add Games
+                            </button>`,
+                            didOpen: () => {
+                                document.getElementById("bulk-btn")?.addEventListener("click", () => {
+                                    Swal.close();
+                                    setShowBulkAddGameModal(true);
+                                });
+                            },
+                            confirmButtonColor: "#510dfd",
+                            denyButtonColor: "#19876f",
+                            cancelButtonColor: "#6c757d",
+                        });
+
+                        if (result.isConfirmed) SetShowAddGameModal(true);
+                        else if (result.isDenied) SetShowAddByeGameModal(true);
+                    },
+                });
+            },
+        });
+    };
 
     /* ===========================
        TABLE HEADERS
@@ -344,7 +316,6 @@ useEffect(() => {
             <ConsoleHeader
                 title="Game Console"
                 subtitle="Manage and track all tournament games"
-                
             />
 
             <div className="create-button d-flex justify-content-end p-2">
@@ -356,36 +327,44 @@ useEffect(() => {
             <div className="console-table-container">
                 <div className="console-table-wrapper">
                     <div className="table-responsive">
-                        <Table striped bordered hover className="console-table text-center align-middle">
-                            <thead>
-                                <tr>
-                                    {theads.map(head => <th key={head}>{head}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {gameData.map(row => (
-                                    <tr key={row.gameId}>
-                                        <td data-label="Game Id">{row.gameId}</td>
-                                        <td data-label="Player1 Name">{row.player1Id}</td>
-                                        <td data-label="Player2 Name">{row.player2Id}</td>
-                                        <td data-label="Score 1">{row.score1}</td>
-                                        <td data-label="Score 2">{row.score2}</td>
-                                        <td data-label="Margin">{row.margin}</td>
-                                        <td data-label="Game Tied">{row.isgameTied ? "Yes" : "No"}</td>
-                                        <td data-label="Winner">{row.winnerId}</td>
-                                        <td data-label="Game Date">{row.gameDate}</td>
-                                        <td data-label="Is Bye Game">{row.isByeGame ? "Yes" : "No"}</td>
-                                        <td data-label="Round">{row.roundId}</td>
-                                        <td data-label="Action">
-                                            <div className="d-flex justify-content-center gap-2">
-                                                <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
-                                                <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>
-                                            </div>
-                                        </td>
+                        {gameData.length === 0 ? (
+                            <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
+                                <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
+                                    No games recorded yet.
+                                </p>
+                            </div>
+                        ) : (
+                            <Table striped bordered hover className="console-table text-center align-middle">
+                                <thead>
+                                    <tr>
+                                        {theads.map(head => <th key={head}>{head}</th>)}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                </thead>
+                                <tbody>
+                                    {gameData.map(row => (
+                                        <tr key={row.gameId}>
+                                            <td data-label="Game Id">{row.gameId}</td>
+                                            <td data-label="Player1 Name">{row.player1Id}</td>
+                                            <td data-label="Player2 Name">{row.player2Id}</td>
+                                            <td data-label="Score 1">{row.score1}</td>
+                                            <td data-label="Score 2">{row.score2}</td>
+                                            <td data-label="Margin">{row.margin}</td>
+                                            <td data-label="Game Tied">{row.isgameTied ? "Yes" : "No"}</td>
+                                            <td data-label="Winner">{row.winnerId}</td>
+                                            <td data-label="Game Date">{row.gameDate}</td>
+                                            <td data-label="Is Bye Game">{row.isByeGame ? "Yes" : "No"}</td>
+                                            <td data-label="Round">{row.roundId}</td>
+                                            <td data-label="Action">
+                                                <div className="d-flex justify-content-center gap-2">
+                                                    <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
+                                                    <Button className="btn-delete" onClick={() => handleDelete(row.gameId)}>Delete</Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
                     </div>
                 </div>
             </div>
@@ -397,14 +376,12 @@ useEffect(() => {
                 handleUpdate={handleUpdate}
                 refreshTable={refreshTable}
             />
-
             <AddGame
                 show={showAddGameModal}
                 handleClose={() => SetShowAddGameModal(false)}
                 handleAdd={handleOnAdd}
                 roundId={selectedRoundId}
             />
-
             <AddByeGame
                 show={showAddByeGameModal}
                 handleClose={() => SetShowAddByeGameModal(false)}
@@ -418,7 +395,6 @@ useEffect(() => {
                 roundId={selectedRoundId}
                 players={players}
             />
-
             <SelectModal
                 show={selectModal.show}
                 title={selectModal.title}
@@ -429,7 +405,6 @@ useEffect(() => {
                 onConfirm={selectModal.onConfirm}
                 onCancel={closeSelectModal}
             />
-
         </div>
     );
 }
