@@ -31,10 +31,18 @@ export function UserConsole() {
     const [userData, SetUserData] = useState<User[]>([]);
     const [selectedRow, SetSelectedRow] = useState<User | null>(null);
     const [showEditUserModal, SetShowEditUserModal] = useState(false);
-    
-    // Loading States
+
     const [loading, setLoading] = useState(true);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+    // ✅ Swal Toast Mixin (same pattern as GameConsole)
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
 
     const loadData = async (isFirstLoad = false) => {
         const startTime = Date.now();
@@ -46,20 +54,17 @@ export function UserConsole() {
             SetUserData(userDetails);
         } catch (error) {
             console.error("Failed to fetch users:", error);
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
+            Toast.fire({
                 icon: 'error',
-                title: 'Failed to load users',
-                showConfirmButton: false,
-                timer: 3000
+                title: 'Failed to load users'
             });
         } finally {
             setLoading(false);
+
             if (isFirstLoad) {
-                // Ensure the "S" spinner stays for at least 1s for visual consistency
                 const duration = Date.now() - startTime;
                 const minWait = 1000;
+
                 if (duration < minWait) {
                     setTimeout(() => setIsInitialLoading(false), minWait - duration);
                 } else {
@@ -69,33 +74,49 @@ export function UserConsole() {
         }
     };
 
+    // ✅ DELETE WITH TOAST
     const handleDelete = async (userId: string) => {
         const result = await Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "This will delete the user.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            cancelButtonColor: '#6c757d',
             confirmButtonText: 'Yes, delete it!'
         });
 
-        if (result.isConfirmed) {
-            try {
-                await DeleteUser(userId);
-                SetUserData(userData.filter(user => user.userId !== userId));
-                Swal.fire('Deleted!', 'User has been deleted.', 'success');
-            } catch (error) {
-                Swal.fire('Error!', 'Failed to delete user.', 'error');
-            }
+        if (!result.isConfirmed) return;
+
+        try {
+            await DeleteUser(userId);
+            SetUserData(userData.filter(user => user.userId !== userId));
+
+            Toast.fire({
+                icon: 'success',
+                title: 'User deleted successfully'
+            });
+
+        } catch (error) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Failed to delete user'
+            });
         }
     };
 
+    // ✅ UPDATE WITH TOAST
     const handleOnUpdate = async (updatedUser: User) => {
-        const updatedUsers = userData.map((user) => {
-            return user.userId === updatedUser.userId ? updatedUser : user;
-        });
+        const updatedUsers = userData.map((user) =>
+            user.userId === updatedUser.userId ? updatedUser : user
+        );
+
         SetUserData(updatedUsers);
+
+        Toast.fire({
+            icon: 'success',
+            title: 'User details updated successfully'
+        });
     };
 
     const refreshTable = () => {
@@ -128,7 +149,6 @@ export function UserConsole() {
 
     return (
         <>
-            {/* The Golden S Spinner (Conditionally Rendered) */}
             {isInitialLoading && <OverlaySpinner message="Loading User Accounts..." />}
 
             <div className="console-page">
@@ -136,53 +156,53 @@ export function UserConsole() {
                     title="User Console"
                     subtitle="Manage user accounts and roles"
                 />
-                
+
                 <div className="console-table-container">
                     <div className="console-table-wrapper">
-                        {/* Background refresh indicator */}
+
                         {loading && !isInitialLoading && (
                             <div style={{ textAlign: 'center', color: '#e0d318', paddingBottom: '10px' }}>
                                 Refreshing data...
                             </div>
                         )}
-                        
+
                         <div className="table-responsive">
                             <Table striped bordered hover className="console-table">
-                            <thead>
-                                <tr>
-                                    {tHeads.map((headings) => (
-                                        <th className="text-center" key={headings}>{headings}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {userData.length === 0 && !loading ? (
+                                <thead>
                                     <tr>
-                                        <td colSpan={tHeads.length} className="text-center" style={{ color: '#bfd0e150', padding: '20px' }}>
-                                            No users found.
-                                        </td>
+                                        {tHeads.map((head) => (
+                                            <th className="text-center" key={head}>{head}</th>
+                                        ))}
                                     </tr>
-                                ) : (
-                                    userData.map((row, index) => (
-                                        <tr key={row.userId || index}>
-                                            <td data-label="User Id" className="text-center">{row.userId}</td>
-                                            <td data-label="Player Id" className="text-center">{row.playerId}</td>
-                                            <td data-label="First Name" className="text-center">{row.firstName}</td>
-                                            <td data-label="Last Name" className="text-center">{row.lastName}</td>
-                                            <td data-label="Email" className="text-center">{row.email}</td>
-                                            <td data-label="Role" className="text-center" style={{ textTransform: 'capitalize' }}>{row.role}</td>
-                                            <td data-label="Account Created Date" className="text-center">{row.accountCreatedDate}</td>
-                                            <td data-label="Action">
-                                                <div className="d-flex gap-2 justify-content-center">
-                                                    <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
-                                                    <Button className="btn-delete" onClick={() => handleDelete(row.userId)}>Delete</Button>
-                                                </div>
+                                </thead>
+                                <tbody>
+                                    {userData.length === 0 && !loading ? (
+                                        <tr>
+                                            <td colSpan={tHeads.length} className="text-center" style={{ color: '#bfd0e150', padding: '20px' }}>
+                                                No users found.
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </Table>
+                                    ) : (
+                                        userData.map((row, index) => (
+                                            <tr key={row.userId || index}>
+                                                <td className="text-center">{row.userId}</td>
+                                                <td className="text-center">{row.playerId}</td>
+                                                <td className="text-center">{row.firstName}</td>
+                                                <td className="text-center">{row.lastName}</td>
+                                                <td className="text-center">{row.email}</td>
+                                                <td className="text-center" style={{ textTransform: 'capitalize' }}>{row.role}</td>
+                                                <td className="text-center">{row.accountCreatedDate}</td>
+                                                <td>
+                                                    <div className="d-flex gap-2 justify-content-center">
+                                                        <Button className="btn-edit" onClick={() => handleEdit(row)}>Edit</Button>
+                                                        <Button className="btn-delete" onClick={() => handleDelete(row.userId)}>Delete</Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </Table>
                         </div>
                     </div>
                 </div>
