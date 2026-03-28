@@ -70,8 +70,7 @@ export const SignUp = () => {
     const { login } = useAuth();
 
     return (
-        <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
-            <AnimatedBackground />
+        <div >
 
             <div className="auth-container d-flex flex-column justify-content-center align-items-center"
                 style={{ position: 'relative', zIndex: 2 }}>

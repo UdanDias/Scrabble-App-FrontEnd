@@ -359,6 +359,16 @@ export function AnimatedBackground() {
 
   return (
     <>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: '#060413', // Lowest dark base layer
+          zIndex: -3,
+          pointerEvents: 'none',
+        }}
+      />
+
       <canvas
         ref={canvasRef}
         style={{
@@ -368,7 +378,7 @@ export function AnimatedBackground() {
           width: '100%',
           height: '100%',
           pointerEvents: 'none',
-          zIndex: 0,
+          zIndex: -2,
         }}
       />
 
@@ -383,7 +393,7 @@ export function AnimatedBackground() {
               rgba(0,0,0,0.95) 100%)
           `,
           pointerEvents: 'none',
-          zIndex: 1,
+          zIndex: -1,
         }}
       />
     </>

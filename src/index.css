@@ -9,13 +9,17 @@
   box-sizing: border-box;
 }
 
+html {
+  background-color: #060413;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0d1117;
+  background-color: transparent;
   min-height: 100vh;
   padding: 0;
   padding-right: 0 !important;
@@ -67,7 +71,7 @@ code {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #0d1117;
+  background-color: transparent;
   min-height: calc(100vh - var(--navbar-height, 60px));
   overflow-x: hidden;
   overflow-y: auto;
@@ -686,7 +690,7 @@ code {
    CONSOLE PAGES
    ===================================================================== */
 .console-page {
-  background-color: #0d1117 !important;
+  background-color: transparent !important;
   min-height: 100vh;
   padding-top: 20px;
   width: 100%;
@@ -1063,11 +1067,8 @@ code {
   box-shadow: 0 0 8px rgba(0, 255, 149, 0.3);
 }
 
-/* =====================================================================
-   LEADERBOARD
-   ===================================================================== */
 .leaderboard-page {
-  background-color: #0d1117 !important;
+  background-color: transparent !important;
   min-height: 100vh;
   padding-top: 30px;
 }
@@ -1782,7 +1783,7 @@ select:focus,
    HOME PAGE
    ===================================================================== */
 .home-root {
-  background: var(--bg-deep);
+  background: transparent;
   color: var(--cream);
   font-family: 'Lato', sans-serif;
   overflow-x: hidden;

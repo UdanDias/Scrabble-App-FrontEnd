@@ -160,7 +160,7 @@ function AppLayout() {
 const App: React.FC = () => {
   return (
     <Router>
-     
+      <AnimatedBackground />  {/* ← add here */}
       <AuthProvider>
         <AppLayout />
       </AuthProvider>

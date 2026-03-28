@@ -14,6 +14,7 @@ import { GetLeaderBoardByTournament } from "../service/performance/GetLeaderBoar
 import { useAuth } from "../auth/AuthProvider";
 import { getAdminRequestStatus, requestAdminAccess } from "../service/adminRequest/AdminRequestService";
 import { getUserEmailFromToken } from "../service/auth/GetEmail";
+import { AnimatedBackground } from "../utils/AnimatedBackground";
 
 interface Player {
     playerId: string;
@@ -203,7 +204,7 @@ export function Profile() {
             {/* Added the overlay spinner here */}
             {isInitialLoading && <OverlaySpinner message="Loading Profile..." />}
 
-            <div className="console-page">
+            <div className="console-page" >
                 <ConsoleHeader
                     title="Profile"
                     subtitle={player ? `Welcome back, ${player.firstName} ${player.lastName} ✦` : "Loading..."}

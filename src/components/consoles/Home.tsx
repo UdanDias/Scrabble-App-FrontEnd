@@ -10,8 +10,7 @@ export function Home() {
   ];
 
   return (
-    <div className="home-root" style={{ position: 'relative', overflow: 'hidden' }}>
-      <AnimatedBackground />
+    <div className="home-root" >
 
       <section className="h-hero" style={{ position: 'relative', zIndex: 2 }}>
         <div className="h-hero-glow" />

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { homeStyles } from '../service/styles/HomeStyles';
+import { AnimatedBackground } from '../utils/AnimatedBackground';
 
 export function HomeAfter() {
   const navigate = useNavigate();
@@ -34,8 +35,7 @@ export function HomeAfter() {
   ];
 
   return (
-    <div className="home-root">
-     
+    <div className="home-root" >
 
       {/* ── HERO — full viewport, everything on one screen ── */}
       <section className="h-hero">

@@ -11,6 +11,7 @@ import BulkAddPlayer from '../service/player/Bulkaddplayer';
 import { ConsoleHeader } from './ConsoleHeader';
 import { useAuth } from '../auth/AuthProvider';
 import { OverlaySpinner } from '../utils/OverlaySpinner';
+import { AnimatedBackground } from '../utils/AnimatedBackground';
 
 
 interface Player {
@@ -129,7 +130,7 @@ export function PlayerConsole() {
             {/* ✅ Global Spinner Overlay */}
             {isInitialLoading && <OverlaySpinner message="Loading Player Records..." />}
 
-            <div className="console-page">
+            <div className="console-page" >
                 <ConsoleHeader
                     title="Player Console"
                     subtitle="Manage registered players and their profiles"

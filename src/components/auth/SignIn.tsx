@@ -52,8 +52,7 @@ export const SignIn = () => {
     const navigate = useNavigate();
 
     return (
-        <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
-            <AnimatedBackground />
+        <div >
 
             <div className="auth-container d-flex flex-column justify-content-center align-items-center vh-100"
                 style={{ position: 'relative', zIndex: 2 }}>
