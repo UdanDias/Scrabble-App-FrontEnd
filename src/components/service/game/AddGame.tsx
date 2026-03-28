@@ -80,31 +80,82 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
     };
 
     const handleSave = async () => {
-    const startTime = Date.now();
-    try {
-        setIsSaving(true);
-        const newGameDetails = await CreateGame({ ...newGameData, roundId });
+        const startTime = Date.now();
+        try {
+            setIsSaving(true);
+            const newGameDetails = await CreateGame({ ...newGameData, roundId });
 
-        // Ensure we wait at least 800ms so the user sees the "Saving" state
-        const duration = Date.now() - startTime;
-        const minWait = 800;
-        
-        const finalize = () => {
+            const duration = Date.now() - startTime;
+            const minWait = 800;
+
+            const finalize = async () => {
+                setIsSaving(false);
+                
+                // Show success toast
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({ icon: "success", title: "Added Game Successfully" });
+                
+                handleAdd(newGameDetails);
+
+                // Ask if they want to add another
+                const result = await Swal.fire({
+                    title: "Add Another Game?",
+                    text: "Do you want to add another game to this round?",
+                    icon: "question",
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    confirmButtonColor: "#510dfd",
+                    cancelButtonColor: "#6c757d",
+                });
+
+                if (result.isConfirmed) {
+                    // Reset form and keep modal open
+                    SetNewGameData({
+                        player1Id: "",
+                        player2Id: "",
+                        score1: 0,
+                        score2: 0,
+                        gameDate: ""
+                    });
+                } else {
+                    handleClose();
+                }
+            };
+
+            if (duration < minWait) {
+                setTimeout(finalize, minWait - duration);
+            } else {
+                finalize();
+            }
+
+        } catch (error) {
             setIsSaving(false);
-            // ... the rest of your Swal and success logic
-        };
-
-        if (duration < minWait) {
-            setTimeout(finalize, minWait - duration);
-        } else {
-            finalize();
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({ icon: "error", title: "Game Addition Failed" });
         }
-
-    } catch (error) {
-        setIsSaving(false);
-        // ... error logic
-    }
-};
+    };
 
     const playerOptions = players
         .map(p => ({
@@ -115,7 +166,6 @@ export function AddGame({ show, handleClose, handleAdd, roundId }: AddGameProps)
 
     return (
         <>
-            {/* Full-viewport overlay while fetching players or saving */}
             {(isFetchingPlayers || isSaving) && (
                 <OverlaySpinner message={isSaving ? "Saving game..." : "Loading players..."} />
             )}
