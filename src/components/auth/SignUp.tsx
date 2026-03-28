@@ -83,27 +83,56 @@ export const SignUp = () => {
                             <div className="signup-grid">
                                 <Form.Group className="mb-3" controlId="firstname">
                                     <Form.Label>First Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter First Name"
-                                        name="firstName" value={user.firstName} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter First Name"
+                                        name="firstName" 
+                                        value={user.firstName} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="lastname">
                                     <Form.Label>Last Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Last Name"
-                                        name="lastName" value={user.lastName} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Last Name"
+                                        name="lastName" 
+                                        value={user.lastName} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="email">
                                     <Form.Label>Email address</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter Email"
-                                        name="email" value={user.email} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="email" 
+                                        placeholder="Enter Email"
+                                        name="email" 
+                                        value={user.email} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="password">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" placeholder="Enter Password"
-                                        name="password" value={user.password} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="password" 
+                                        placeholder="Enter Password"
+                                        name="password" 
+                                        value={user.password} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="gender">
                                     <Form.Label>Gender</Form.Label>
-                                    <Form.Select name="gender" value={user.gender} onChange={handleOnChange}>
+                                    <Form.Select 
+                                        name="gender" 
+                                        value={user.gender} 
+                                        onChange={handleOnChange}
+                                        required
+                                    >
                                         <option value="" disabled>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -111,38 +140,80 @@ export const SignUp = () => {
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="dob">
                                     <Form.Label>Date of Birth</Form.Label>
-                                    <Form.Control type="date" placeholder="Enter DOB"
-                                        name="dob" value={user.dob} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="date" 
+                                        placeholder="Enter DOB"
+                                        name="dob" 
+                                        value={user.dob} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="phone">
                                     <Form.Label>Phone</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Phone"
-                                        name="phone" value={user.phone} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Phone"
+                                        name="phone" 
+                                        value={user.phone} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="address">
                                     <Form.Label>Address</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Address"
-                                        name="address" value={user.address} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Address"
+                                        name="address" 
+                                        value={user.address} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="university">
                                     <Form.Label>University</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter University"
-                                        name="university" value={user.university} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter University"
+                                        name="university" 
+                                        value={user.university} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="faculty">
                                     <Form.Label>Faculty</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Faculty"
-                                        name="faculty" value={user.faculty} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Faculty"
+                                        name="faculty" 
+                                        value={user.faculty} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="studentNo">
                                     <Form.Label>Student No</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Student No"
-                                        name="studentNo" value={user.studentNo} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Student No"
+                                        name="studentNo" 
+                                        value={user.studentNo} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="academicLevel">
                                     <Form.Label>Academic Level</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Academic Level"
-                                        name="academicLevel" value={user.academicLevel} onChange={handleOnChange} />
+                                    <Form.Control 
+                                        type="text" 
+                                        placeholder="Enter Academic Level"
+                                        name="academicLevel" 
+                                        value={user.academicLevel} 
+                                        onChange={handleOnChange}
+                                        required 
+                                    />
                                 </Form.Group>
                             </div>
                         </div>

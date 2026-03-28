@@ -21,12 +21,12 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
     const [showRequestsModal, setShowRequestsModal] = useState(false);
 
     const fetchPending = async () => {
-    if (!isAdmin) return;
-    try {
-        const data = await getPendingAdminRequests();
-        setPendingRequests(Array.isArray(data) ? data : []);  // ← guard here
-    } catch { /* silently fail */ }
-};
+        if (!isAdmin) return;
+        try {
+            const data = await getPendingAdminRequests();
+            setPendingRequests(Array.isArray(data) ? data : []);
+        } catch { /* silently fail */ }
+    };
 
     useEffect(() => {
         fetchPending();
@@ -123,10 +123,6 @@ function NavBar({ sidebarOpen, setSidebarOpen }: NavBarProps){
                                 </button>
                             )}
                             <Nav.Link as={NavLink} to="/homeafter">HOME</Nav.Link>
-                            <Nav.Link as={NavLink} to="/signup">REGISTER</Nav.Link>
-
-                            {/* ── Bell icon (admin only) ── */}
-                            
 
                             <Button variant="warning" className="ms-2" onClick={handleOnClick}>
                                 LOG OUT
