@@ -10,6 +10,9 @@ import { DeleteTeam } from "../service/team/DeleteTeam";
 import { getPlayer } from "../service/player/GetPlayer";
 import { ConsoleHeader } from "./ConsoleHeader";
 import { OverlaySpinner } from "../utils/OverlaySpinner";
+import { DataCount } from "../utils/DataCount";
+import { SearchBar } from "../utils/SearchBar";
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface TeamMember {
@@ -293,6 +296,16 @@ export const TeamsConsole: React.FC = () => {
     const [showAdd, setShowAdd] = useState(false);
     const [editTeam, setEditTeam] = useState<Team | null>(null);
     const [activeKey, setActiveKey] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // ✅ FILTER TEAMS BY NAME
+    const filteredTeams = teams.filter(team => {
+        const teamName = team.teamName?.toLowerCase() || '';
+
+        const query = searchQuery.toLowerCase();
+
+        return teamName.includes(query);
+    });
 
     const loadAll = async (isFirstLoad = false) => {
         const startTime = Date.now();
@@ -312,7 +325,7 @@ export const TeamsConsole: React.FC = () => {
             
             if (isFirstLoad) {
                 const duration = Date.now() - startTime;
-                const minWait = 1000; // Match GameConsole's timing
+                const minWait = 1000;
                 
                 if (duration < minWait) {
                     setTimeout(() => setIsInitialLoading(false), minWait - duration);
@@ -343,7 +356,7 @@ export const TeamsConsole: React.FC = () => {
         try {
             await DeleteTeam(team.teamId);
             Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Team deleted", showConfirmButton: false, timer: 2500 });
-            loadAll(false); // Silent refresh
+            loadAll(false);
         } catch {
             Swal.fire({ toast: true, position: "top-end", icon: "error", title: "Failed to delete", showConfirmButton: false, timer: 2500 });
         }
@@ -351,7 +364,6 @@ export const TeamsConsole: React.FC = () => {
 
     return (
         <div className="console-page">
-            {/* The Golden S Spinner */}
             {isInitialLoading && <OverlaySpinner message="Loading Teams..." />}
 
             <ConsoleHeader title="Teams" subtitle="Manage teams and their members" />
@@ -361,12 +373,36 @@ export const TeamsConsole: React.FC = () => {
             </div>
 
             <div className="console-table-container">
-                {/* Secondary loading indicator for background refreshes */}
+                {/* ✅ TEAM COUNT & SEARCH BAR */}
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                    gap: '20px',
+                    flexWrap: 'wrap'
+                }}>
+                    <DataCount 
+                        label="Total Teams"
+                        totalCount={teams.length}
+                        filteredCount={filteredTeams.length}
+                        showFiltered={!!searchQuery}
+                    />
+
+                    <SearchBar 
+                        placeholder="Search by team name..."
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                    />
+                </div>
+
                 {loading && !isInitialLoading ? (
                     <div style={{ textAlign: "center", color: "#e0d318a0", padding: "40px", letterSpacing: "2px" }}>Refreshing...</div>
-                ) : teams.length === 0 ? (
+                ) : filteredTeams.length === 0 ? (
                     <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
-                        <p style={{ fontSize: "0.9rem", letterSpacing: "1px" }}>No teams created yet.</p>
+                        <p style={{ fontSize: "0.9rem", letterSpacing: "1px" }}>
+                            {searchQuery ? `No teams found matching "${searchQuery}"` : 'No teams created yet.'}
+                        </p>
                     </div>
                 ) : (
                     <>
@@ -384,7 +420,7 @@ export const TeamsConsole: React.FC = () => {
                             activeKey={activeKey ?? undefined}
                             onSelect={k => setActiveKey(k as string | null)}
                         >
-                            {teams.map((team, index) => (
+                            {filteredTeams.map((team, index) => (
                                 <Accordion.Item eventKey={String(index)} key={team.teamId}>
                                     <Accordion.Header>
                                         <div className="d-flex w-100 pe-3 align-items-center position-relative">

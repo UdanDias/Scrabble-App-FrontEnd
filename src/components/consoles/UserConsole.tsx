@@ -7,6 +7,8 @@ import { ConsoleHeader } from './ConsoleHeader';
 import EditUser from '../service/user/EditUser';
 import { OverlaySpinner } from '../utils/OverlaySpinner';
 import Swal from 'sweetalert2';
+import { DataCount } from '../utils/DataCount';
+import { SearchBar } from '../utils/SearchBar';
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
 interface User {
@@ -31,6 +33,7 @@ export function UserConsole() {
     const [userData, SetUserData] = useState<User[]>([]);
     const [selectedRow, SetSelectedRow] = useState<User | null>(null);
     const [showEditUserModal, SetShowEditUserModal] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [loading, setLoading] = useState(true);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -73,6 +76,21 @@ export function UserConsole() {
             }
         }
     };
+
+    // ✅ FILTER USERS BASED ON SEARCH QUERY
+    const filteredUsers = userData.filter(user => {
+        const firstName = user.firstName?.toLowerCase() || '';
+        const lastName = user.lastName?.toLowerCase() || '';
+
+        const fullName = `${firstName} ${lastName}`;
+        const query = searchQuery.toLowerCase();
+
+        return (
+            fullName.includes(query) ||
+            firstName.includes(query) ||
+            lastName.includes(query)
+        );
+    });
 
     // ✅ DELETE WITH TOAST
     const handleDelete = async (userId: string) => {
@@ -158,6 +176,29 @@ export function UserConsole() {
                 />
 
                 <div className="console-table-container">
+                    {/* ✅ USER COUNT & SEARCH BAR - USING REUSABLE COMPONENTS */}
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        marginBottom: '20px',
+                        gap: '20px',
+                        flexWrap: 'wrap'
+                    }}>
+                        <DataCount 
+                            label="Total Registered Users"
+                            totalCount={userData.length}
+                            filteredCount={filteredUsers.length}
+                            showFiltered={!!searchQuery}
+                        />
+
+                        <SearchBar 
+                            placeholder="Search by name..."
+                            value={searchQuery}
+                            onChange={setSearchQuery}
+                        />
+                    </div>
+
                     <div className="console-table-wrapper">
 
                         {loading && !isInitialLoading && (
@@ -176,14 +217,14 @@ export function UserConsole() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {userData.length === 0 && !loading ? (
+                                    {filteredUsers.length === 0 && !loading ? (
                                         <tr>
                                             <td colSpan={tHeads.length} className="text-center" style={{ color: '#bfd0e150', padding: '20px' }}>
-                                                No users found.
+                                                {searchQuery ? `No users found matching "${searchQuery}"` : 'No users found.'}
                                             </td>
                                         </tr>
                                     ) : (
-                                        userData.map((row, index) => (
+                                        filteredUsers.map((row, index) => (
                                             <tr key={row.userId || index}>
                                                 <td className="text-center">{row.userId}</td>
                                                 <td className="text-center">{row.playerId}</td>

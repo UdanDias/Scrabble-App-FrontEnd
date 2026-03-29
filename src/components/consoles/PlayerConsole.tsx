@@ -11,7 +11,8 @@ import BulkAddPlayer from '../service/player/Bulkaddplayer';
 import { ConsoleHeader } from './ConsoleHeader';
 import { useAuth } from '../auth/AuthProvider';
 import { OverlaySpinner } from '../utils/OverlaySpinner';
-import { AnimatedBackground } from '../utils/AnimatedBackground';
+import { DataCount } from '../utils/DataCount';
+import { SearchBar } from '../utils/SearchBar';
 
 
 interface Player {
@@ -41,6 +42,24 @@ export function PlayerConsole() {
     const [showGamesByPlayerModal, setShowGamesByPlayerModal] = useState(false);
     const [showBulkModal, setShowBulkModal] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // ✅ FILTER PLAYERS BY NAME
+    const filteredPlayers = playerData.filter(player => {
+        const firstName = player.firstName?.toLowerCase() || '';
+        const lastName = player.lastName?.toLowerCase() || '';
+        const username = player.username?.toLowerCase() || '';
+
+        const fullName = `${firstName} ${lastName}`;
+        const query = searchQuery.toLowerCase();
+
+        return (
+            fullName.includes(query) ||
+            firstName.includes(query) ||
+            lastName.includes(query) ||
+            username.includes(query)
+        );
+    });
 
     /* ===========================
         DATA LOADING LOGIC
@@ -140,12 +159,35 @@ export function PlayerConsole() {
                 )}
 
                 <div className="console-table-container">
+                    {/* ✅ PLAYER COUNT & SEARCH BAR */}
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        marginBottom: '20px',
+                        gap: '20px',
+                        flexWrap: 'wrap'
+                    }}>
+                        <DataCount 
+                            label="Total Registered Players"
+                            totalCount={playerData.length}
+                            filteredCount={filteredPlayers.length}
+                            showFiltered={!!searchQuery}
+                        />
+
+                        <SearchBar 
+                            placeholder="Search by name or username..."
+                            value={searchQuery}
+                            onChange={setSearchQuery}
+                        />
+                    </div>
+
                     <div className="console-table-wrapper">
                         <div className="table-responsive">
-                            {playerData.length === 0 ? (
+                            {filteredPlayers.length === 0 ? (
                                 <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
                                     <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
-                                        No players registered yet.
+                                        {searchQuery ? `No players found matching "${searchQuery}"` : 'No players registered yet.'}
                                     </p>
                                 </div>
                             ) : (
@@ -156,7 +198,7 @@ export function PlayerConsole() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {playerData.map(row => (
+                                        {filteredPlayers.map(row => (
                                             <tr key={row.playerId}>
                                                 <td data-label="Player Id">{row.playerId}</td>
                                                 <td data-label="First Name">{row.firstName}</td>

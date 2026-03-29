@@ -14,6 +14,9 @@ import { ConsoleHeader } from "./ConsoleHeader";
 import { sortByNumberAsc } from "../utils/Sorters";
 import { BulkAddGame } from "../service/game/BulkAddGame";
 import { OverlaySpinner } from "../utils/OverlaySpinner";
+import { DataCount } from "../utils/DataCount";
+import { SearchBar } from "../utils/SearchBar";
+
 
 
 interface Game {
@@ -103,6 +106,22 @@ export function GameConsole() {
     const [players, setPlayers] = useState<PlayerIdToName[]>([]);
     const [showBulkAddGameModal, setShowBulkAddGameModal] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // ✅ FILTER GAMES BY PLAYER NAME
+    const filteredGames = gameData.filter(game => {
+        const player1Id = game.player1Id?.toLowerCase() || '';
+        const player2Id = game.player2Id?.toLowerCase() || '';
+        const winnerId = game.winnerId?.toLowerCase() || '';
+
+        const query = searchQuery.toLowerCase();
+
+        return (
+            player1Id.includes(query) ||
+            player2Id.includes(query) ||
+            winnerId.includes(query)
+        );
+    });
 
     useEffect(() => {
         const init = async () => {
@@ -325,12 +344,35 @@ export function GameConsole() {
             </div>
 
             <div className="console-table-container">
+                {/* ✅ GAME COUNT & SEARCH BAR */}
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                    gap: '20px',
+                    flexWrap: 'wrap'
+                }}>
+                    <DataCount 
+                        label="Total Games Recorded"
+                        totalCount={gameData.length}
+                        filteredCount={filteredGames.length}
+                        showFiltered={!!searchQuery}
+                    />
+
+                    <SearchBar 
+                        placeholder="Search by player name..."
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                    />
+                </div>
+
                 <div className="console-table-wrapper">
                     <div className="table-responsive">
-                        {gameData.length === 0 ? (
+                        {filteredGames.length === 0 ? (
                             <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
                                 <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
-                                    No games recorded yet.
+                                    {searchQuery ? `No games found for player "${searchQuery}"` : 'No games recorded yet.'}
                                 </p>
                             </div>
                         ) : (
@@ -341,7 +383,7 @@ export function GameConsole() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {gameData.map(row => (
+                                    {filteredGames.map(row => (
                                         <tr key={row.gameId}>
                                             <td data-label="Game Id">{row.gameId}</td>
                                             <td data-label="Player1 Name">{row.player1Id}</td>

@@ -16,6 +16,9 @@ import { useAuth } from "../auth/AuthProvider"
 import { TournamentPlayersModal } from "../service/tournament/TournamentPlayersModal"
 import { sortByNumberAsc } from "../utils/Sorters"
 import { OverlaySpinner } from "../utils/OverlaySpinner"
+import { DataCount } from "../utils/DataCount"
+import { SearchBar } from "../utils/SearchBar"
+
 
 interface Tournament {
     tournamentId: string
@@ -58,11 +61,25 @@ export function TournamentConsole() {
     const [modalTournamentId, setModalTournamentId]     = useState<string | null>(null)
     const [modalTournamentName, setModalTournamentName] = useState<string>("")
     const [selectedRoundCompleted, setSelectedRoundCompleted] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
 
     const [pendingTournamentType, setPendingTournamentType] = useState<"individual" | "team">("individual")
     const [modalTournamentType, setModalTournamentType]     = useState<"individual" | "team">("individual")
 
     const [loadingMessage, setLoadingMessage] = useState<string | null>("Loading Tournaments...")
+
+    // ✅ FILTER TOURNAMENTS BY NAME
+    const filteredTournaments = tournamentData.filter(tournament => {
+        const tournamentName = tournament.tournamentName?.toLowerCase() || '';
+        const tournamentId = tournament.tournamentId?.toLowerCase() || '';
+
+        const query = searchQuery.toLowerCase();
+
+        return (
+            tournamentName.includes(query) ||
+            tournamentId.includes(query)
+        );
+    });
 
     const [selectModal, setSelectModal] = useState<{
         show: boolean
@@ -401,12 +418,35 @@ export function TournamentConsole() {
                 )}
 
                 <div className="console-table-container">
+                    {/* ✅ TOURNAMENT COUNT & SEARCH BAR */}
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        marginBottom: '20px',
+                        gap: '20px',
+                        flexWrap: 'wrap'
+                    }}>
+                        <DataCount 
+                            label="Total Tournaments"
+                            totalCount={tournamentData.length}
+                            filteredCount={filteredTournaments.length}
+                            showFiltered={!!searchQuery}
+                        />
+
+                        <SearchBar 
+                            placeholder="Search by tournament name..."
+                            value={searchQuery}
+                            onChange={setSearchQuery}
+                        />
+                    </div>
+
                     <div className="console-table-wrapper">
                         <div className="table-responsive">
-                            {tournamentData.length === 0 ? (
+                            {filteredTournaments.length === 0 ? (
                                 <div style={{ textAlign: "center", color: "#bfd0e150", padding: "40px" }}>
                                     <p style={{ fontSize: "0.9rem", letterSpacing: "1px", margin: 0 }}>
-                                        No tournaments created yet.
+                                        {searchQuery ? `No tournaments found matching "${searchQuery}"` : 'No tournaments created yet.'}
                                     </p>
                                 </div>
                             ) : (
@@ -419,7 +459,7 @@ export function TournamentConsole() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tournamentData.map((row, index) => (
+                                        {filteredTournaments.map((row, index) => (
                                             <tr key={(row.tournamentId || index) + (role || 'loading')}>
                                                 <td data-label="Tournament ID" className="text-center">{row.tournamentId}</td>
                                                 <td data-label="Tournament Name" className="text-center">{row.tournamentName}</td>
