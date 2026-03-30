@@ -1869,7 +1869,7 @@ select:focus,
   font-size: clamp(3.8rem, 10vw, 7.5rem);
   font-weight: 900;
   line-height: 1;
-  color: #e0d318;
+  color: #e0d318d9;
   text-shadow: 0 0 50px rgba(224, 211, 24, 0.45), 0 0 120px rgba(224, 211, 24, 0.12);
   letter-spacing: 8px;
   animation: hFadeUp 0.9s ease 0.08s both;
@@ -1950,7 +1950,7 @@ select:focus,
 }
 
 .h-btn-gold {
-  background: #e0d318;
+  background: #e0d318d4;
   color: #060413;
   border: none;
   padding: 14px 38px;
