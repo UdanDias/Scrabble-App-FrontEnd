@@ -131,20 +131,20 @@ function AppLayout() {
               <Route path="/profile" element={<Profile />} />
               <Route
                 path="/user"
-                element={isAdmin ? <UserConsole /> : <Navigate to="/leaderboard" />}
+                element={isAdmin ? <UserConsole /> : <Navigate to="/Home" />}
               />
               <Route
                 path="/game"
-                element={isAdmin ? <GameConsole /> : <Navigate to="/leaderboard" />}
+                element={isAdmin ? <GameConsole /> : <Navigate to="/Home" />}
               />
               <Route
                 path="/player"
-                element={isAdmin ? <PlayerConsole /> : <Navigate to="/leaderboard" />}
+                element={isAdmin ? <PlayerConsole /> : <Navigate to="/Home" />}
               />
               <Route path="/tournament" element={<TournamentConsole />} />
               <Route
                 path="/teams"
-                element={isAdmin ? <TeamsConsole /> : <Navigate to="/leaderboard" />}
+                element={isAdmin ? <TeamsConsole /> : <Navigate to="/Home" />}
               />
               <Route path="/pairings" element={<PairingsConsole />} />
               <Route path="/leaderboard" element={<LeaderBoard />} />
